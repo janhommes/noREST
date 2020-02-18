@@ -1,4 +1,4 @@
-import { prepare } from './_prepare';
+import { prepare, createFakeData } from './_prepare';
 import { ApiController } from '../../api/api.controller';
 
 let apiController: ApiController;
@@ -11,7 +11,7 @@ const reqMock = {
 beforeAll(async () => {
   const { module } = await prepare();
   apiController = module.get<ApiController>(ApiController);
-  // connectorService = module.get<ConnectorService>(ConnectorService);
+  await createFakeData(apiController, reqMock);
 });
 
 describe('ApiController -> list()', () => {

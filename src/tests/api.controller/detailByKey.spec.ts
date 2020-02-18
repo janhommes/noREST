@@ -1,8 +1,8 @@
-import { prepare } from './_prepare';
+import { createFakeData, prepare } from './_prepare';
 import { ApiController } from '../../api/api.controller';
 
 let apiController: ApiController;
-let reqMock = {
+const reqMock = {
   auth: {
     user: 'foo',
   },
@@ -11,7 +11,7 @@ let reqMock = {
 beforeAll(async () => {
   const { module } = await prepare();
   apiController = module.get<ApiController>(ApiController);
-  // connectorService = module.get<ConnectorService>(ConnectorService);
+  await createFakeData(apiController, reqMock);
 });
 
 describe('ApiController -> detailByKey()', () => {

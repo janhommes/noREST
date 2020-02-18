@@ -11,7 +11,6 @@ const reqMock = {
 beforeAll(async () => {
   const { module } = await prepare();
   apiController = module.get<ApiController>(ApiController);
-  // connectorService = module.get<ConnectorService>(ConnectorService);
 });
 
 describe('ApiControlelr -> create()', () => {

@@ -5,7 +5,7 @@ import { ApiModule } from './api/api.module';
   imports: [
     ApiModule.register({
       db: {
-        name: 'mongodb',
+        name: 'mock',
         url: 'mongodb://127.0.0.1:27017/test',
         // collection: req => 'delete_me',
         collection: 'delete_me',

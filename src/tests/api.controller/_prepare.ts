@@ -15,11 +15,77 @@ import { ConnectorService } from '../../connector/connector.service';
 import { Connector } from '../../connector/connector.interface';
 import { DbConfig } from '../../connector/db-config.interface';
 
+export const createFakeData = async (apiController: ApiController, reqMock) => {
+  const fakeData = [
+    {
+      _id: '1',
+      name: 'position5',
+      '#_user': {
+        mail: 'smth@do.de',
+      },
+    },
+    {
+      _id: '2',
+      name: 'position4',
+      '#_product': {},
+    },
+    {
+      _id: '3',
+      name: 'position3',
+      '#_product': {},
+      // '@': [{ id: '7', fragment: '@_category' }],
+    },
+    {
+      _id: '4',
+      name: 'position2',
+      '#_option': {
+        name: 'api-key',
+        internal: 'I am a secret :)',
+      },
+    },
+    {
+      _id: '5',
+      name: 'position1',
+      _key: 'test',
+      '#_option': {
+        name: 'api-key',
+        internal: 'I am a secret :)',
+      },
+    },
+    {
+      _id: '7',
+      name: 'position7',
+      '#_category': {
+        name: 'api-key',
+        internal: 'I am a secret :)',
+      },
+      // '@': [{ id: '6', fragment: '@_category' }],
+    },
+    {
+      _id: '6',
+      name: 'position1',
+      '#_category': {
+        name: 'api-key',
+        internal: 'I am a secret :)',
+      },
+      // '@': [{ id: '8', fragment: '@_product', oneToOne: true }],
+    },
+    {
+      _id: '8',
+      name: 'position8',
+      '#_product': {},
+    },
+  ];
+  for (const data of fakeData) {
+    await apiController.create(data, reqMock);
+  }
+};
+
 export const prepare = async () => {
   const apiConfig: ApiConfig = {
     db: {
-      name: 'mongodb',
-      url: 'mongodb://127.0.0.1:27017/test',
+      name: 'mock',
+      url: '',
       collection: 'delete_me',
     },
     config: {
