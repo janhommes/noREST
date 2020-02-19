@@ -13,7 +13,7 @@ beforeAll(async () => {
   apiController = module.get<ApiController>(ApiController);
 });
 
-describe('ApiControlelr -> create()', () => {
+describe('ApiController -> create()', () => {
   it('should create an entity with any given id', async () => {
     // given
     const data = {
