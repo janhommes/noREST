@@ -20,7 +20,23 @@ describe('ApiController -> createFragment()', () => {
       _id: 'test',
       test: '1',
     };
-    await apiController.create({ _id: 'foo', '#_test': {}}, reqMock);
+    await apiController.create({ _id: 'foo', '#_test': {} }, reqMock);
+
+    // when
+    const result = await apiController.createFragment('test', data, reqMock);
+
+    // then
+    expect(result['#_test']).toBeDefined();
+  });
+
+  it('should create an entity with an fragment attached even if the data already defines it', async () => {
+    // given
+    const data = {
+      _id: 'test2',
+      test: '1',
+      '#_test': {},
+    };
+    await apiController.create({ _id: 'foobar', '#_test': {} }, reqMock);
 
     // when
     const result = await apiController.createFragment('test', data, reqMock);
@@ -38,7 +54,7 @@ describe('ApiController -> createFragment()', () => {
 
     try {
       // when
-      const result = await apiController.createFragment('test2', data, reqMock);
+      await apiController.createFragment('test2', data, reqMock);
     } catch (ex) {
       // then
       expect(ex.status).toBe(404);
