@@ -171,7 +171,7 @@ export class ApiController {
     await this.checkIfRefExist(data, request);
     this.validateMetaData(data);
     this.validateIfIndexFragmentIsSet(data);
-    this.attachMetadata(data, request.auth.user);
+    data = this.attachMetadata(data, request.auth.user);
     return this.getDatabase(request).update(id, data);
   }
 
@@ -199,7 +199,7 @@ export class ApiController {
     this.validateIfIndexFragmentIsSet(data);
     data = this.removeNullFragments(data);
     await this.checkIfRefExist(data, request);
-    this.attachMetadata(data, undefined, request.auth.user);
+    data = this.attachMetadata(data, undefined, request.auth.user);
     return this.getDatabase(request).update(id, data);
   }
 
@@ -243,7 +243,7 @@ export class ApiController {
   private async checkIfRefExist(data: any, request: Request) {
     if (data[DEFAULT_REFERENCE_DB_KEY]) {
       const result = await this.getDatabase(request).listByRef(
-        data[DEFAULT_REFERENCE_DB_KEY]
+        data[DEFAULT_REFERENCE_DB_KEY],
       );
 
       // TODO: LENGTH COULD BE THE SAME :(
@@ -371,8 +371,8 @@ export class ApiController {
     d._ = {
       owner: owner ? owner : data._.owner,
       created: owner ? new Date().toISOString() : data._.created,
-      changed: new Date().toISOString(),
       changedBy: changedBy ? changedBy : owner,
+      changed: new Date().toISOString(),
     };
     return d;
   }
