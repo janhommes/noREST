@@ -106,6 +106,7 @@ export class MockService implements Connector {
   delete(id: string) {
     const toReplace = this.read(id);
     this.data.splice(this.data.indexOf(toReplace), 1);
+    return toReplace;
   }
 
   private order(data, orderBy?: string) {

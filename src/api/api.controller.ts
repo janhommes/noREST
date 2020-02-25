@@ -230,7 +230,7 @@ export class ApiController {
     @Param('fragment') fragment,
     @Req() request,
   ) {
-    await this.checkIfFragmentExist(fragment, request);
+    fragment = await this.checkIfFragmentExist(fragment, request);
     id = await this.checkIfIdIsAKey(fragment, id, request);
     return this.delete(id, request);
   }
