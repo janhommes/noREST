@@ -27,12 +27,9 @@ export class MongoDbService implements Connector {
         useNewUrlParser: true,
         autoReconnect: true,
       }).connect();
-      if (_.isString(config.collection)) {
-        this.collection = this.connection
-          .db()
-          .collection(config.collection as string);
-        this.indexFragments = await this.getIndexFragments();
-      }
+
+      await this.resolveCollection();
+
       Logger.log(`${config.name} connection established at url: ${config.url}`);
       return this.connection;
     } catch (ex) {
@@ -40,12 +37,18 @@ export class MongoDbService implements Connector {
     }
   }
 
-  resolveCollection(req: Request) {
-    if (_.isString(this.config.collection)) {
-      this.connection.db().collection(this.config.collection as string);
-    } else {
-      const collName = (this.config.collection as Function)(req);
+  async resolveCollection(req?: Request) {
+    const collName = this.getCollectionName(req);
+    try {
       this.collection = this.connection.db().collection(collName);
+      this.indexFragments = await this.getIndexFragments();
+    } catch (ex) {
+      if (this.config.createCollectionNotExisting && ex.code === 26) {
+        this.collection = await this.connection.db().createCollection(collName);
+        this.indexFragments = await this.getIndexFragments();
+      } else {
+        throw ex;
+      }
     }
   }
 
@@ -163,6 +166,7 @@ export class MongoDbService implements Connector {
         [`${DEFAULT_REFERENCE_DB_KEY}.${DEFAULT_REFERENCE_DB_IDENTIFIER_KEY}`]: `${id}`,
       })
       .toArray();
+
     await references.forEach(async data => {
       data[DEFAULT_REFERENCE_DB_KEY] = data[DEFAULT_REFERENCE_DB_KEY].filter(
         ref => ref === `${id}`,
@@ -174,6 +178,13 @@ export class MongoDbService implements Connector {
     });
 
     return result.value;
+  }
+
+  private getCollectionName(req?: Request) {
+    if (_.isString(this.config.collection)) {
+      return this.config.collection as string;
+    }
+    return (this.config.collection as Function)(req) as string;
   }
 
   private async getIndexFragments() {

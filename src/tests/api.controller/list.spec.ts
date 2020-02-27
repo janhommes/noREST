@@ -15,7 +15,7 @@ beforeAll(async () => {
 });
 
 describe('ApiController -> list()', () => {
-  it('Should list all when not fixed', async () => {
+  fit('Should list all when not fixed', async () => {
     // when
     const result = await apiController.list(reqMock);
 

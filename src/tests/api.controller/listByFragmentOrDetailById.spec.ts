@@ -82,7 +82,8 @@ describe('listByFragmentOrDetailById()', () => {
     );
 
     // then
-    expect(result._.total).toBe(1);
+    expect(result.data.length).toBe(1);
+    expect(result._.total).toBe(3);
     expect(result.data[0].name).toBe('position3');
   });
 
@@ -101,7 +102,8 @@ describe('listByFragmentOrDetailById()', () => {
     );
 
     // then
-    expect(result._.total).toBe(2);
+    expect(result._.total).toBe(3);
+    expect(result.data.length).toBe(2);
   });
 
   it('should still orderBy on fragment', async () => {

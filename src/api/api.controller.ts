@@ -122,8 +122,8 @@ export class ApiController {
       throw new HttpException(Messages.NO_REF_FOUND, HttpStatus.NOT_FOUND);
     }
 
+    const paging = this.normalizeSkipLimit(skip, limit);
     if (!references[0].oneToOne) {
-      const paging = this.normalizeSkipLimit(skip, limit);
       return this.getDatabase(request).listByRef(
         references,
         paging.skip,
@@ -131,7 +131,12 @@ export class ApiController {
       );
     }
 
-    return this.listByFragmentOrDetailById(references[0].id, request);
+    return this.listByFragmentOrDetailById(
+      references[0].id,
+      request,
+      paging.skip,
+      paging.limit,
+    );
   }
 
   @UseGuards(AuthGuard)
@@ -163,7 +168,7 @@ export class ApiController {
   async update(@Param('id') id, @Body() data, @Req() request) {
     if (data._id) {
       throw new HttpException(
-        Messages.VALIDATION_ALTERING_ID,
+        Messages.VALIDATION_CONFLICT,
         HttpStatus.CONFLICT,
       );
     }
@@ -242,8 +247,11 @@ export class ApiController {
 
   private async checkIfRefExist(data: any, request: Request) {
     if (data[DEFAULT_REFERENCE_DB_KEY]) {
+      // TODO: LIMIT
       const result = await this.getDatabase(request).listByRef(
         data[DEFAULT_REFERENCE_DB_KEY],
+        0,
+        DEFAULT_PAGE_SIZE,
       );
 
       // TODO: LENGTH COULD BE THE SAME :(
@@ -328,7 +336,7 @@ export class ApiController {
       throw new HttpException(Messages.NOT_FOUND, HttpStatus.NOT_FOUND);
     } else if (existing && !shouldExist) {
       throw new HttpException(
-        Messages.VALIDATION_ALTERING_ID,
+        Messages.VALIDATION_CONFLICT,
         HttpStatus.CONFLICT,
       );
     }

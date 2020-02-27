@@ -64,16 +64,16 @@ export class MockService implements Connector {
     limit?: number,
     orderBy?: string,
   ) {
-    const data = this.order(this.getPaged(this.data.filter(value => {
+    const data = this.data.filter(value => {
       return _.has(value, fragment);
-    }), skip, limit), orderBy);
+    })
     return Promise.resolve({
       _: {
         total: data.length,
         skip,
         limit,
       },
-      data,
+      data: this.order(this.getPaged(data, skip, limit), orderBy),
     });
   }
 
@@ -82,17 +82,17 @@ export class MockService implements Connector {
     skip: number = 0,
     limit: number = this.MAX_PAGE_SIZE,
   ): Promise<List> {
-    const data = this.getPaged(this.data.filter(value => {
+    const data = this.data.filter(value => {
       // tslint:disable-next-line: triple-equals
       return references.some((r) => r.id == value._id);
-    }), skip, limit);
+    });
     return Promise.resolve({
       _: {
         total: data.length,
         skip,
         limit,
       },
-      data,
+      data: this.getPaged(data, skip, limit),
     });
   }
 

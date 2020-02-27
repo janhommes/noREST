@@ -5,4 +5,5 @@ export interface DbConfig {
   name: 'mock' | 'mongodb' | 'file' | DbConnector;
   url?: string;
   collection?: string | ((req: Request) => string);
+  createCollectionNotExisting?: boolean;
 }

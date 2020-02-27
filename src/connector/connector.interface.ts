@@ -44,7 +44,7 @@ export interface Connector {
    * @param limit How many docs should be requested.
    * @param orderby How should the docs be ordered e.g. name,size DESC.
    */
-  list(skip?: number, limit?: number, orderBy?: string): Promise<List>;
+  list(skip: number, limit: number, orderBy?: string): Promise<List>;
 
   /**
    * Lists all data by the index fragment.
@@ -54,7 +54,7 @@ export interface Connector {
    * @param limit How many docs should be requested.
    * @param orderby How should the docs be ordered e.g. name,size DESC.
    */
-  listByIndexFragment(fragment: string, skip?: number, limit?: number, orderBy?: string): Promise<List>;
+  listByIndexFragment(fragment: string, skip: number, limit: number, orderBy?: string): Promise<List>;
 
   /**
    * List all references by passing a map of
@@ -63,7 +63,7 @@ export interface Connector {
    * @param skip How many docs should be skipped.
    * @param limit How many docs should be requested.
    */
-  listByRef(references: Reference[], skip?: number, limit?: number): Promise<List>;
+  listByRef(references: Reference[], skip: number, limit: number): Promise<List>;
 
   /**
    * Creates a new entity in the connector.
