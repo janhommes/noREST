@@ -11,6 +11,7 @@ import {
   DB_CONNECTION_TOKEN,
 } from '../common/constants';
 import { MongoDbService } from './mongodb.service';
+import { FileService } from './file.service';
 
 @Module({})
 export class ConnectorModule {
@@ -22,7 +23,7 @@ export class ConnectorModule {
         case DbConnector.MongoDB:
           return MongoDbService;
         case DbConnector.File:
-          return MockService;
+          return FileService;
       }
     }
     return defaultConnector;
