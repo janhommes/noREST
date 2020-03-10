@@ -6,7 +6,14 @@ import { Request } from 'express';
 import { Messages } from '../common/messages';
 import { Reference } from './reference.interface';
 import { List } from './list.interface';
-import { readFile, writeFile, exists, mkdir } from 'fs';
+import {
+  readFile,
+  writeFile,
+  exists,
+  watchFile,
+  createWriteStream,
+  createReadStream,
+} from 'fs';
 import { isAbsolute, resolve } from 'path';
 import { promisify } from 'util';
 
@@ -16,6 +23,9 @@ export class FileService implements Connector {
   private path;
   private cachedData = [];
 
+  private _readFile = promisify(readFile);
+  private _writeFile = promisify(writeFile);
+  private watchers = [];
   private config: DbConfig;
 
   private getCollectionName(req?: Request) {
@@ -26,42 +36,54 @@ export class FileService implements Connector {
   }
 
   async getData() {
-    if (_.isString(this.config.collection)) {
-      return this.cachedData;
-    } else {
-      return await this.resolveCollection();
-    }
+    return this.cachedData[await this.resolveCollection()];
   }
 
   async saveData(data) {
     const collName = this.getCollectionName();
     const path = resolve(this.path, collName);
-    const _writeFile = promisify(writeFile);
-    _writeFile(path, JSON.stringify(data));
+    // console.log('saving', data, path);
+    await this._writeFile(path, JSON.stringify(data));
   }
 
   async resolveCollection(req?: Request) {
     const collName = this.getCollectionName(req);
     const path = resolve(this.path, collName);
+
+    if (this.watchers[path]) {
+      return path;
+    }
+
     const _exsists = promisify(exists);
     let data = [];
     if (!(await _exsists(path))) {
-      const _writeFile = promisify(writeFile);
-      await _writeFile(path, '[]');
+      await this._writeFile(path, '[]');
     } else {
-      const _readFile = promisify(readFile);
-      data = JSON.parse(await _readFile(path, 'utf8'));
+      try {
+        const fileData = await this._readFile(path, 'utf8');
+        data = JSON.parse(fileData);
+      } catch (ex) {
+        throw new Error(`Failed to load file: ${path}`);
+      }
     }
-    this.cachedData = data;
-    return data;
+    this.cachedData[path] = data;
+
+    this.watchers[path] = watchFile(path, () => {
+      this._readFile(path, 'utf8').then(data => {
+        this.cachedData[path] = JSON.parse(data);
+      });
+    });
+
+    return path;
   }
 
   async connect(config: DbConfig) {
     this.config = config;
-    if (isAbsolute(this.config.path)) {
-      this.path = this.config.path;
+    const path = this.config.path || '.';
+    if (isAbsolute(path)) {
+      this.path = path;
     } else {
-      this.path = resolve(__dirname, this.config.path);
+      this.path = resolve(__dirname, path);
     }
     await this.resolveCollection();
     Logger.log(`${config.name} connection established.`);
@@ -77,7 +99,7 @@ export class FileService implements Connector {
     }
     const _data = await this.getData();
     _data.push(data);
-    this.saveData(_data);
+    await this.saveData(_data);
     return data;
   }
 
@@ -150,7 +172,7 @@ export class FileService implements Connector {
     data._id = id;
     const _data = await this.getData();
     _data[_data.indexOf(toReplace)] = data;
-    this.saveData(_data);
+    await this.saveData(_data);
     return data;
   }
 
@@ -158,7 +180,7 @@ export class FileService implements Connector {
     const toReplace = this.read(id);
     const _data = await this.getData();
     _data.splice(_data.indexOf(toReplace), 1);
-    this.saveData(_data);
+    await this.saveData(_data);
     return toReplace;
   }
 

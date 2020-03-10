@@ -14,7 +14,7 @@ beforeAll(async () => {
 });
 
 describe('ApiController', () => {
-  // TODO: add test that verify the right setuo
+  // TODO: add test that verify the right setup
   // of the controller.
   it('should exist', () => {
     expect(apiController).toBeDefined();

@@ -1,10 +1,6 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { DB_CONNECTOR_TOKEN } from '../common/constants';
 import { Connector } from './connector.interface';
-import {
-  DB_CONNECTOR_TOKEN,
-  DB_CONFIG_TOKEN,
-  DB_CONNECTION_TOKEN,
-} from '../common/constants';
 
 @Injectable({})
 export class ConnectorService {

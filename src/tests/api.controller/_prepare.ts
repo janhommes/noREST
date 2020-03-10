@@ -14,6 +14,7 @@ import { MongoDbService } from '../../connector/mongodb.service';
 import { ConnectorService } from '../../connector/connector.service';
 import { Connector } from '../../connector/connector.interface';
 import { DbConfig } from '../../connector/db-config.interface';
+import { FileService } from '../../connector/file.service';
 
 export const createFakeData = async (apiController: ApiController, reqMock) => {
   const fakeData = [
@@ -84,9 +85,10 @@ export const createFakeData = async (apiController: ApiController, reqMock) => {
 export const prepare = async () => {
   const apiConfig: ApiConfig = {
     db: {
-      name: 'mock',
+      name: 'file',
       url: 'mongodb://127.0.0.1:27017/test',
       collection: 'testme_' + Math.random(),
+      path: '../../dist/test',
       createCollectionNotExisting: true
     },
     config: {
@@ -118,9 +120,10 @@ export const prepare = async () => {
       MockService,
       MongoDbService,
       ConnectorService,
+      FileService,
       {
         provide: DB_CONNECTOR_TOKEN,
-        useExisting: MockService,
+        useExisting: FileService,
       },
       {
         provide: DB_CONNECTION_TOKEN,
