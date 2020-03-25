@@ -95,7 +95,9 @@ describe('ApiController -> list()', () => {
     const result = await apiController.list(reqMock, skip);
 
     // then
-    expect(result._.total).toBe(5);
+    expect(result._.skip).toBe(3);
+    expect(result._.total).toBe(8);
+    expect(result.data.length).toBe(5);
     expect(result.data[0].name).toBe('position2');
   });
 
@@ -107,7 +109,9 @@ describe('ApiController -> list()', () => {
     const result = await apiController.list(reqMock, 0, limit);
 
     // then
-    expect(result._.total).toBe(2);
+    expect(result._.limit).toBe(2);
+    expect(result._.total).toBe(8);
+    expect(result.data.length).toBe(2);
     expect(result.data[0].name).toBe('position5');
   });
 
@@ -120,7 +124,10 @@ describe('ApiController -> list()', () => {
     const result = await apiController.list(reqMock, skip, limit);
 
     // then
-    expect(result._.total).toBe(2);
+    expect(result._.limit).toBe(2);
+    expect(result._.limit).toBe(2);
+    expect(result._.total).toBe(8);
+    expect(result.data.length).toBe(2);
     expect(result.data[0].name).toBe('position3');
   });
 
@@ -133,7 +140,10 @@ describe('ApiController -> list()', () => {
     const result = await apiController.list(reqMock, skip, limit);
 
     // then
-    expect(result._.total).toBe(3);
+    expect(result._.skip).toBe(0);
+    expect(result._.limit).toBe(3);
+    expect(result._.total).toBe(8);
+    expect(result.data.length).toBe(3);
   });
 
   it('should order data correctly asc', async () => {

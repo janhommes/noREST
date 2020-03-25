@@ -42,7 +42,6 @@ export class FileService implements Connector {
   async saveData(data) {
     const collName = this.getCollectionName();
     const path = resolve(this.path, collName);
-    // console.log('saving', data, path);
     await this._writeFile(path, JSON.stringify(data));
   }
 
@@ -118,14 +117,14 @@ export class FileService implements Connector {
   }
 
   async list(skip: number, limit: number, orderBy?: string) {
-    const data = this.getPaged(await this.getData(), skip, limit);
+    const data = await this.getData();
     return Promise.resolve({
       _: {
         total: data.length,
         skip,
         limit,
       },
-      data: this.order(data, orderBy),
+      data: this.order(this.getPaged(data, skip, limit), orderBy),
     });
   }
 
@@ -168,7 +167,7 @@ export class FileService implements Connector {
   }
 
   async update(id: string, data: any) {
-    const toReplace = this.read(id);
+    const toReplace = await this.read(id);
     data._id = id;
     const _data = await this.getData();
     _data[_data.indexOf(toReplace)] = data;
@@ -177,7 +176,7 @@ export class FileService implements Connector {
   }
 
   async delete(id: string) {
-    const toReplace = this.read(id);
+    const toReplace = await this.read(id);
     const _data = await this.getData();
     _data.splice(_data.indexOf(toReplace), 1);
     await this.saveData(_data);

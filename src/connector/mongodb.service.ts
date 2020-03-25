@@ -24,8 +24,7 @@ export class MongoDbService implements Connector {
     try {
       this.connection = await new MongoClient(config.url, {
         useUnifiedTopology: true,
-        useNewUrlParser: true,
-        autoReconnect: true,
+        useNewUrlParser: true
       }).connect();
 
       await this.resolveCollection();
