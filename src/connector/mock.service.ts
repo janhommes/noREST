@@ -6,6 +6,7 @@ import { Request } from 'express';
 import { Messages } from '../common/messages';
 import { Reference } from './reference.interface';
 import { List } from './list.interface';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class MockService implements Connector {
@@ -107,6 +108,10 @@ export class MockService implements Connector {
     const toReplace = this.read(id);
     this.data.splice(this.data.indexOf(toReplace), 1);
     return toReplace;
+  }
+
+  listenOnChanges(fragment?: any, id?: any): Observable<any> {
+    throw new Error("Method not implemented.");
   }
 
   private order(data, orderBy?: string) {

@@ -2,9 +2,11 @@ import { DbConfig } from './db-config.interface';
 import { Request } from 'express';
 import { List } from './list.interface';
 import { Reference } from './reference.interface';
+import { Observable } from 'rxjs';
+import { ChangesetInterface } from './changeset.interface';
 
 /**
- * A connector allows to connect any datasource to
+ * A connector allows to connect any data source to
  * the noREST API.
  */
 export interface Connector {
@@ -85,4 +87,12 @@ export interface Connector {
    * @param id The id to delete.
    */
   delete(id: string);
+
+  /**
+   * Subscribes to changes. Used to inform websocket of data changes.
+   * @param fragment The fragment to listen to (if undefined, a global list is used).
+   * @param id The id to listen to (if undefined, a fragment list is used).
+   * @param ref If given a re list is listened to.
+   */
+  listenOnChanges(fragment?, id?, ref?): Observable<ChangesetInterface>;
 }

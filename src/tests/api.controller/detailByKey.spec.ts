@@ -94,4 +94,18 @@ describe('ApiController -> detailByKey()', () => {
       expect(ex.status).toBe(404);
     }
   });
+
+  it('should throw if fragment is unknown', async () => {
+    // given
+    const fragment = 'abc';
+    const id = '3';
+
+    try {
+      // when
+      await apiController.detailByKey(fragment, id, reqMock);
+    } catch (ex) {
+      // then
+      expect(ex.status).toBe(404);
+    }
+  });
 });

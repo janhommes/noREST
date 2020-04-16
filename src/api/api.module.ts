@@ -1,12 +1,13 @@
-import { Module, DynamicModule, Provider } from '@nestjs/common';
-import { ApiController } from './api.controller';
-import { AuthService } from './auth.service';
-import { ConnectorModule } from '../connector/connector.module';
-import { Connector } from '../connector/connector.interface';
-import { ApiConfig } from './api-config.interface';
-import { API_CONFIG_TOKEN } from '../common/constants';
+import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { _ } from 'lodash';
+import { API_CONFIG_TOKEN, DEFAULT_PAGE_SIZE } from '../common/constants';
+import { Connector } from '../connector/connector.interface';
+import { ConnectorModule } from '../connector/connector.module';
+import { ApiConfig } from './api-config.interface';
+import { ApiController } from './api.controller';
 import { AuthGuard } from './auth.guard';
+import { AuthService } from './auth.service';
+import { WebsocketGateway } from './websocket.gateway';
 
 @Module({})
 export class ApiModule {
@@ -26,13 +27,14 @@ export class ApiModule {
       },
       baseRoute: 'api',
       fixed: false,
+      defaultPageSize: DEFAULT_PAGE_SIZE
     },
   };
 
   static register(
     config?: Partial<ApiConfig>,
     databaseConnector?: Provider<Connector>,
-  ): DynamicModule {;
+  ): DynamicModule {
     const apiConfig = _.merge(ApiModule.defaultConfig, config);
     const connector = ConnectorModule.getConnector(
       apiConfig.db.name,
@@ -43,6 +45,7 @@ export class ApiModule {
       providers: [
         AuthService,
         AuthGuard,
+        WebsocketGateway,
         { provide: API_CONFIG_TOKEN, useValue: apiConfig },
       ],
       controllers: [ApiController],

@@ -12,5 +12,6 @@ export interface ApiConfig {
     };
     baseRoute: string;
     fixed: boolean;
+    defaultPageSize: number;
   };
 }

@@ -2,7 +2,7 @@ import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { _ } from 'lodash';
 import { Connector } from './connector.interface';
 import { DbConfig } from './db-config.interface';
-import { MongoClient, ObjectID, Collection } from 'mongodb';
+import { MongoClient, ObjectId, Collection } from 'mongodb';
 import { Request } from 'express';
 import {
   DEFAULT_INDEX_FRAGMENT_PREFIX,
@@ -11,6 +11,9 @@ import {
 } from '../common/constants';
 import { Messages } from '../common/messages';
 import { Reference } from './reference.interface';
+import { bindCallback, fromEvent, Observable, pipe } from 'rxjs';
+import { filter, map, tap } from 'rxjs/operators';
+import { ChangesetInterface } from './changeset.interface';
 
 @Injectable()
 export class MongoDbService implements Connector {
@@ -18,16 +21,60 @@ export class MongoDbService implements Connector {
   private collection: Collection;
   private config: DbConfig;
   private indexFragments: string[] = [];
+  private watcher$;
+
+  listenOnChanges() {
+    return this.watcher$.pipe(
+      map(
+        (change: any) =>
+          ({
+            _id: change.documentKey._id.toHexString(),
+            method: this.mapOperationType(change.operationType),
+            data: change.fullDocument
+              ? {
+                  ...change.fullDocument,
+                  _id: change.documentKey._id.toHexString(),
+                }
+              : undefined,
+          } as ChangesetInterface),
+      ),
+    );
+  }
+
+  private mapOperationType(
+    operationType: any,
+  ): 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT' {
+    switch (operationType) {
+      case 'insert': {
+        return 'POST';
+      }
+      // TODO: Issue with POST vs. PUT. As we only use
+      // replace, PATCH is never referenced correctly in
+      // a ws return
+      case 'update': {
+        return 'PATCH';
+      }
+      case 'replace': {
+        return 'PUT';
+      }
+      case 'delete': {
+        return 'DELETE';
+      }
+    }
+    return 'GET';
+  }
 
   async connect(config: DbConfig) {
     this.config = config;
     try {
       this.connection = await new MongoClient(config.url, {
         useUnifiedTopology: true,
-        useNewUrlParser: true
+        useNewUrlParser: true,
       }).connect();
 
       await this.resolveCollection();
+
+      this.watcher$ = fromEvent(this.collection.watch(), 'change');
 
       Logger.log(`${config.name} connection established at url: ${config.url}`);
       return this.connection;
@@ -59,7 +106,7 @@ export class MongoDbService implements Connector {
   }
 
   async create(data: any) {
-    const newData = { _id: new ObjectID(), ...data };
+    const newData = { _id: new ObjectId(), ...data };
     await this.collection.insertOne(newData);
     await this.setIndexFragments(newData);
     return newData;
@@ -80,6 +127,9 @@ export class MongoDbService implements Connector {
         // tslint:disable-next-line: triple-equals
         _.find(data, (val, k) => k.startsWith('_') && val == key),
       );
+    }
+    if (!_.has(result, fragment)) {
+      return;
     }
     return result;
   }
@@ -206,7 +256,7 @@ export class MongoDbService implements Connector {
   }
 
   private getObjectIdIfValid(id) {
-    return ObjectID.isValid(id) ? new ObjectID(id) : id;
+    return ObjectId.isValid(id) ? new ObjectId(id) : id;
   }
 
   private createSearchFilter(orderBy?: string) {

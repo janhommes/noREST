@@ -25,14 +25,14 @@ import {
   REFLECTION_NESTJS_CONTROLLER_PATH,
   DEFAULT_INDEX_FRAGMENT_PREFIX,
   DEFAULT_REFERENCE_PREFIX,
-  DEFAULT_REFERENCE_DB_KEY,
-  DEFAULT_PAGE_SIZE,
+  DEFAULT_REFERENCE_DB_KEY
 } from '../common/constants';
 import { AuthGuard } from './auth.guard';
 import { _ } from 'lodash';
 import { Request } from 'express';
 import { Messages } from '../common/messages';
 import { ReferenceInterceptor } from './reference.interceptor';
+import { normalizeSkipLimit, normalizeFragment, normalizeReference } from 'src/common/normalize';
 
 @UseInterceptors(PrivateInterceptor)
 @UseInterceptors(ReferenceInterceptor)
@@ -44,7 +44,7 @@ export class ApiController {
 
   constructor(
     connector: ConnectorService,
-    @Inject(API_CONFIG_TOKEN) apiConfig: ApiConfig,
+    @Inject(API_CONFIG_TOKEN) private apiConfig: ApiConfig,
   ) {
     Reflect.defineMetadata(
       REFLECTION_NESTJS_CONTROLLER_PATH,
@@ -56,12 +56,12 @@ export class ApiController {
 
   @Get()
   async list(
-    @Req() request,
+    @Req() request: Request,
     @Query('skip') skip: string | number = 0,
-    @Query('limit') limit: string | number = DEFAULT_PAGE_SIZE,
+    @Query('limit') limit: string | number = this.apiConfig.config.defaultPageSize,
     @Query('orderBy') orderBy?,
   ) {
-    const paging = this.normalizeSkipLimit(skip, limit);
+    const paging = normalizeSkipLimit(skip, limit);
     return this.getDatabase(request).list(paging.skip, paging.limit, orderBy);
   }
 
@@ -70,14 +70,14 @@ export class ApiController {
     @Param('fragmentOrId') fragmentOrId,
     @Req() request,
     @Query('skip') skip = 0,
-    @Query('limit') limit = DEFAULT_PAGE_SIZE,
+    @Query('limit') limit = this.apiConfig.config.defaultPageSize,
     @Query('orderBy') orderBy?,
   ) {
-    const fragment = this.normalizeFragment(fragmentOrId);
+    const fragment = normalizeFragment(fragmentOrId);
     const db = this.getDatabase(request);
     const isIndex = await db.isIndex(fragment);
     if (isIndex) {
-      const paging = this.normalizeSkipLimit(skip, limit);
+      const paging = normalizeSkipLimit(skip, limit);
       return this.getDatabase(request).listByIndexFragment(
         fragment,
         paging.skip,
@@ -94,7 +94,7 @@ export class ApiController {
     @Param('key') key,
     @Req() request,
   ) {
-    fragment = this.normalizeFragment(fragment);
+    fragment = normalizeFragment(fragment);
     const data = await this.getDatabase(request).readByKey(fragment, key);
     if (!data) {
       throw new HttpException(Messages.NOT_FOUND, HttpStatus.NOT_FOUND);
@@ -109,10 +109,10 @@ export class ApiController {
     @Param('ref') ref,
     @Req() request,
     @Query('skip') skip = 0,
-    @Query('limit') limit = DEFAULT_PAGE_SIZE,
+    @Query('limit') limit = this.apiConfig.config.defaultPageSize,
   ) {
     const data = await this.detailByKey(fragment, key, request);
-    const normalizedRef = this.normalizeReference(ref);
+    const normalizedRef = normalizeReference(ref);
     const references = _.filter(
       data[DEFAULT_REFERENCE_DB_KEY],
       val => val.fragment === normalizedRef,
@@ -122,7 +122,7 @@ export class ApiController {
       throw new HttpException(Messages.NO_REF_FOUND, HttpStatus.NOT_FOUND);
     }
 
-    const paging = this.normalizeSkipLimit(skip, limit);
+    const paging = normalizeSkipLimit(skip, limit);
     if (!references[0].oneToOne) {
       return this.getDatabase(request).listByRef(
         references,
@@ -251,7 +251,7 @@ export class ApiController {
       const result = await this.getDatabase(request).listByRef(
         data[DEFAULT_REFERENCE_DB_KEY],
         0,
-        DEFAULT_PAGE_SIZE,
+        this.apiConfig.config.defaultPageSize,
       );
 
       // TODO: LENGTH COULD BE THE SAME :(
@@ -320,7 +320,7 @@ export class ApiController {
   }
 
   private async checkIfFragmentExist(fragment: any, request: Request) {
-    fragment = this.normalizeFragment(fragment);
+    fragment = normalizeFragment(fragment);
     const db = this.getDatabase(request);
     const isIndex = await db.isIndex(fragment);
     if (!isIndex) {
@@ -341,30 +341,6 @@ export class ApiController {
       );
     }
     return existing;
-  }
-
-  private normalizeSkipLimit(skip, limit) {
-    skip = parseInt(`${skip}`, 10);
-    limit = parseInt(`${limit}`, 10);
-    if (isNaN(skip) || isNaN(limit) || skip < 0 || limit < 0) {
-      throw new HttpException(
-        Messages.SKIP_QUERY_NO_POSITIVE_NUMBER,
-        HttpStatus.PRECONDITION_FAILED,
-      );
-    }
-    return { skip, limit };
-  }
-
-  private normalizeFragment(frag: string) {
-    return (frag || '').startsWith(DEFAULT_INDEX_FRAGMENT_PREFIX)
-      ? frag
-      : `${DEFAULT_INDEX_FRAGMENT_PREFIX}${frag}`;
-  }
-
-  private normalizeReference(frag: string) {
-    return frag.startsWith(DEFAULT_REFERENCE_PREFIX)
-      ? frag
-      : `${DEFAULT_REFERENCE_PREFIX}${frag}`;
   }
 
   private attachFragmentIfNotSet(fragment: any, data: any) {

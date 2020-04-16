@@ -16,6 +16,7 @@ import {
 } from 'fs';
 import { isAbsolute, resolve } from 'path';
 import { promisify } from 'util';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class FileService implements Connector {
@@ -181,6 +182,10 @@ export class FileService implements Connector {
     _data.splice(_data.indexOf(toReplace), 1);
     await this.saveData(_data);
     return toReplace;
+  }
+
+  listenOnChanges(fragment?: any, id?: any): Observable<any> {
+    throw new Error("Method not implemented.");
   }
 
   private order(data, orderBy?: string) {

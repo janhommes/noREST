@@ -101,6 +101,7 @@ export const prepare = async () => {
       },
       baseRoute: 'api',
       fixed: false,
+      defaultPageSize: 100
     },
   };
 
