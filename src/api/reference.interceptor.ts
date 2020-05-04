@@ -4,13 +4,13 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
+import { _ } from 'lodash';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { _ } from 'lodash';
-import { AuthService } from './auth.service';
+import * as WebSocket from 'ws';
 import {
-  DEFAULT_REFERENCE_PREFIX,
   DEFAULT_REFERENCE_DB_KEY,
+  DEFAULT_REFERENCE_PREFIX,
 } from '../common/constants';
 
 /**
@@ -21,11 +21,14 @@ import {
  */
 @Injectable()
 export class ReferenceInterceptor implements NestInterceptor {
-  constructor(private auth: AuthService) {}
+  constructor() {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
-    if (['POST', 'PUT', 'PATCH'].includes(request.method)) {
+    if (
+      !(request instanceof WebSocket) &&
+      ['POST', 'PUT', 'PATCH'].includes(request.method)
+    ) {
       request.body = this.unmapValues(request.body);
     }
 
@@ -68,7 +71,7 @@ export class ReferenceInterceptor implements NestInterceptor {
     const references: any[] = _.get(value, DEFAULT_REFERENCE_DB_KEY);
     if (references) {
       references.forEach(({ id, fragment, oneToOne }) => {
-        const key =  fragment;
+        const key = fragment;
         if (oneToOne) {
           value[key] = id;
         } else {

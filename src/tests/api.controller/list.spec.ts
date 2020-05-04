@@ -17,7 +17,7 @@ beforeAll(async () => {
 describe('ApiController -> list()', () => {
   it('Should list all when not fixed', async () => {
     // when
-    const result = await apiController.list(reqMock);
+    const result = await apiController.list(reqMock as any);
 
     // expect
     expect(result._.total).toBe(8);
@@ -30,7 +30,7 @@ describe('ApiController -> list()', () => {
     // when
     let status;
     try {
-      await apiController.list(reqMock, skip);
+      await apiController.list(reqMock as any, skip);
     } catch (ex) {
       status = ex.getStatus();
     }
@@ -46,7 +46,7 @@ describe('ApiController -> list()', () => {
     // when
     let status;
     try {
-      await apiController.list(reqMock, skip);
+      await apiController.list(reqMock as any, skip);
     } catch (ex) {
       status = ex.getStatus();
     }
@@ -62,7 +62,7 @@ describe('ApiController -> list()', () => {
     // when
     let status;
     try {
-      await apiController.list(reqMock, 0, limit);
+      await apiController.list(reqMock as any, 0, limit);
     } catch (ex) {
       status = ex.getStatus();
     }
@@ -78,7 +78,7 @@ describe('ApiController -> list()', () => {
     // when
     let status;
     try {
-      await apiController.list(reqMock, 0, limit);
+      await apiController.list(reqMock as any, 0, limit);
     } catch (ex) {
       status = ex.getStatus();
     }
@@ -92,7 +92,7 @@ describe('ApiController -> list()', () => {
     const skip = '3';
 
     // when
-    const result = await apiController.list(reqMock, skip);
+    const result = await apiController.list(reqMock as any, skip);
 
     // then
     expect(result._.skip).toBe(3);
@@ -106,7 +106,7 @@ describe('ApiController -> list()', () => {
     const limit = '2';
 
     // when
-    const result = await apiController.list(reqMock, 0, limit);
+    const result = await apiController.list(reqMock as any, 0, limit);
 
     // then
     expect(result._.limit).toBe(2);
@@ -121,7 +121,7 @@ describe('ApiController -> list()', () => {
     const limit = '2';
 
     // when
-    const result = await apiController.list(reqMock, skip, limit);
+    const result = await apiController.list(reqMock as any, skip, limit);
 
     // then
     expect(result._.limit).toBe(2);
@@ -137,7 +137,7 @@ describe('ApiController -> list()', () => {
     const limit = 3;
 
     // when
-    const result = await apiController.list(reqMock, skip, limit);
+    const result = await apiController.list(reqMock as any, skip, limit);
 
     // then
     expect(result._.skip).toBe(0);
@@ -151,7 +151,7 @@ describe('ApiController -> list()', () => {
     const orderStr = 'name asc';
 
     // when
-    const result = await apiController.list(reqMock, 0, undefined, orderStr);
+    const result = await apiController.list(reqMock as any, 0, undefined, orderStr);
 
     // then
     expect(result.data[0].name).toBe('position1');
@@ -163,7 +163,7 @@ describe('ApiController -> list()', () => {
     const orderStr = 'name desc';
 
     // when
-    const result = await apiController.list(reqMock, 0, undefined, orderStr);
+    const result = await apiController.list(reqMock as any, 0, undefined, orderStr);
 
     // then
     expect(result.data[0].name).toBe('position8');
@@ -174,7 +174,7 @@ describe('ApiController -> list()', () => {
     const orderStr = 'name asc, _id desc';
 
     // when
-    const result = await apiController.list(reqMock, 0, undefined, orderStr);
+    const result = await apiController.list(reqMock as any, 0, undefined, orderStr);
 
     // then
     expect(result.data[0].name).toBe('position1');
@@ -187,7 +187,7 @@ describe('ApiController -> list()', () => {
 
     try {
       // when
-      await apiController.list(reqMock, 0, undefined, orderFail);
+      await apiController.list(reqMock as any, 0, undefined, orderFail);
     } catch (ex) {
       // then
       expect(ex.status).toBe(400);
@@ -201,7 +201,7 @@ describe('ApiController -> list()', () => {
     // when
     let status;
     try {
-      await apiController.list(reqMock);
+      await apiController.list(reqMock as any);
     } catch (ex) {
       status = ex.getStatus();
     }

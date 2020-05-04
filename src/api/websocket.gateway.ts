@@ -1,27 +1,29 @@
-import { Inject, HttpServer, UseFilters } from '@nestjs/common';
+import { Inject, UseInterceptors } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import {
   OnGatewayConnection,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsException,
-  BaseWsExceptionFilter,
 } from '@nestjs/websockets';
+import * as http from 'http';
+import { _ } from 'lodash';
 import * as fetch from 'node-fetch';
-import { from, Observable, throwError, of } from 'rxjs';
-import { map, mergeMap, merge, filter, startWith } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
+import { map, mergeMap, startWith } from 'rxjs/operators';
 import * as Ws from 'ws';
 import { API_CONFIG_TOKEN } from '../common/constants';
+import { normalizeFragment } from '../common/normalize';
+import { Changeset } from '../connector/changeset.interface';
 import { Connector } from '../connector/connector.interface';
 import { ConnectorService } from '../connector/connector.service';
 import { ApiConfig } from './api-config.interface';
-import * as http from 'http';
-import { _ } from 'lodash';
-import { normalizeFragment } from 'src/common/normalize';
-import { ChangesetInterface } from 'src/connector/changeset.interface';
+import { PrivateInterceptor } from './private.interceptor';
+import { ReferenceInterceptor } from './reference.interceptor';
 
 @WebSocketGateway()
+@UseInterceptors(PrivateInterceptor)
+@UseInterceptors(ReferenceInterceptor)
 export class WebsocketGateway implements OnGatewayConnection<Ws> {
   private database: Connector;
 
@@ -32,6 +34,7 @@ export class WebsocketGateway implements OnGatewayConnection<Ws> {
     connector: ConnectorService,
     @Inject(API_CONFIG_TOKEN) private apiConfig: ApiConfig,
     private httpServerRef: HttpAdapterHost,
+    private privateDataInterceptor: PrivateInterceptor,
   ) {
     this.database = connector.database;
   }
@@ -95,7 +98,7 @@ export class WebsocketGateway implements OnGatewayConnection<Ws> {
           .listenOnChanges(normalizeFragment(fragment), id, ref)
           .pipe(
             startWith({}),
-            map((change: ChangesetInterface) => {
+            map((change: Changeset) => {
               if (response._id && response._id === change._id) {
                 return this.resolveDetailChanges(response, change, channel);
               } else if (response.data && change._id) {
@@ -110,7 +113,7 @@ export class WebsocketGateway implements OnGatewayConnection<Ws> {
 
   private resolveDetailChanges(
     response: any,
-    change: ChangesetInterface,
+    change: Changeset,
     channel: string,
   ) {
     if (change.method === 'DELETE') {
@@ -130,7 +133,7 @@ export class WebsocketGateway implements OnGatewayConnection<Ws> {
 
   private resolveListChanges(
     response: any,
-    change: ChangesetInterface,
+    change: Changeset,
     channel: string,
   ) {
     let index = _.findIndex(response.data, item => item._id === change._id);
@@ -158,7 +161,10 @@ export class WebsocketGateway implements OnGatewayConnection<Ws> {
         ...response._,
         method: change.method,
         channel,
-        new: change.method === 'DELETE' ? undefined : response.data[index],
+        new:
+          change.method === 'DELETE'
+            ? undefined
+            : this.privateDataInterceptor.omit(response.data[index]),
         origin: change.method === 'POST' ? undefined : change.data,
       },
       data: response.data,

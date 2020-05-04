@@ -32,7 +32,7 @@ import { _ } from 'lodash';
 import { Request } from 'express';
 import { Messages } from '../common/messages';
 import { ReferenceInterceptor } from './reference.interceptor';
-import { normalizeSkipLimit, normalizeFragment, normalizeReference } from 'src/common/normalize';
+import { normalizeSkipLimit, normalizeFragment, normalizeReference } from '../common/normalize';
 
 @UseInterceptors(PrivateInterceptor)
 @UseInterceptors(ReferenceInterceptor)
@@ -205,7 +205,7 @@ export class ApiController {
     data = this.removeNullFragments(data);
     await this.checkIfRefExist(data, request);
     data = this.attachMetadata(data, undefined, request.auth.user);
-    return this.getDatabase(request).update(id, data);
+    return this.getDatabase(request).update(id, data, partialData);
   }
 
   @UseGuards(AuthGuard)

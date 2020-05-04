@@ -6,28 +6,32 @@ import { Request } from 'express';
 import { Messages } from '../common/messages';
 import { Reference } from './reference.interface';
 import { List } from './list.interface';
-import {
-  readFile,
-  writeFile,
-  exists,
-  watchFile,
-  createWriteStream,
-  createReadStream,
-} from 'fs';
+import { readFile, writeFile, exists, watchFile } from 'fs';
 import { isAbsolute, resolve } from 'path';
 import { promisify } from 'util';
-import { Observable } from 'rxjs';
+import { Observable, of, BehaviorSubject, from } from 'rxjs';
+import { merge, filter, map, tap, mergeMap } from 'rxjs/operators';
+import {
+  deletedDiff,
+  updatedDiff,
+  addedDiff,
+  diff,
+  detailedDiff,
+} from 'deep-object-diff';
+import { Changeset } from './changeset.interface';
+import { ObjectID } from 'mongodb';
 
 @Injectable()
 export class FileService implements Connector {
   private readonly MAX_PAGE_SIZE = Infinity;
+  private readonly FILE_WATCH_INTERVAL = 500;
   private path;
   private cachedData = [];
-
   private _readFile = promisify(readFile);
   private _writeFile = promisify(writeFile);
   private watchers = [];
   private config: DbConfig;
+  private watcher$ = new BehaviorSubject(null);
 
   private getCollectionName(req?: Request) {
     if (_.isString(this.config.collection)) {
@@ -37,10 +41,12 @@ export class FileService implements Connector {
   }
 
   async getData() {
-    return this.cachedData[await this.resolveCollection()];
+    const path = await this.resolveCollection();
+    return this.cachedData[path];
   }
 
   async saveData(data) {
+    // TODO: req is not passed to this function
     const collName = this.getCollectionName();
     const path = resolve(this.path, collName);
     await this._writeFile(path, JSON.stringify(data));
@@ -68,11 +74,22 @@ export class FileService implements Connector {
     }
     this.cachedData[path] = data;
 
-    this.watchers[path] = watchFile(path, () => {
-      this._readFile(path, 'utf8').then(data => {
-        this.cachedData[path] = JSON.parse(data);
-      });
-    });
+    this.watchers[path] = watchFile(
+      path,
+      { interval: this.FILE_WATCH_INTERVAL },
+      () => {
+        this._readFile(path, 'utf8').then(d => {
+          const json = JSON.parse(d);
+          const changes = detailedDiff(this.cachedData[path], json);
+          this.watcher$.next({
+            changes,
+            data: json,
+            origin: this.cachedData[path],
+          });
+          this.cachedData[path] = json;
+        });
+      },
+    );
 
     return path;
   }
@@ -89,6 +106,27 @@ export class FileService implements Connector {
     Logger.log(`${config.name} connection established.`);
   }
 
+  private mapOperationType(
+    addedIndexes: string[],
+    deletedIndexes: string[],
+    updatedIndexes: string[],
+    index,
+  ): 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT' {
+    if (addedIndexes.indexOf(index) > -1) {
+      return 'POST';
+    } else if (
+      deletedIndexes.indexOf(index) > -1 &&
+      updatedIndexes.indexOf(index) > -1
+    ) {
+      return 'PUT';
+    } else if (updatedIndexes.indexOf(index) > -1) {
+      return 'PATCH';
+    } else if (deletedIndexes.indexOf(index) > -1) {
+      return 'DELETE';
+    }
+    return 'GET';
+  }
+
   async isIndex(fragment: any) {
     return (await this.getData()).find(value => _.has(value, fragment));
   }
@@ -97,9 +135,14 @@ export class FileService implements Connector {
     if (!data._id) {
       data._id = this.createId();
     }
-    const _data = await this.getData();
-    _data.push(data);
-    await this.saveData(_data);
+    const allData = await this.getData();
+    allData.push(data);
+    await this.saveData(allData);
+    this.watcher$.next({
+      method: 'POST',
+      data: data,
+      _id: data._id,
+    });
     return data;
   }
 
@@ -167,25 +210,40 @@ export class FileService implements Connector {
     });
   }
 
-  async update(id: string, data: any) {
-    const toReplace = await this.read(id);
+  async update(id: string, data: any, partialData) {
+    const allData = await this.getData();
+    const toReplace = allData.find(items => items._id === id);
     data._id = id;
-    const _data = await this.getData();
-    _data[_data.indexOf(toReplace)] = data;
-    await this.saveData(_data);
+    allData[allData.indexOf(toReplace)] = data;
+    await this.saveData(allData);
+    this.watcher$.next({
+      method: partialData ? 'PATCH' : 'PUT',
+      data: data,
+      _id: data._id,
+    });
     return data;
   }
 
   async delete(id: string) {
     const toReplace = await this.read(id);
-    const _data = await this.getData();
-    _data.splice(_data.indexOf(toReplace), 1);
-    await this.saveData(_data);
+    const allData = await this.getData();
+    allData.splice(allData.indexOf(toReplace), 1);
+    await this.saveData(allData);
+    this.watcher$.next({
+      method: 'DELETE',
+      data: toReplace,
+      _id: toReplace._id,
+    });
     return toReplace;
   }
 
   listenOnChanges(fragment?: any, id?: any): Observable<any> {
-    throw new Error("Method not implemented.");
+    return this.watcher$.pipe(
+      filter(diff => diff),
+      mergeMap(({ changes, data, origin }) =>
+        from(this.mapDiffToChangeset(changes, origin, data)),
+      ),
+    );
   }
 
   private order(data, orderBy?: string) {
@@ -215,8 +273,32 @@ export class FileService implements Connector {
   }
 
   private createId() {
-    const random = String(Math.random()).substr(2, 6);
-    const date = Date.now();
-    return `${date}${random}`;
+    return new ObjectID().toHexString();
+  }
+
+  private mapDiffToChangeset(changes: any, origin: any, data: any) {
+    const changeset: Changeset[] = [];
+    const addedIndexes = Object.keys(changes.added) || [];
+    const deletedIndexes = Object.keys(changes.deleted) || [];
+    const updatedIndexes = Object.keys(changes.updated) || [];
+    _.uniq([...addedIndexes, ...deletedIndexes, ...updatedIndexes]).forEach(
+      index => {
+        const method = this.mapOperationType(
+          addedIndexes,
+          deletedIndexes,
+          updatedIndexes,
+          index,
+        );
+        const isDelete = method === 'DELETE';
+        changeset.push({
+          method,
+          _id: isDelete
+            ? origin[parseInt(index)]._id
+            : data[parseInt(index)]._id,
+          data: isDelete ? origin[parseInt(index)] : data[parseInt(index)],
+        });
+      },
+    );
+    return changeset;
   }
 }

@@ -78,14 +78,18 @@ export const createFakeData = async (apiController: ApiController, reqMock) => {
     },
   ];
   for (const data of fakeData) {
-    await apiController.create(data, reqMock);
+    try {
+      await apiController.create(data, reqMock);
+    } catch (ex) {
+      console.log(ex);
+    }
   }
 };
 
 export const prepare = async () => {
   const apiConfig: ApiConfig = {
     db: {
-      name: 'file',
+      name: 'mock',
       url: 'mongodb://127.0.0.1:27017/test',
       collection: 'testme_' + Math.random(),
       path: '../../dist/test',
@@ -124,7 +128,7 @@ export const prepare = async () => {
       FileService,
       {
         provide: DB_CONNECTOR_TOKEN,
-        useExisting: FileService,
+        useExisting: MockService,
       },
       {
         provide: DB_CONNECTION_TOKEN,

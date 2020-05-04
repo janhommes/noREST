@@ -8,6 +8,7 @@ import { ApiController } from './api.controller';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { WebsocketGateway } from './websocket.gateway';
+import { PrivateInterceptor } from './private.interceptor';
 
 @Module({})
 export class ApiModule {
@@ -46,6 +47,7 @@ export class ApiModule {
         AuthService,
         AuthGuard,
         WebsocketGateway,
+        PrivateInterceptor,
         { provide: API_CONFIG_TOKEN, useValue: apiConfig },
       ],
       controllers: [ApiController],

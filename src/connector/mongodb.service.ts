@@ -1,19 +1,19 @@
-import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
-import { _ } from 'lodash';
-import { Connector } from './connector.interface';
-import { DbConfig } from './db-config.interface';
-import { MongoClient, ObjectId, Collection } from 'mongodb';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Request } from 'express';
+import { _ } from 'lodash';
+import { Collection, MongoClient, ObjectId } from 'mongodb';
+import { fromEvent } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {
   DEFAULT_INDEX_FRAGMENT_PREFIX,
   DEFAULT_REFERENCE_DB_IDENTIFIER_KEY,
   DEFAULT_REFERENCE_DB_KEY,
 } from '../common/constants';
 import { Messages } from '../common/messages';
+import { Changeset } from './changeset.interface';
+import { Connector } from './connector.interface';
+import { DbConfig } from './db-config.interface';
 import { Reference } from './reference.interface';
-import { bindCallback, fromEvent, Observable, pipe } from 'rxjs';
-import { filter, map, tap } from 'rxjs/operators';
-import { ChangesetInterface } from './changeset.interface';
 
 @Injectable()
 export class MongoDbService implements Connector {
@@ -36,7 +36,7 @@ export class MongoDbService implements Connector {
                   _id: change.documentKey._id.toHexString(),
                 }
               : undefined,
-          } as ChangesetInterface),
+          } as Changeset),
       ),
     );
   }
@@ -50,7 +50,7 @@ export class MongoDbService implements Connector {
       }
       // TODO: Issue with POST vs. PUT. As we only use
       // replace, PATCH is never referenced correctly in
-      // a ws return
+      // a ws return (wasn't that fixed already?!)
       case 'update': {
         return 'PATCH';
       }
@@ -196,13 +196,21 @@ export class MongoDbService implements Connector {
     };
   }
 
-  async update(id: string, data: any) {
-    await this.collection.findOneAndReplace(
-      { _id: this.getObjectIdIfValid(id) },
-      data,
-    );
+  async update(id: string, data: any, partialData?: any) {
+    if (partialData) {
+      await this.collection.findOneAndUpdate(
+        { _id: this.getObjectIdIfValid(id) },
+        { $set: { ...partialData } },
+        { upsert: true },
+      );
+    } else {
+      await this.collection.findOneAndReplace(
+        { _id: this.getObjectIdIfValid(id) },
+        data,
+      );
+    }
     this.setIndexFragments(data);
-    return data;
+    return { _id: id, ...data };
   }
 
   async delete(id: string) {

@@ -3,7 +3,7 @@ import { Request } from 'express';
 import { List } from './list.interface';
 import { Reference } from './reference.interface';
 import { Observable } from 'rxjs';
-import { ChangesetInterface } from './changeset.interface';
+import { Changeset } from './changeset.interface';
 
 /**
  * A connector allows to connect any data source to
@@ -77,9 +77,10 @@ export interface Connector {
    * Updates an existing entity. The update should be
    * done by a complete replace.
    * @param id The id of the entity.
-   * @param data The data to set. It usually contains the full entity.
+   * @param data The data to set. It contains the full entity.
+   * @param data The data to set. It only contains the changed data.
    */
-  update(id: string, data: any);
+  update(id: string, data: any, partialData?: any);
 
   /**
    * Deletes a entity. References should be
@@ -94,5 +95,5 @@ export interface Connector {
    * @param id The id to listen to (if undefined, a fragment list is used).
    * @param ref If given a re list is listened to.
    */
-  listenOnChanges(fragment?, id?, ref?): Observable<ChangesetInterface>;
+  listenOnChanges(fragment?, id?, ref?): Observable<Changeset>;
 }

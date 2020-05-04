@@ -6,12 +6,15 @@ import { Request } from 'express';
 import { Messages } from '../common/messages';
 import { Reference } from './reference.interface';
 import { List } from './list.interface';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { skip } from 'rxjs/operators';
+import { Changeset } from './changeset.interface';
 
 @Injectable()
 export class MockService implements Connector {
   private readonly MAX_PAGE_SIZE = Infinity;
   private data = [];
+  private watcher$: BehaviorSubject<Changeset> = new BehaviorSubject(null);
 
   resolveCollection(req: Request) {
     // intended empty
@@ -30,6 +33,11 @@ export class MockService implements Connector {
       data._id = this.createId();
     }
     this.data.push(data);
+    this.watcher$.next({
+      method: 'POST',
+      data: data,
+      _id: data._id,
+    });
     return data;
   }
 
@@ -51,7 +59,7 @@ export class MockService implements Connector {
     const data = this.getPaged(this.data, skip, limit);
     return Promise.resolve({
       _: {
-        total: data.length,
+        total: this.data.length,
         skip,
         limit,
       },
@@ -67,7 +75,7 @@ export class MockService implements Connector {
   ) {
     const data = this.data.filter(value => {
       return _.has(value, fragment);
-    })
+    });
     return Promise.resolve({
       _: {
         total: data.length,
@@ -85,7 +93,7 @@ export class MockService implements Connector {
   ): Promise<List> {
     const data = this.data.filter(value => {
       // tslint:disable-next-line: triple-equals
-      return references.some((r) => r.id == value._id);
+      return references.some(r => r.id == value._id);
     });
     return Promise.resolve({
       _: {
@@ -97,21 +105,31 @@ export class MockService implements Connector {
     });
   }
 
-  update(id: string, data: any) {
+  update(id: string, data: any, partialData: any) {
     const toReplace = this.read(id);
     data._id = id;
     this.data[this.data.indexOf(toReplace)] = data;
+    this.watcher$.next({
+      method: partialData ? 'PATCH' : 'PUT',
+      data,
+      _id: data._id,
+    });
     return data;
   }
 
   delete(id: string) {
     const toReplace = this.read(id);
     this.data.splice(this.data.indexOf(toReplace), 1);
+    this.watcher$.next({
+      method: 'DELETE',
+      data: toReplace,
+      _id: toReplace._id,
+    });
     return toReplace;
   }
 
-  listenOnChanges(fragment?: any, id?: any): Observable<any> {
-    throw new Error("Method not implemented.");
+  listenOnChanges(): Observable<any> {
+    return this.watcher$.pipe(skip(1));
   }
 
   private order(data, orderBy?: string) {
