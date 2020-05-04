@@ -25,14 +25,18 @@ import {
   REFLECTION_NESTJS_CONTROLLER_PATH,
   DEFAULT_INDEX_FRAGMENT_PREFIX,
   DEFAULT_REFERENCE_PREFIX,
-  DEFAULT_REFERENCE_DB_KEY
+  DEFAULT_REFERENCE_DB_KEY,
 } from '../common/constants';
 import { AuthGuard } from './auth.guard';
 import { _ } from 'lodash';
 import { Request } from 'express';
 import { Messages } from '../common/messages';
 import { ReferenceInterceptor } from './reference.interceptor';
-import { normalizeSkipLimit, normalizeFragment, normalizeReference } from '../common/normalize';
+import {
+  normalizeSkipLimit,
+  normalizeFragment,
+  normalizeReference,
+} from '../common/normalize';
 
 @UseInterceptors(PrivateInterceptor)
 @UseInterceptors(ReferenceInterceptor)
@@ -58,9 +62,13 @@ export class ApiController {
   async list(
     @Req() request: Request,
     @Query('skip') skip: string | number = 0,
-    @Query('limit') limit: string | number = this.apiConfig.config.defaultPageSize,
+    @Query('limit')
+    limit: string | number = this.apiConfig.config.defaultPageSize,
     @Query('orderBy') orderBy?,
   ) {
+    if (this.apiConfig.config.fixed) {
+      throw new HttpException(Messages.API_FIXED, HttpStatus.FORBIDDEN);
+    }
     const paging = normalizeSkipLimit(skip, limit);
     return this.getDatabase(request).list(paging.skip, paging.limit, orderBy);
   }
@@ -160,6 +168,7 @@ export class ApiController {
   ) {
     fragment = await this.checkIfFragmentExist(fragment, request);
     data = this.attachFragmentIfNotSet(fragment, data);
+    await this.checkIfFragmentsAreValid(data, request);
     return this.create(data, request);
   }
 
@@ -174,6 +183,7 @@ export class ApiController {
     }
     await this.checkIfExist(id, request);
     await this.checkIfRefExist(data, request);
+    await this.checkIfFragmentsAreValid(data, request);
     this.validateMetaData(data);
     this.validateIfIndexFragmentIsSet(data);
     data = this.attachMetadata(data, request.auth.user);
@@ -204,6 +214,7 @@ export class ApiController {
     this.validateIfIndexFragmentIsSet(data);
     data = this.removeNullFragments(data);
     await this.checkIfRefExist(data, request);
+    await this.checkIfFragmentsAreValid(data, request);
     data = this.attachMetadata(data, undefined, request.auth.user);
     return this.getDatabase(request).update(id, data, partialData);
   }
@@ -301,13 +312,29 @@ export class ApiController {
   }
 
   private validateIfIndexFragmentIsSet(data: any) {
-    if (
-      !_.find(data, (val, k) => k.startsWith(DEFAULT_INDEX_FRAGMENT_PREFIX))
-    ) {
+    const fragments = _.filter(data, (val, k) =>
+      k.startsWith(DEFAULT_INDEX_FRAGMENT_PREFIX) && val,
+    );
+    if (fragments.length === 0) {
       throw new HttpException(
         Messages.NO_INDEX_SET,
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
+    }
+  }
+
+  private async checkIfFragmentsAreValid(data: any, request: Request) {
+    if (this.apiConfig.config.fixed) {
+      const fragments = Object.keys(data).filter(k => {
+        return k.startsWith(DEFAULT_INDEX_FRAGMENT_PREFIX);
+      });
+      for (let fragmentKey in fragments) {
+        try {
+          await this.checkIfFragmentExist(fragments[fragmentKey], request);
+        } catch (ex) {
+          throw new HttpException(Messages.API_FIXED, HttpStatus.FORBIDDEN);
+        }
+      }
     }
   }
 

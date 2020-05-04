@@ -1,4 +1,5 @@
 export enum Messages {
+  API_FIXED = 'The API is fixed. New index fragments cannot be created and the base route access is not permitted.',
   NOT_FOUND = 'Entity not found',
   NO_REF_FOUND = 'Reference not found',
   NO_REF_FOUND_CREATE = 'Reference not found for: ',

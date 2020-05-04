@@ -1,4 +1,5 @@
-import { DynamicModule, Module, Provider } from '@nestjs/common';
+import { DynamicModule, Module, Provider, Logger } from '@nestjs/common';
+import { cosmiconfig } from 'cosmiconfig';
 import { _ } from 'lodash';
 import { API_CONFIG_TOKEN, DEFAULT_PAGE_SIZE } from '../common/constants';
 import { Connector } from '../connector/connector.interface';
@@ -7,11 +8,12 @@ import { ApiConfig } from './api-config.interface';
 import { ApiController } from './api.controller';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
-import { WebsocketGateway } from './websocket.gateway';
 import { PrivateInterceptor } from './private.interceptor';
+import { WebsocketGateway } from './websocket.gateway';
 
 @Module({})
 export class ApiModule {
+  private static configExplorer = cosmiconfig('norest');
   private static defaultConfig: ApiConfig = {
     db: {
       name: 'mock',
@@ -32,11 +34,19 @@ export class ApiModule {
     },
   };
 
-  static register(
+  static async forRoot(
     config?: Partial<ApiConfig>,
     databaseConnector?: Provider<Connector>,
-  ): DynamicModule {
-    const apiConfig = _.merge(ApiModule.defaultConfig, config);
+  ): Promise<DynamicModule> {
+    return ApiModule.register(config, databaseConnector);
+  }
+
+  static async register(
+    config?: Partial<ApiConfig>,
+    databaseConnector?: Provider<Connector>,
+  ): Promise<DynamicModule> {
+    const fileConfig = await ApiModule.configExplorer.search();
+    const apiConfig = _.merge(ApiModule.defaultConfig, fileConfig ? fileConfig.config : {}, config);
     const connector = ConnectorModule.getConnector(
       apiConfig.db.name,
       databaseConnector,
