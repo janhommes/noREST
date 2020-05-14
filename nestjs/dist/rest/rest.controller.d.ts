@@ -1,0 +1,32 @@
+import { Request } from 'express';
+import { ConnectorService } from '../connector/connector.service';
+import { NoRestConfig } from '../norest-config.interface';
+export declare class RestController {
+    private config;
+    private database;
+    constructor(connector: ConnectorService, config: NoRestConfig);
+    list(request: Request, skip?: string | number, limit?: string | number, orderBy?: any): Promise<import("../public_api").List>;
+    listByFragmentOrDetailById(fragmentOrId: any, request: any, skip?: number, limit?: number, orderBy?: any): Promise<any>;
+    detailByKey(fragment: any, key: any, request: any): Promise<any>;
+    detailReferences(fragment: any, key: any, ref: any, request: any, skip?: number, limit?: number): Promise<any>;
+    create(data: any, request: any): Promise<any>;
+    createFragment(fragment: any, data: any, request: any): Promise<any>;
+    update(id: any, data: any, request: any): Promise<any>;
+    updateFragment(id: any, fragment: any, data: any, request: any): Promise<any>;
+    change(id: any, partialData: any, request: any): Promise<any>;
+    changeByFragment(id: any, fragment: any, partialData: any, request: any): Promise<any>;
+    delete(id: any, request: any): Promise<any>;
+    deleteByFragment(id: any, fragment: any, request: any): Promise<any>;
+    private getDatabase;
+    private checkIfRefExist;
+    private removeNullFragments;
+    private validateMetaData;
+    private validateDataForReadonly;
+    private validateIfIndexFragmentIsSet;
+    private checkIfFragmentsAreValid;
+    private checkIfIdIsAKey;
+    private checkIfFragmentExist;
+    private checkIfExist;
+    private attachFragmentIfNotSet;
+    private attachMetadata;
+}
