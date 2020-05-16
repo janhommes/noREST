@@ -1,12 +1,8 @@
-import {
-  Injectable,
-  HttpStatus,
-  HttpException,  
-  Inject,
-} from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException, Inject } from '@nestjs/common';
 import { NOREST_AUTH_CONFIG_TOKEN } from '../common/constants';
 import { Request } from 'express';
 import { AuthConfig } from './auth-config.interface';
+import { Messages } from '../common/messages';
 
 export type AuthenticatedRequest = Request & { auth? };
 
@@ -15,12 +11,14 @@ export class AuthService {
   public isAuthenticated = false;
   public user: string;
 
-  constructor(@Inject(NOREST_AUTH_CONFIG_TOKEN) private authConfig: AuthConfig) {}
+  constructor(
+    @Inject(NOREST_AUTH_CONFIG_TOKEN) private authConfig: AuthConfig,
+  ) {}
 
   authenticate(request: AuthenticatedRequest) {
     if (!request.auth) {
       const headers = request.headers;
-      const jwt = this.getJwt(headers);
+      const jwt = this.getJwt(headers, request.query);
       request.auth = {
         isAuthenticated: !!jwt,
         user: jwt ? this.getUserFromJwt(jwt) : undefined,
@@ -28,13 +26,14 @@ export class AuthService {
     }
   }
 
-  getJwt(headers: any) {
+  getJwt(headers: any, query: any) {
+    if (query && query[this.authConfig.cookieName]) {
+      return this.getJwtContent(query[this.authConfig.cookieName]);
+    }
+
     let authHeader = headers.authorization || headers.cookie;
-    if (headers.cookie) {
-      authHeader = this.getCookieByName(
-        authHeader,
-        this.authConfig.cookieName,
-      );
+    if (headers.cookie && !headers.authorization) {
+      authHeader = this.getCookieByName(authHeader, this.authConfig.cookieName);
     }
     if (!authHeader) {
       return;
@@ -56,11 +55,12 @@ export class AuthService {
 
   private getJwtContent(token: string) {
     if (token.split('.').length !== 3) {
-      throw new HttpException(
-        'The given authorization is not a valid JWT.',
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new HttpException(Messages.INVALID_JWT, HttpStatus.UNAUTHORIZED);
     }
-    return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+    try {
+      return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+    } catch (ex) {
+      throw new HttpException(Messages.INVALID_JWT, HttpStatus.UNAUTHORIZED);
+    }
   }
 }

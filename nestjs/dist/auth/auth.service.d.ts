@@ -9,7 +9,7 @@ export declare class AuthService {
     user: string;
     constructor(authConfig: AuthConfig);
     authenticate(request: AuthenticatedRequest): void;
-    getJwt(headers: any): any;
+    getJwt(headers: any, query: any): any;
     getUserFromJwt(jwt: any): any;
     private getCookieByName;
     private getJwtContent;

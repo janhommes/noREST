@@ -169,9 +169,9 @@ let FileService = class FileService {
     }
     async update(id, data, partialData) {
         const allData = await this.getData();
-        const toReplace = allData.find(items => items._id === id);
+        const toReplaceIndex = allData.findIndex(items => items._id === id);
         data._id = id;
-        allData[allData.indexOf(toReplace)] = data;
+        allData[toReplaceIndex] = data;
         await this.saveData(allData);
         this.watcher$.next({
             method: partialData ? 'PATCH' : 'PUT',
@@ -193,7 +193,12 @@ let FileService = class FileService {
         return toReplace;
     }
     listenOnChanges() {
-        return this.watcher$.pipe(operators_1.filter(diff => diff), operators_1.mergeMap(({ changes, data, origin }) => rxjs_1.from(this.mapDiffToChangeset(changes, origin, data))));
+        return this.watcher$.pipe(operators_1.filter(diff => diff), operators_1.mergeMap(changesetOrChanges => {
+            if (changesetOrChanges.changes) {
+                return rxjs_1.from(this.mapDiffToChangeset(changesetOrChanges.changes, changesetOrChanges.origin, changesetOrChanges.data));
+            }
+            return rxjs_1.of(changesetOrChanges);
+        }));
     }
     order(data, orderBy) {
         if (orderBy) {

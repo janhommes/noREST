@@ -14,5 +14,6 @@ var Messages;
     Messages["VALIDATION_DUPLICATED_ID"] = "Duplicated id";
     Messages["SKIP_QUERY_NO_POSITIVE_NUMBER"] = "The skip and query parameter needs to be a positive number.";
     Messages["VALIDATION_ORDER"] = "Invalid orderBy query parameter";
+    Messages["INVALID_JWT"] = "The given authorization is not a valid JWT.";
 })(Messages = exports.Messages || (exports.Messages = {}));
 //# sourceMappingURL=messages.js.map

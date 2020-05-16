@@ -3,9 +3,9 @@ import { detailedDiff } from 'deep-object-diff';
 import { Request } from 'express';
 import { exists, readFile, watchFile, writeFile } from 'fs';
 import { _ } from 'lodash';
-import { ObjectID } from 'mongodb';
+import { ObjectID, ChangeStream } from 'mongodb';
 import { isAbsolute, resolve } from 'path';
-import { BehaviorSubject, from, Observable } from 'rxjs';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { filter, mergeMap } from 'rxjs/operators';
 import { promisify } from 'util';
 import { Messages } from '../common/messages';
@@ -206,9 +206,9 @@ export class FileService implements Connector {
 
   async update(id: string, data: any, partialData) {
     const allData = await this.getData();
-    const toReplace = allData.find(items => items._id === id);
+    const toReplaceIndex = allData.findIndex(items => items._id === id);
     data._id = id;
-    allData[allData.indexOf(toReplace)] = data;
+    allData[toReplaceIndex] = data;
     await this.saveData(allData);
     this.watcher$.next({
       method: partialData ? 'PATCH' : 'PUT',
@@ -234,9 +234,18 @@ export class FileService implements Connector {
   listenOnChanges(): Observable<any> {
     return this.watcher$.pipe(
       filter(diff => diff),
-      mergeMap(({ changes, data, origin }) =>
-        from(this.mapDiffToChangeset(changes, origin, data)),
-      ),
+      mergeMap(changesetOrChanges => {
+        if (changesetOrChanges.changes) {
+          return from(
+            this.mapDiffToChangeset(
+              changesetOrChanges.changes,
+              changesetOrChanges.origin,
+              changesetOrChanges.data,
+            ),
+          );
+        }
+        return of(changesetOrChanges);
+      }),
     );
   }
 

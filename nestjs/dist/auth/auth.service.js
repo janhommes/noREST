@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const constants_1 = require("../common/constants");
+const messages_1 = require("../common/messages");
 let AuthService = class AuthService {
     constructor(authConfig) {
         this.authConfig = authConfig;
@@ -22,16 +23,19 @@ let AuthService = class AuthService {
     authenticate(request) {
         if (!request.auth) {
             const headers = request.headers;
-            const jwt = this.getJwt(headers);
+            const jwt = this.getJwt(headers, request.query);
             request.auth = {
                 isAuthenticated: !!jwt,
                 user: jwt ? this.getUserFromJwt(jwt) : undefined,
             };
         }
     }
-    getJwt(headers) {
+    getJwt(headers, query) {
+        if (query && query[this.authConfig.cookieName]) {
+            return this.getJwtContent(query[this.authConfig.cookieName]);
+        }
         let authHeader = headers.authorization || headers.cookie;
-        if (headers.cookie) {
+        if (headers.cookie && !headers.authorization) {
             authHeader = this.getCookieByName(authHeader, this.authConfig.cookieName);
         }
         if (!authHeader) {
@@ -51,9 +55,14 @@ let AuthService = class AuthService {
     }
     getJwtContent(token) {
         if (token.split('.').length !== 3) {
-            throw new common_1.HttpException('The given authorization is not a valid JWT.', common_1.HttpStatus.UNAUTHORIZED);
+            throw new common_1.HttpException(messages_1.Messages.INVALID_JWT, common_1.HttpStatus.UNAUTHORIZED);
         }
-        return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+        try {
+            return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+        }
+        catch (ex) {
+            throw new common_1.HttpException(messages_1.Messages.INVALID_JWT, common_1.HttpStatus.UNAUTHORIZED);
+        }
     }
 };
 AuthService = __decorate([

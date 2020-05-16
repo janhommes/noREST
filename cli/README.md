@@ -11,7 +11,7 @@ npm i @norest/cli -g
 Spin up a default server:
 
 ```
-norest serve
+norest
 ```
 
 ## Configuration

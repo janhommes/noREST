@@ -10,5 +10,6 @@ export declare enum Messages {
     VALIDATION_READABLE_IMMUTABLE = "Changing readonly properties (prefixed with '_') is not allowed.",
     VALIDATION_DUPLICATED_ID = "Duplicated id",
     SKIP_QUERY_NO_POSITIVE_NUMBER = "The skip and query parameter needs to be a positive number.",
-    VALIDATION_ORDER = "Invalid orderBy query parameter"
+    VALIDATION_ORDER = "Invalid orderBy query parameter",
+    INVALID_JWT = "The given authorization is not a valid JWT."
 }

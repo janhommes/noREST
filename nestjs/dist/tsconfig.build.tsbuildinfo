@@ -1409,9 +1409,13 @@
         "version": "fdda1573fbfd88c6617613ba5eebf96b903cd9fd0ce52d1c8910e99400dc8ce1",
         "signature": "d1b04448d72670b85cbd482b008197ef6590ffa5e6fa4c46e46d10111f8d79e0"
       },
+      "../src/common/messages.ts": {
+        "version": "91e94308a16454128dface8bb8609dfbc49d6bc76756b942c8a4540711440bfb",
+        "signature": "9f93544edfcc1ba74d1d8e16c7b55af48d1be4c8e55c42bfa2534bde18b36d32"
+      },
       "../src/auth/auth.service.ts": {
-        "version": "5d312df24deba88f2161a7c98c356b75dc7fa23e1172574ebdd97596447087d2",
-        "signature": "3b2d6f2cc4fa12855639b23ad84892a6a595fe72a6a6630c49984ccc3e30de19"
+        "version": "21239b4641d13277411b1dcb0e15c8561a30946f42c44172ac42197fe7947bb7",
+        "signature": "5e45e1bcc451a7edfba89df36737b6249ee9b2be2ed125e3b859805f6683c79b"
       },
       "../src/auth/auth.guard.ts": {
         "version": "56366166a49270031738ad3f09514b6013836c7d74b71827d91f4918df4e7e49",
@@ -1841,10 +1845,6 @@
         "version": "a97bb2c5cfe3c90481207b8d957d3539490fea6311fc94b56dc3f19faffc7617",
         "signature": "95f37f83f4ed32507b65807da87d2cb120d4f9838af3b4d0cfed7da5cadb7c5e"
       },
-      "../src/common/messages.ts": {
-        "version": "0663a4419fcfc71318bfea55b40005776b36ee0a67e89aaa919300b04066728a",
-        "signature": "3c7710576516ff8c02962cde19b5ebc7f97bc74b023b3cb129ace374be594ffb"
-      },
       "../../node_modules/cosmiconfig/dist/types.d.ts": {
         "version": "b791ba05bd7a70824c6e49af9b13eeee2e0f9f8da9ebc2e05afc67b6932b5b6a",
         "signature": "b791ba05bd7a70824c6e49af9b13eeee2e0f9f8da9ebc2e05afc67b6932b5b6a"
@@ -1906,7 +1906,7 @@
         "signature": "85393a11d2f104b3254a9ee06f7fe036cb6efd10d3296daeb3fbe2ea64aa0b82"
       },
       "../src/connector/file.service.ts": {
-        "version": "782b1028a75d0727b3dfeb3aeb8b133fcc02714b74572a25c0d910e73b2e88ed",
+        "version": "d28189967a504f75e56ee2ce67c8e975e168d2c2e2cc75cff090d12a62ece3dc",
         "signature": "20d34b81382dfb3719ecfc62005d3d37a957a5728bcf809b9baf67691f794f31"
       },
       "../src/common/resolver.ts": {
@@ -5308,11 +5308,19 @@
         "../../node_modules/@types/node/util.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "../src/common/messages.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/graceful-fs/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
       "../src/auth/auth.service.ts": [
         "../../node_modules/@nestjs/common/index.d.ts",
         "../src/common/constants.ts",
         "../../node_modules/@types/express/index.d.ts",
         "../src/auth/auth-config.interface.ts",
+        "../src/common/messages.ts",
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/graceful-fs/index.d.ts",
@@ -6357,13 +6365,6 @@
         "../../node_modules/rxjs/operators/index.d.ts",
         "../../node_modules/@types/ws/index.d.ts",
         "../src/common/constants.ts",
-        "../../node_modules/@types/node/fs.d.ts",
-        "../../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../../node_modules/@types/graceful-fs/index.d.ts",
-        "../../node_modules/@types/node/util.d.ts",
-        "../../node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "../src/common/messages.ts": [
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/graceful-fs/index.d.ts",
@@ -12137,6 +12138,7 @@
       "../src/websocket/websocket-config.interface.ts",
       "../src/norest-config.interface.ts",
       "../src/common/constants.ts",
+      "../src/common/messages.ts",
       "../src/auth/auth.service.ts",
       "../src/auth/auth.guard.ts",
       "../../node_modules/rxjs/internal/operators/audit.d.ts",
@@ -12245,7 +12247,6 @@
       "../../node_modules/@types/ws/index.d.ts",
       "../src/auth/interceptors/private.interceptor.ts",
       "../src/auth/interceptors/reference.interceptor.ts",
-      "../src/common/messages.ts",
       "../../node_modules/cosmiconfig/dist/types.d.ts",
       "../../node_modules/cosmiconfig/dist/index.d.ts",
       "../src/common/normalize.ts",
@@ -12261,7 +12262,6 @@
       "../../node_modules/@types/mongodb/index.d.ts",
       "../src/connector/mongodb.service.ts",
       "../../node_modules/deep-object-diff/index.d.ts",
-      "../src/connector/file.service.ts",
       "../src/common/resolver.ts",
       "../src/connector/connector.service.ts",
       "../src/connector/connector.module.ts",
@@ -12269,6 +12269,7 @@
       "../src/rest/rest.module.ts",
       "../src/websocket/websocket.gateway.ts",
       "../src/websocket/websocket.module.ts",
+      "../src/norest.module.ts",
       "../src/main.ts",
       "../src/public_api.ts",
       "../../node_modules/@nestjs/testing/interfaces/override-by-factory-options.interface.d.ts",
@@ -12317,7 +12318,7 @@
       "../../node_modules/@types/webpack/index.d.ts",
       "../../node_modules/@types/yargs-parser/index.d.ts",
       "../../node_modules/@types/yargs/index.d.ts",
-      "../src/norest.module.ts"
+      "../src/connector/file.service.ts"
     ]
   },
   "version": "3.8.3"
