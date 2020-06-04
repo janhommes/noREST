@@ -59,7 +59,7 @@ let MongoDbService = class MongoDbService {
         }
     }
     async resolveCollection(req) {
-        const collName = this.getCollectionName(req);
+        const collName = await this.getCollectionName(req);
         try {
             this.collection = this.connection.db().collection(collName);
             this.indexFragments = await this.getIndexFragments();
@@ -73,6 +73,7 @@ let MongoDbService = class MongoDbService {
                 throw ex;
             }
         }
+        return collName;
     }
     async isIndex(fragment) {
         if (!this.indexFragments) {
@@ -180,11 +181,11 @@ let MongoDbService = class MongoDbService {
         });
         return result.value;
     }
-    getCollectionName(req) {
+    async getCollectionName(req) {
         if (lodash_1._.isString(this.config.collection)) {
             return this.config.collection;
         }
-        return this.config.collection(req);
+        return (await this.config.collection(req));
     }
     async getIndexFragments() {
         return lodash_1._.filter(await this.collection.indexes(), val => val.name.startsWith(constants_1.DEFAULT_INDEX_FRAGMENT_PREFIX)).map(({ key }) => Object.keys(key)[0]);

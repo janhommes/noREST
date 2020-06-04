@@ -18,7 +18,17 @@ export class AuthService {
   authenticate(request: AuthenticatedRequest) {
     if (!request.auth) {
       const headers = request.headers;
-      const jwt = this.getJwt(headers, request.query);
+      let query = request.query;
+      if ((request as any).channel) {
+        // TODO: WS very hacky approach for auth with query parameter
+        // should be improved.
+        query = {
+          [this.authConfig.cookieName]: new URL(
+            (request as any).channel,
+          ).searchParams.get(this.authConfig.cookieName),
+        };
+      }
+      const jwt = this.getJwt(headers, query);
       request.auth = {
         isAuthenticated: !!jwt,
         user: jwt ? this.getUserFromJwt(jwt) : undefined,

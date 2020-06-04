@@ -73,6 +73,7 @@ export interface Connector {
     references: Reference[],
     skip: number,
     limit: number,
+    orderBy?: string
   ): Promise<List>;
 
   /**

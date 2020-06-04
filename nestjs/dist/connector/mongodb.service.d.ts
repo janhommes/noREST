@@ -12,7 +12,7 @@ export declare class MongoDbService implements Connector {
     listenOnChanges(): any;
     private mapOperationType;
     connect(config: ConnectorConfig): Promise<MongoClient>;
-    resolveCollection(req?: Request): Promise<void>;
+    resolveCollection(req?: Request): Promise<string>;
     isIndex(fragment: any): Promise<boolean>;
     create(data: any): Promise<any>;
     read(id: string): Promise<any>;

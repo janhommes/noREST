@@ -32,11 +32,12 @@ export class ReferenceInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       map(values => {
-        if (!values.data) {
-          return this.mapValues(values);
+        const _values = _.clone(values);
+        if (!_values.data) {
+          return this.mapValues(_values);
         }
-        values.data = values.data.map(value => this.mapValues(value));
-        return values;
+        _values.data.map(value => this.mapValues(value));
+        return _values;
       }),
     );
   }

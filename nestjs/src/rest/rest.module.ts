@@ -11,7 +11,10 @@ import { Connector } from '../connector/connector.interface';
   controllers: [RestController],
 })
 export class RestModule {
-  static register(config: NoRestConfig, connector: Connector,): DynamicModule {
+  static register(
+    config: NoRestConfig,
+    connector: Connector,
+  ): DynamicModule {
     return {
       module: RestModule,
       imports: [

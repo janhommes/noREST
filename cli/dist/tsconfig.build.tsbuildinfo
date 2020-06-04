@@ -1390,8 +1390,8 @@
         "signature": "e903e81d39ab58c2457fcafb1927f68704111f1a4c3dc7910d048a923d7693cf"
       },
       "../../nestjs/dist/auth/auth.service.d.ts": {
-        "version": "3b2d6f2cc4fa12855639b23ad84892a6a595fe72a6a6630c49984ccc3e30de19",
-        "signature": "3b2d6f2cc4fa12855639b23ad84892a6a595fe72a6a6630c49984ccc3e30de19"
+        "version": "5e45e1bcc451a7edfba89df36737b6249ee9b2be2ed125e3b859805f6683c79b",
+        "signature": "5e45e1bcc451a7edfba89df36737b6249ee9b2be2ed125e3b859805f6683c79b"
       },
       "../../nestjs/dist/auth/auth.guard.d.ts": {
         "version": "77e23281fc6ed0140acab3c848562d364826fb3eca87f12fd635803693514fa4",
@@ -1430,8 +1430,8 @@
         "signature": "d1b04448d72670b85cbd482b008197ef6590ffa5e6fa4c46e46d10111f8d79e0"
       },
       "../../nestjs/dist/common/messages.d.ts": {
-        "version": "3c7710576516ff8c02962cde19b5ebc7f97bc74b023b3cb129ace374be594ffb",
-        "signature": "3c7710576516ff8c02962cde19b5ebc7f97bc74b023b3cb129ace374be594ffb"
+        "version": "9f93544edfcc1ba74d1d8e16c7b55af48d1be4c8e55c42bfa2534bde18b36d32",
+        "signature": "9f93544edfcc1ba74d1d8e16c7b55af48d1be4c8e55c42bfa2534bde18b36d32"
       },
       "../../nestjs/dist/common/normalize.d.ts": {
         "version": "86871d306449089990e38109c3f2ac8618af749e34465b61ffdc9b010461c2aa",
@@ -9545,9 +9545,6 @@
       "../../node_modules/@types/body-parser/index.d.ts",
       "../../node_modules/@types/express/index.d.ts",
       "../../nestjs/dist/auth/auth-config.interface.d.ts",
-      "../../nestjs/dist/auth/auth.service.d.ts",
-      "../../nestjs/dist/auth/auth.guard.d.ts",
-      "../../nestjs/dist/auth/interceptors/private.interceptor.d.ts",
       "../../nestjs/dist/auth/interceptors/reference.interceptor.d.ts",
       "../../nestjs/dist/connector/connector-type.enum.d.ts",
       "../../nestjs/dist/connector/connector-config.interface.d.ts",
@@ -9555,7 +9552,6 @@
       "../../nestjs/dist/websocket/websocket-config.interface.d.ts",
       "../../nestjs/dist/norest-config.interface.d.ts",
       "../../nestjs/dist/common/constants.d.ts",
-      "../../nestjs/dist/common/messages.d.ts",
       "../../nestjs/dist/common/normalize.d.ts",
       "../../nestjs/dist/config/config-initializer.module.d.ts",
       "../../nestjs/dist/config/config.module.d.ts",
@@ -9571,11 +9567,8 @@
       "../../node_modules/@types/mongodb/index.d.ts",
       "../../nestjs/dist/connector/mongodb.service.d.ts",
       "../../nestjs/dist/norest.module.d.ts",
-      "../../nestjs/dist/rest/rest.controller.d.ts",
       "../../nestjs/dist/rest/rest.module.d.ts",
       "../../node_modules/@types/ws/index.d.ts",
-      "../../nestjs/dist/websocket/websocket.gateway.d.ts",
-      "../../nestjs/dist/public_api.d.ts",
       "../../node_modules/@types/yargs-parser/index.d.ts",
       "../../node_modules/@types/yargs/index.d.ts",
       "../../node_modules/@types/anymatch/index.d.ts",
@@ -9614,6 +9607,13 @@
       "../../node_modules/@types/uglify-js/index.d.ts",
       "../../node_modules/@types/webpack-sources/index.d.ts",
       "../../node_modules/@types/webpack/index.d.ts",
+      "../../nestjs/dist/auth/auth.service.d.ts",
+      "../../nestjs/dist/auth/interceptors/private.interceptor.d.ts",
+      "../../nestjs/dist/auth/auth.guard.d.ts",
+      "../../nestjs/dist/common/messages.d.ts",
+      "../../nestjs/dist/rest/rest.controller.d.ts",
+      "../../nestjs/dist/websocket/websocket.gateway.d.ts",
+      "../../nestjs/dist/public_api.d.ts",
       "../src/main.ts"
     ]
   },

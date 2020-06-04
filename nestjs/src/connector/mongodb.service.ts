@@ -83,8 +83,10 @@ export class MongoDbService implements Connector {
     }
   }
 
+  // TODO: MULTI TENANCY IS fuc**
+  //       How to resolve a collection? Non singleton services? 
   async resolveCollection(req?: Request) {
-    const collName = this.getCollectionName(req);
+    const collName = await this.getCollectionName(req);
     try {
       this.collection = this.connection.db().collection(collName);
       this.indexFragments = await this.getIndexFragments();
@@ -96,6 +98,7 @@ export class MongoDbService implements Connector {
         throw ex;
       }
     }
+    return collName;
   }
 
   async isIndex(fragment: any) {
@@ -237,11 +240,11 @@ export class MongoDbService implements Connector {
     return result.value;
   }
 
-  private getCollectionName(req?: Request) {
+  private async getCollectionName(req?: Request) {
     if (_.isString(this.config.collection)) {
       return this.config.collection as string;
     }
-    return (this.config.collection as Function)(req) as string;
+    return (await (this.config.collection as Function)(req)) as string;
   }
 
   private async getIndexFragments() {

@@ -1,4 +1,4 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, Module, Provider, Inject } from '@nestjs/common';
 import {
   DB_CONNECTOR_TOKEN,
   NOREST_CONNECTOR_CONFIG_TOKEN,

@@ -8,7 +8,7 @@ export declare class RestController {
     list(request: Request, skip?: string | number, limit?: string | number, orderBy?: any): Promise<import("../public_api").List>;
     listByFragmentOrDetailById(fragmentOrId: any, request: any, skip?: number, limit?: number, orderBy?: any): Promise<any>;
     detailByKey(fragment: any, key: any, request: any): Promise<any>;
-    detailReferences(fragment: any, key: any, ref: any, request: any, skip?: number, limit?: number): Promise<any>;
+    detailReferences(fragment: any, key: any, ref: any, request: any, skip?: number, limit?: number, orderBy?: any): Promise<any>;
     create(data: any, request: any): Promise<any>;
     createFragment(fragment: any, data: any, request: any): Promise<any>;
     update(id: any, data: any, request: any): Promise<any>;

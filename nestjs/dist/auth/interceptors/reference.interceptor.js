@@ -19,11 +19,12 @@ let ReferenceInterceptor = class ReferenceInterceptor {
             request.body = this.unmapValues(request.body);
         }
         return next.handle().pipe(operators_1.map(values => {
-            if (!values.data) {
-                return this.mapValues(values);
+            const _values = lodash_1._.clone(values);
+            if (!_values.data) {
+                return this.mapValues(_values);
             }
-            values.data = values.data.map(value => this.mapValues(value));
-            return values;
+            _values.data.map(value => this.mapValues(value));
+            return _values;
         }));
     }
     unmapValues(value) {

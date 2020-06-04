@@ -15,14 +15,14 @@ import { ConfigModule } from './config/config.module';
 export class NoRestModule {
   static async forRoot(
     config?: Partial<NoRestConfig>,
-    databaseConnector?: Provider<Connector>,
+    databaseConnector?: Connector,
   ): Promise<DynamicModule> {
     return NoRestModule.register(config, databaseConnector);
   }
 
   static async register(
     config?: Partial<NoRestConfig>,
-    databaseConnector?: Provider<Connector>,
+    databaseConnector?: Connector,
   ): Promise<DynamicModule> {
     const noRestConfig = await normalizeConfig(config);
     const connector = resolveConnector(

@@ -17,7 +17,8 @@ let MockService = class MockService {
         this.data = [];
         this.watcher$ = new rxjs_1.BehaviorSubject(null);
     }
-    resolveCollection() {
+    async resolveCollection() {
+        return 'mock';
     }
     connect(config) {
         common_1.Logger.log(`${config.name} connection established.`);

@@ -40,7 +40,7 @@ export declare class FileService implements Connector {
         };
         data: any;
     }>;
-    listByRef(references: Reference[], skip?: number, limit?: number): Promise<List>;
+    listByRef(references: Reference[], skip?: number, limit?: number, orderBy?: string): Promise<List>;
     update(id: string, data: any, partialData: any): Promise<any>;
     delete(id: string): Promise<any>;
     listenOnChanges(): Observable<any>;

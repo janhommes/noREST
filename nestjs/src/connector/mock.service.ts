@@ -15,8 +15,8 @@ export class MockService implements Connector {
   private data = [];
   private watcher$: BehaviorSubject<Changeset> = new BehaviorSubject(null);
 
-  resolveCollection() {
-    // intended empty
+  async resolveCollection() {
+    return 'mock';
   }
 
   connect(config: ConnectorConfig) {

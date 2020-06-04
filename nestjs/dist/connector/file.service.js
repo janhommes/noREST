@@ -16,6 +16,7 @@ const rxjs_1 = require("rxjs");
 const operators_1 = require("rxjs/operators");
 const util_1 = require("util");
 const messages_1 = require("../common/messages");
+const constants_1 = require("../common/constants");
 let FileService = class FileService {
     constructor() {
         this.MAX_PAGE_SIZE = Infinity;
@@ -26,23 +27,23 @@ let FileService = class FileService {
         this.watchers = [];
         this.watcher$ = new rxjs_1.BehaviorSubject(null);
     }
-    getCollectionName(req) {
+    async getCollectionName(req) {
         if (lodash_1._.isString(this.config.collection)) {
             return this.config.collection;
         }
-        return this.config.collection(req);
+        return (await this.config.collection(req));
     }
     async getData() {
         const path = await this.resolveCollection();
         return this.cachedData[path];
     }
     async saveData(data) {
-        const collName = this.getCollectionName();
+        const collName = await this.getCollectionName();
         const path = path_1.resolve(this.path, collName);
         await this._writeFile(path, JSON.stringify(data));
     }
     async resolveCollection(req) {
-        const collName = this.getCollectionName(req);
+        const collName = await this.getCollectionName(req);
         const path = path_1.resolve(this.path, collName);
         if (this.watchers[path]) {
             return path;
@@ -138,7 +139,7 @@ let FileService = class FileService {
                 skip,
                 limit,
             },
-            data: this.order(this.getPaged(data, skip, limit), orderBy),
+            data: this.getPaged(this.order(data, orderBy), skip, limit),
         });
     }
     async listByIndexFragment(fragment, skip, limit, orderBy) {
@@ -151,10 +152,10 @@ let FileService = class FileService {
                 skip,
                 limit,
             },
-            data: this.order(this.getPaged(data, skip, limit), orderBy),
+            data: this.getPaged(this.order(data, orderBy), skip, limit),
         });
     }
-    async listByRef(references, skip = 0, limit = this.MAX_PAGE_SIZE) {
+    async listByRef(references, skip = 0, limit = this.MAX_PAGE_SIZE, orderBy) {
         const data = (await this.getData()).filter(value => {
             return references.some(r => r.id == value._id);
         });
@@ -164,7 +165,7 @@ let FileService = class FileService {
                 skip,
                 limit,
             },
-            data: this.getPaged(data, skip, limit),
+            data: this.getPaged(this.order(data, orderBy), skip, limit),
         });
     }
     async update(id, data, partialData) {
@@ -184,6 +185,18 @@ let FileService = class FileService {
         const toReplace = await this.read(id);
         const allData = await this.getData();
         allData.splice(allData.indexOf(toReplace), 1);
+        allData.forEach(data => {
+            const d = data[constants_1.DEFAULT_REFERENCE_DB_KEY];
+            if (d && d.length && lodash_1._.find(d, value => value.id === id)) {
+                data[constants_1.DEFAULT_REFERENCE_DB_KEY] = lodash_1._.filter(d, value => value.id !== id);
+                if (data[constants_1.DEFAULT_REFERENCE_DB_KEY].length === 0) {
+                    delete data[constants_1.DEFAULT_REFERENCE_DB_KEY];
+                }
+            }
+            else if (d && d.id === id) {
+                delete data[constants_1.DEFAULT_REFERENCE_DB_KEY];
+            }
+        });
         await this.saveData(allData);
         this.watcher$.next({
             method: 'DELETE',

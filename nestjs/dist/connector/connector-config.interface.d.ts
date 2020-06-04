@@ -4,6 +4,6 @@ export interface ConnectorConfig {
     name: ConnectorType;
     path?: string;
     url?: string;
-    collection?: string | ((req?: Request) => string);
+    collection?: string | ((req?: Request) => string | Promise<string>);
     createCollectionNotExisting?: boolean;
 }

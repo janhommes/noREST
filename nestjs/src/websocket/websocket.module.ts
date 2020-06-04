@@ -1,4 +1,4 @@
-import { Module, DynamicModule } from '@nestjs/common';
+import { Module, DynamicModule, Provider } from '@nestjs/common';
 import { WebsocketGateway } from './websocket.gateway';
 import { AuthModule } from '../auth/auth.module';
 import { ConnectorModule } from '../connector/connector.module';

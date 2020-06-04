@@ -7,7 +7,7 @@ export declare class MockService implements Connector {
     private readonly MAX_PAGE_SIZE;
     private data;
     private watcher$;
-    resolveCollection(): void;
+    resolveCollection(): Promise<string>;
     connect(config: ConnectorConfig): void;
     isIndex(fragment: any): any;
     create(data: any): any;

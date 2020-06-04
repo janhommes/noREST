@@ -12,7 +12,7 @@ export interface Connector {
     readByKey(fragment: string, key: string): any;
     list(skip: number, limit: number, orderBy?: string): Promise<List>;
     listByIndexFragment(fragment: string, skip: number, limit: number, orderBy?: string): Promise<List>;
-    listByRef(references: Reference[], skip: number, limit: number): Promise<List>;
+    listByRef(references: Reference[], skip: number, limit: number, orderBy?: string): Promise<List>;
     create(data: any): any;
     update(id: string, data: any, partialData?: any): any;
     delete(id: string): any;

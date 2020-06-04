@@ -6,7 +6,7 @@ const norest_module_1 = require("./norest.module");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(norest_module_1.NoRestModule);
     app.useWebSocketAdapter(new platform_ws_1.WsAdapter(app));
-    await app.listen(3000);
+    await app.listen(3030);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

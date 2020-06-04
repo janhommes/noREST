@@ -43,7 +43,8 @@ export class RestController {
       throw new HttpException(Messages.API_FIXED, HttpStatus.FORBIDDEN);
     }
     const paging = normalizeSkipLimit(skip, limit);
-    return this.getDatabase(request).list(paging.skip, paging.limit, orderBy);
+    const db = await this.getDatabase(request);
+    return db.list(paging.skip, paging.limit, orderBy);
   }
 
   @Get(`:fragmentOrId`)
@@ -55,11 +56,11 @@ export class RestController {
     @Query('orderBy') orderBy?,
   ) {
     const fragment = normalizeFragment(fragmentOrId);
-    const db = this.getDatabase(request);
+    const db = await this.getDatabase(request);
     const isIndex = await db.isIndex(fragment);
     if (isIndex) {
       const paging = normalizeSkipLimit(skip, limit);
-      return this.getDatabase(request).listByIndexFragment(
+      return db.listByIndexFragment(
         fragment,
         paging.skip,
         paging.limit,
@@ -76,7 +77,8 @@ export class RestController {
     @Req() request,
   ) {
     fragment = normalizeFragment(fragment);
-    const data = await this.getDatabase(request).readByKey(fragment, key);
+    const db = await this.getDatabase(request);
+    const data = await db.readByKey(fragment, key);
     if (!data) {
       throw new HttpException(Messages.NOT_FOUND, HttpStatus.NOT_FOUND);
     }
@@ -91,6 +93,7 @@ export class RestController {
     @Req() request,
     @Query('skip') skip = 0,
     @Query('limit') limit = this.config.rest.defaultPageSize,
+    @Query('orderBy') orderBy?,
   ) {
     const data = await this.detailByKey(fragment, key, request);
     const normalizedRef = normalizeReference(ref);
@@ -99,17 +102,14 @@ export class RestController {
       val => val.fragment === normalizedRef,
     );
 
-    if (!references) {
+    if (!references.length) {
       throw new HttpException(Messages.NO_REF_FOUND, HttpStatus.NOT_FOUND);
     }
 
     const paging = normalizeSkipLimit(skip, limit);
     if (!references[0].oneToOne) {
-      return this.getDatabase(request).listByRef(
-        references,
-        paging.skip,
-        paging.limit,
-      );
+      const db = await this.getDatabase(request);
+      return db.listByRef(references, paging.skip, paging.limit, orderBy);
     }
 
     return this.listByFragmentOrDetailById(
@@ -128,7 +128,8 @@ export class RestController {
     await this.checkIfRefExist(data, request);
     data = this.attachMetadata(data, request.auth.user);
     await this.checkIfExist(data._id, request, false);
-    const createdData = await this.getDatabase(request).create(data);
+    const db = await this.getDatabase(request);
+    const createdData = db.create(data);
     return createdData;
   }
 
@@ -160,7 +161,8 @@ export class RestController {
     this.validateMetaData(data);
     this.validateIfIndexFragmentIsSet(data);
     data = this.attachMetadata(data, request.auth.user);
-    return this.getDatabase(request).update(id, data);
+    const db = await this.getDatabase(request);
+    return db.update(id, data);
   }
 
   @UseGuards(AuthGuard)
@@ -189,7 +191,8 @@ export class RestController {
     await this.checkIfRefExist(data, request);
     await this.checkIfFragmentsAreValid(data, request);
     data = this.attachMetadata(data, undefined, request.auth.user);
-    return this.getDatabase(request).update(id, data, partialData);
+    const db = await this.getDatabase(request);
+    return db.update(id, data, partialData);
   }
 
   @UseGuards(AuthGuard)
@@ -208,8 +211,9 @@ export class RestController {
   @UseGuards(AuthGuard)
   @Delete(':id')
   async delete(@Param('id') id, @Req() request) {
+    const db = await this.getDatabase(request);
     await this.checkIfExist(id, request);
-    return this.getDatabase(request).delete(id);
+    return db.delete(id);
   }
 
   @UseGuards(AuthGuard)
@@ -224,15 +228,16 @@ export class RestController {
     return this.delete(id, request);
   }
 
-  private getDatabase(request: Request) {
-    this.database.resolveCollection(request);
+  private async getDatabase(request: Request) {
+    await this.database.resolveCollection(request);
     return this.database;
   }
 
   private async checkIfRefExist(data: any, request: Request) {
     if (data[DEFAULT_REFERENCE_DB_KEY]) {
       // TODO: LIMIT
-      const result = await this.getDatabase(request).listByRef(
+      const db = await this.getDatabase(request);
+      const result = await db.listByRef(
         data[DEFAULT_REFERENCE_DB_KEY],
         0,
         this.config.rest.defaultPageSize,
@@ -322,7 +327,7 @@ export class RestController {
 
   private async checkIfFragmentExist(fragment: any, request: Request) {
     fragment = normalizeFragment(fragment);
-    const db = this.getDatabase(request);
+    const db = await this.getDatabase(request);
     const isIndex = await db.isIndex(fragment);
     if (!isIndex) {
       throw new HttpException(Messages.NO_ROUTE_FOUND, HttpStatus.NOT_FOUND);
@@ -331,7 +336,7 @@ export class RestController {
   }
 
   private async checkIfExist(id: any, request: Request, shouldExist = true) {
-    const db = this.getDatabase(request);
+    const db = await this.getDatabase(request);
     const existing = await db.read(id);
     if (!existing && shouldExist) {
       throw new HttpException(Messages.NOT_FOUND, HttpStatus.NOT_FOUND);

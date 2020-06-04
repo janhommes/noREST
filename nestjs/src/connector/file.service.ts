@@ -3,7 +3,7 @@ import { detailedDiff } from 'deep-object-diff';
 import { Request } from 'express';
 import { exists, readFile, watchFile, writeFile } from 'fs';
 import { _ } from 'lodash';
-import { ObjectID, ChangeStream } from 'mongodb';
+import { ObjectID } from 'mongodb';
 import { isAbsolute, resolve } from 'path';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { filter, mergeMap } from 'rxjs/operators';
@@ -14,6 +14,7 @@ import { ConnectorConfig } from './connector-config.interface';
 import { Connector } from './connector.interface';
 import { List } from './list.interface';
 import { Reference } from './reference.interface';
+import { DEFAULT_REFERENCE_DB_KEY } from '../common/constants';
 
 @Injectable()
 export class FileService implements Connector {
@@ -27,11 +28,11 @@ export class FileService implements Connector {
   private config: ConnectorConfig;
   private watcher$ = new BehaviorSubject(null);
 
-  private getCollectionName(req?: Request) {
+  private async getCollectionName(req?: Request) {
     if (_.isString(this.config.collection)) {
       return this.config.collection as string;
     }
-    return (this.config.collection as Function)(req) as string;
+    return (await (this.config.collection as Function)(req)) as string;
   }
 
   async getData() {
@@ -41,13 +42,13 @@ export class FileService implements Connector {
 
   async saveData(data) {
     // TODO: req is not passed to this function
-    const collName = this.getCollectionName();
+    const collName = await this.getCollectionName();
     const path = resolve(this.path, collName);
     await this._writeFile(path, JSON.stringify(data));
   }
 
   async resolveCollection(req?: Request) {
-    const collName = this.getCollectionName(req);
+    const collName = await this.getCollectionName(req);
     const path = resolve(this.path, collName);
 
     if (this.watchers[path]) {
@@ -162,7 +163,7 @@ export class FileService implements Connector {
         skip,
         limit,
       },
-      data: this.order(this.getPaged(data, skip, limit), orderBy),
+      data: this.getPaged(this.order(data, orderBy), skip, limit),
     });
   }
 
@@ -181,7 +182,7 @@ export class FileService implements Connector {
         skip,
         limit,
       },
-      data: this.order(this.getPaged(data, skip, limit), orderBy),
+      data: this.getPaged(this.order(data, orderBy), skip, limit),
     });
   }
 
@@ -189,6 +190,7 @@ export class FileService implements Connector {
     references: Reference[],
     skip = 0,
     limit: number = this.MAX_PAGE_SIZE,
+    orderBy?: string,
   ): Promise<List> {
     const data = (await this.getData()).filter(value => {
       // tslint:disable-next-line: triple-equals
@@ -200,7 +202,7 @@ export class FileService implements Connector {
         skip,
         limit,
       },
-      data: this.getPaged(data, skip, limit),
+      data: this.getPaged(this.order(data, orderBy), skip, limit),
     });
   }
 
@@ -222,7 +224,21 @@ export class FileService implements Connector {
     const toReplace = await this.read(id);
     const allData = await this.getData();
     allData.splice(allData.indexOf(toReplace), 1);
+
+    allData.forEach(data => {
+      const d = data[DEFAULT_REFERENCE_DB_KEY];
+      if (d && d.length && _.find(d, value => value.id === id)) {
+        data[DEFAULT_REFERENCE_DB_KEY] = _.filter(d, value => value.id !== id);
+        if (data[DEFAULT_REFERENCE_DB_KEY].length === 0) {
+          delete data[DEFAULT_REFERENCE_DB_KEY];
+        }
+      } else if (d && d.id === id) {
+        delete data[DEFAULT_REFERENCE_DB_KEY];
+      }
+    });
+
     await this.saveData(allData);
+
     this.watcher$.next({
       method: 'DELETE',
       data: toReplace,

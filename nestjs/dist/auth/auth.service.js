@@ -23,7 +23,13 @@ let AuthService = class AuthService {
     authenticate(request) {
         if (!request.auth) {
             const headers = request.headers;
-            const jwt = this.getJwt(headers, request.query);
+            let query = request.query;
+            if (request.channel) {
+                query = {
+                    [this.authConfig.cookieName]: new URL(request.channel).searchParams.get(this.authConfig.cookieName),
+                };
+            }
+            const jwt = this.getJwt(headers, query);
             request.auth = {
                 isAuthenticated: !!jwt,
                 user: jwt ? this.getUserFromJwt(jwt) : undefined,

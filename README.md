@@ -2,7 +2,7 @@
 <p align="center">
   <img src="documentation/assets/logo.png">
   <br />
-  <strong>A zeroconfig (not only) RESTfull API</strong>
+  <strong>A no-code (not only) RESTfull API</strong>
 </p>
 
 # Getting started
@@ -153,7 +153,7 @@ socket.onopen = function() {
 The returned message then is equal to the http result and gets pushed on each change to the index fragment collection. The metadata is enhanced by information about the change that triggers the new message to be send. Create operations are appended at the end of the list.
 
 ## Fixating an API
-As mentioned before, noREST is intended to be used for rapid development.However, noREST supports a `fixed` mode which disallow to add new index fragments entries to the API.
+As mentioned before, noREST is intended to be used for rapid development. However, noREST supports a `fixed` mode which disallow to add new index fragments to the API.
 
 ## GraphQL (tbd)
 A GraphQL implementation is planed, but not yet done.
@@ -163,5 +163,5 @@ noREST is more meant as an paradigm, which could be implemented in any language.
 
  - [@norest/nestjs](nestjs/README.md): A noREST reference implementation for node.js written with the help of the nestjs framework.
  - [@norest/cli](cli/README.md): A small tool which allows to configure and run the application quickly from your command line.
-- [@norest/cli](playground/README.md): An interactive playground to try out the capabilities of noREST.
+ - [@norest/playground](playground/README.md): An interactive playground to try out the capabilities of noREST.
 
