@@ -1,0 +1,35 @@
+/* You can add global styles to this file, and also import other style files */
+.nr-green-text {
+  color: #0fbc3c;
+}
+
+.nr-green-background {
+  background-color: #0fbc3c;
+}
+
+a {
+  color: #0fbc3c;
+  &:hover {
+    color: #333;
+  }
+}
+
+button[color="norest"], mat-chip.mat-norest, button:not(.mat-icon-button).mat-norest {
+  background-color: #0fbc3c !important;
+}
+
+button[color="alert"], mat-chip.mat-alert, button:not(.mat-icon-button).mat-alert {
+  background-color: #ff8800 !important;
+}
+
+.mat-icon-button.mat-alert {
+  color: #ff8800;
+}
+
+.mat-icon-button.mat-norest {
+  color: #0fbc3c;
+}
+
+.nr-no-pointer {
+  pointer-events: none;
+}

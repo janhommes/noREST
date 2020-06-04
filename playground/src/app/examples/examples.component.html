@@ -1,0 +1,19 @@
+<mat-action-list dense>
+  <mat-list-item *ngFor="let example of examples" (click)="prepareQuery(example)">
+    <button
+      [title]="example.options.description"
+      matLine
+    >
+      {{ example.options.title }}
+    </button>
+    <button
+      mat-icon-button
+      [color]="methods.getColor(example.method)"
+      (click)="triggerQuery($event, example)"
+      [title]="'Click here to execute this ' + example.method + ' directly.'"
+    >
+      {{ example.method }}
+    </button>
+  </mat-list-item>
+</mat-action-list>
+

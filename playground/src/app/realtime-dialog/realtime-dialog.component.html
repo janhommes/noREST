@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Realtime data</h1>
+<div mat-dialog-content style="overflow: hidden;">
+  <p>From: {{ date | date: 'long' }}</p>
+  <ngx-monaco-editor
+    [options]="editorOptions"
+    [ngModel]="payload"
+    style="height: 500px;"
+  ></ngx-monaco-editor>
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close cdkFocusInitial>Close</button>
+</div>

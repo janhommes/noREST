@@ -1,0 +1,79 @@
+form {
+  width: 100%;
+  background-color: #fff;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  height: 94px;
+
+  .nr-method-selector {
+    flex: 1;
+    padding: 24px 4px 0px 24px;
+  }
+
+  .nr-resource-input {
+    flex: 4;
+    padding: 24px 4px 0px 0px;
+  }
+
+  .nr-resource-button {
+    flex: 1;
+    margin: 24px 24px 20px 0px;
+  }
+}
+
+:host ::ng-deep .mat-tab-body-wrapper {
+  height: 100%;
+}
+
+:host ::ng-deep .mat-tab-body.mat-tab-body-active {
+  height: 100%;
+}
+
+mat-tab-group {
+  height: calc(100% - 94px);
+  background-color: #f1f1f1;
+
+  .nr-editor {
+    height: 100%;
+    overflow: hidden;
+
+    ngx-monaco-editor {
+      height: 96%;
+    }
+  }
+
+  .nr-http-status {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+  }
+}
+
+.nr-options {
+  padding: 24px;
+
+  [mat-card-avatar] {
+    text-align: center;
+  }
+
+  .nr-options-card {
+    margin: auto;
+  }
+
+  .mat-radio-button ~ .mat-radio-button {
+    margin-left: 16px;
+  }
+
+  mat-card-content {
+    padding-left: 54px;
+  }
+
+  mat-grid-list {
+    width: 100%;
+  }
+
+  ::ng-deep figure {
+    justify-content: flex-start !important;
+  }
+}

@@ -1,0 +1,115 @@
+<form>
+  <mat-form-field class="nr-method-selector" appearance="fill">
+    <mat-label>Method:</mat-label>
+    <mat-select [(ngModel)]="method" name="method">
+      <mat-option *ngFor="let m of methods.values" [value]="m.name"
+        ><mat-chip [color]="m.color" selected class="nr-no-pointer">{{
+          m.name
+        }}</mat-chip></mat-option
+      >
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field
+    class="nr-resource-input"
+    appearance="fill"
+    [floatLabel]="'always'"
+  >
+    <mat-label>URI:</mat-label>
+    <input
+      type="text"
+      matInput
+      placeholder="&#60;&#60;fragment&#62;&#62;/&#60;&#60;id&#62;&#62;/&#60;&#60;ref&#62;&#62;"
+      [(ngModel)]="uri"
+      name="uri"
+    />
+  </mat-form-field>
+  <button
+    class="nr-resource-button"
+    type="submit"
+    mat-raised-button
+    [color]="methods.getColor(method)"
+    (click)="query()"
+  >
+    {{ method }}
+  </button>
+</form>
+
+<mat-tab-group>
+  <mat-tab label="Response">
+    <ng-template matTabContent>
+      <div class="nr-editor">
+        <ngx-monaco-editor
+          [options]="editorOptionsResponse"
+          [(ngModel)]="response"
+          name="response"
+        ></ngx-monaco-editor>
+      </div>
+      <small class="nr-http-status"
+        >Status: <strong>{{ status }}</strong> || Authentication:
+        <strong>{{
+          options.useAuthentication ? 'enabled' : 'disabled'
+        }}</strong></small
+      >
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="Body">
+    <ng-template matTabContent>
+      <div class="nr-editor">
+        <ngx-monaco-editor
+          [options]="editorOptionsBody"
+          [(ngModel)]="body"
+          name="body"
+        ></ngx-monaco-editor>
+      </div>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="Options">
+    <div class="nr-options">
+      <mat-card class="nr-options-card">
+        <mat-card-header>
+          <div mat-card-avatar><mat-icon>lock</mat-icon></div>
+          <mat-card-title>Authentication</mat-card-title>
+          <mat-card-subtitle
+            >Define any JWT to update, delete or create
+            content</mat-card-subtitle
+          >
+        </mat-card-header>
+        <mat-card-content
+          fxLayout="column"
+          fxLayoutGap="10px"
+          ngForm="authentication"
+        >
+          <mat-slide-toggle
+            [(ngModel)]="options.useAuthentication"
+            name="useAuthentication"
+            >Use authentication</mat-slide-toggle
+          >
+          <mat-radio-group
+            aria-labelledby="header-type-radio-select"
+            [disabled]="!options.useAuthentication"
+          >
+            <mat-radio-button value="bearer" [checked]="true"
+              >Bearer</mat-radio-button
+            >
+            <mat-radio-button value="cookie">Cookie</mat-radio-button>
+          </mat-radio-group>
+
+          <mat-form-field>
+            <mat-label>JWT:</mat-label>
+            <textarea
+              matInput
+              [(ngModel)]="options.jwt"
+              [disabled]="!options.useAuthentication"
+              name="jwt"
+              >{{ options.jwt }}</textarea
+            >
+            <mat-hint
+              >Default JWT sets the sub to "John Doo" user. Create your own with
+              tools like <a href="http://jwt.io">jwt.io</a></mat-hint
+            >
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </mat-tab>
+</mat-tab-group>

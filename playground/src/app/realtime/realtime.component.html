@@ -1,0 +1,45 @@
+<form>
+  <mat-form-field class="nr-resource-input" [floatLabel]="'always'">
+    <mat-label>{{ label }}:</mat-label>
+    <input
+      type="text"
+      matInput
+      placeholder="&#60;&#60;fragment&#62;&#62;/&#60;&#60;id&#62;&#62;"
+      [(ngModel)]="uri"
+      name="uri"
+      [disabled]="isConnected || isConnecting"
+    />
+  </mat-form-field>
+  <button
+    class="nr-resource-button"
+    type="submit"
+    mat-raised-button
+    *ngIf="!isConnected"
+    [disabled]="isConnecting"
+    color="primary"
+    (click)="connect()"
+  >
+    Connect
+  </button>
+  <button
+    class="nr-resource-button"
+    type="submit"
+    mat-raised-button
+    color="warn"
+    *ngIf="isConnected"
+    [disabled]="isConnecting"
+    (click)="disconnect()"
+  >
+    Disconnect
+  </button>
+</form>
+<mat-action-list dense>
+  <mat-list-item *ngFor="let message of messages" (click)="openDetails(message)">
+    <button mat-mini-fab [color]="methods.getColor(message.payload._.method)">
+      {{ message.payload._.method }}
+    </button>
+    <button [title]="message.payload._.channel" matLine>
+      {{ message.date | date: 'medium' }}
+    </button>
+  </mat-list-item>
+</mat-action-list>

@@ -1,0 +1,11 @@
+<mat-action-list dense>
+
+  <button
+    mat-list-item
+    *ngFor="let fragment of fragments"
+    (click)="queryService.trigger({ method: 'GET', uri: fragment })"
+  >
+    <mat-icon mat-list-icon>local_offer</mat-icon>
+    <div mat-line>{{ fragment }}</div>
+  </button>
+</mat-action-list>

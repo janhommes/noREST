@@ -1,0 +1,15 @@
+form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  
+  .nr-resource-input {
+    flex: 3;
+    padding: 24px 4px 0px 0px;
+  }
+
+  .nr-resource-button {
+    flex: 2;
+    margin: 24px 4px 20px 0px;
+  }
+}
