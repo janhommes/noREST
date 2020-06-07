@@ -4,7 +4,7 @@ module.exports = {
     url: 'mongodb://127.0.0.1:27017/test',
     collection: (req) => {
       if (req) {
-        console.log(req.headers);
+        return req.headers['x-norest-demo-key'];
       }
       return 'delete_me2';
     },
@@ -20,28 +20,3 @@ module.exports = {
   path: 'api',
   fixed: false,
 };
-
-/*
-module.exports = {
-  connector: {
-    name: 'file',
-    path: '../../data',
-    collection: (req) => {
-      if (req && req.headers['x-demo-key']) {
-        console.log(req.headers);
-      }
-      return 'sample';
-    },
-    createCollectionNotExisting: true,
-  },
-  websocket: {
-    enabled: true,
-  },
-  auth: {
-    cookieName: 'auth',
-    userProperty: 'sub',
-  },
-  path: 'api',
-  fixed: false,
-};
- */

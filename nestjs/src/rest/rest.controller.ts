@@ -1,13 +1,40 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Inject, Param, Patch, Post, Put, Query, Req, Scope, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
+  Req,
+  Scope,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { Request } from 'express';
 import { _ } from 'lodash';
 import { AuthGuard } from '../auth/auth.guard';
 import { PrivateInterceptor } from '../auth/interceptors/private.interceptor';
 import { ReferenceInterceptor } from '../auth/interceptors/reference.interceptor';
-import { DEFAULT_INDEX_FRAGMENT_PREFIX, DEFAULT_REFERENCE_DB_KEY, DEFAULT_REFERENCE_PREFIX, NOREST_CONFIG_TOKEN, REFLECTION_NESTJS_CONTROLLER_PATH } from '../common/constants';
+import {
+  DEFAULT_INDEX_FRAGMENT_PREFIX,
+  DEFAULT_REFERENCE_DB_KEY,
+  DEFAULT_REFERENCE_PREFIX,
+  NOREST_CONFIG_TOKEN,
+  REFLECTION_NESTJS_CONTROLLER_PATH,
+} from '../common/constants';
 import { Messages } from '../common/messages';
-import { normalizeFragment, normalizeReference, normalizeSkipLimit } from '../common/normalize';
-import { Connector } from '../connector/connector.interface';
+import {
+  normalizeFragment,
+  normalizeReference,
+  normalizeSkipLimit,
+} from '../common/normalize';
+import { Connector, ConnectorFactory } from '../connector/connector.interface';
 import { ConnectorService } from '../connector/connector.service';
 import { NoRestConfig } from '../norest-config.interface';
 
@@ -17,7 +44,7 @@ import { NoRestConfig } from '../norest-config.interface';
   scope: Scope.DEFAULT,
 })
 export class RestController {
-  private database: Connector;
+  private connectorFactory: ConnectorFactory;
 
   constructor(
     connector: ConnectorService,
@@ -28,7 +55,7 @@ export class RestController {
       config.path,
       RestController,
     );
-    this.database = connector.database;
+    this.connectorFactory = connector.connectorFactory;
   }
 
   @Get()
@@ -229,8 +256,11 @@ export class RestController {
   }
 
   private async getDatabase(request: Request) {
-    await this.database.resolveCollection(request);
-    return this.database;
+    const connector = await this.connectorFactory.resolveConnector(
+      request,
+      this.config.connector,
+    );
+    return connector;
   }
 
   private async checkIfRefExist(data: any, request: Request) {

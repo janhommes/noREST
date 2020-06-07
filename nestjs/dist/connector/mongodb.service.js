@@ -17,6 +17,22 @@ let MongoDbService = class MongoDbService {
     constructor() {
         this.indexFragments = [];
     }
+    async init(client, collectionName, config) {
+        try {
+            this.collection = client.db().collection(collectionName);
+            this.indexFragments = await this.getIndexFragments();
+        }
+        catch (ex) {
+            if (config.createCollectionNotExisting && ex.code === 26) {
+                this.collection = await client.db().createCollection(collectionName);
+                this.indexFragments = await this.getIndexFragments();
+            }
+            else {
+                throw ex;
+            }
+        }
+        this.watcher$ = rxjs_1.fromEvent(this.collection.watch(), 'change');
+    }
     listenOnChanges() {
         return this.watcher$.pipe(operators_1.map((change) => ({
             _id: change.documentKey._id.toHexString(),
@@ -41,39 +57,6 @@ let MongoDbService = class MongoDbService {
             }
         }
         return 'GET';
-    }
-    async connect(config) {
-        this.config = config;
-        try {
-            this.connection = await new mongodb_1.MongoClient(config.url, {
-                useUnifiedTopology: true,
-                useNewUrlParser: true,
-            }).connect();
-            await this.resolveCollection();
-            this.watcher$ = rxjs_1.fromEvent(this.collection.watch(), 'change');
-            common_1.Logger.log(`${config.name} connection established at url: ${config.url}`);
-            return this.connection;
-        }
-        catch (ex) {
-            throw new Error(ex);
-        }
-    }
-    async resolveCollection(req) {
-        const collName = await this.getCollectionName(req);
-        try {
-            this.collection = this.connection.db().collection(collName);
-            this.indexFragments = await this.getIndexFragments();
-        }
-        catch (ex) {
-            if (this.config.createCollectionNotExisting && ex.code === 26) {
-                this.collection = await this.connection.db().createCollection(collName);
-                this.indexFragments = await this.getIndexFragments();
-            }
-            else {
-                throw ex;
-            }
-        }
-        return collName;
     }
     async isIndex(fragment) {
         if (!this.indexFragments) {
@@ -180,12 +163,6 @@ let MongoDbService = class MongoDbService {
             await this.update(`${data._id}`, data);
         });
         return result.value;
-    }
-    async getCollectionName(req) {
-        if (lodash_1._.isString(this.config.collection)) {
-            return this.config.collection;
-        }
-        return (await this.config.collection(req));
     }
     async getIndexFragments() {
         return lodash_1._.filter(await this.collection.indexes(), val => val.name.startsWith(constants_1.DEFAULT_INDEX_FRAGMENT_PREFIX)).map(({ key }) => Object.keys(key)[0]);

@@ -27,8 +27,8 @@ let ConnectorModule = ConnectorModule_1 = class ConnectorModule {
                 {
                     provide: constants_1.DB_CONNECTION_TOKEN,
                     useFactory: async (connector) => {
-                        const connection = await connector.connect(config.connector);
-                        return connection;
+                        const client = await connector.connect(config.connector);
+                        return client;
                     },
                     inject: [constants_1.DB_CONNECTOR_TOKEN],
                 },

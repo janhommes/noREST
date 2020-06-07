@@ -5,17 +5,29 @@ import { Reference } from './reference.interface';
 import { Observable } from 'rxjs';
 import { Changeset } from '../websocket/changeset.interface';
 
+export interface ConnectorRequest {
+  url: string;
+  headers: {}
+}
+
+export interface ConnectorFactory {
+  /**
+   * A function that can be used to connect to the
+   * database. 
+   * @param config The connector configuration
+   */
+  connect(config: ConnectorConfig): Promise<any>;
+  
+  /**
+   * A function that is called before each call to resolve the correct collection.
+   */
+  resolveConnector(req: ConnectorRequest, config: ConnectorConfig): Promise<Connector>;
+}
+
 /**
  * A connector allows to connect any data source to the noREST API.
  */
 export interface Connector {
-  connect(config: ConnectorConfig);
-  /**
-   * A function that is called before each request goes to the database. It can
-   * be used to resolve the collection for multi-tenancy.
-   */
-  resolveCollection(req: Request);
-
   /**
    * Returns true, if the given fragment is a valid index.
    * @param fragment The fragment to check.

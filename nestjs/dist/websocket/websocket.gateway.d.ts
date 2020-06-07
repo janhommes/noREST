@@ -15,7 +15,7 @@ export declare class WebsocketGateway implements OnGatewayConnection<Ws> {
     server: Ws.Server;
     constructor(connector: ConnectorService, noRestConfig: NoRestConfig, httpServerRef: HttpAdapterHost, privateDataInterceptor: PrivateInterceptor);
     handleConnection(client: Ws, msg: http.IncomingMessage): Promise<void>;
-    onEvent(client: Ws, eventDate: any): Observable<any>;
+    onEvent(client: Ws, eventDate: any): Promise<Observable<any>>;
     private resolveDetailChanges;
     private resolveListChanges;
 }

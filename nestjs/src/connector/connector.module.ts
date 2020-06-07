@@ -8,7 +8,7 @@ import {
 import { resolveConnector } from '../common/resolver';
 import { ConfigModule } from '../config/config.module';
 import { ConnectorConfig } from './connector-config.interface';
-import { Connector } from './connector.interface';
+import { Connector, ConnectorFactory } from './connector.interface';
 import { ConnectorService } from './connector.service';
 import { NoRestConfig } from '../norest-config.interface';
 
@@ -24,7 +24,7 @@ import { NoRestConfig } from '../norest-config.interface';
     },
     {
       provide: DB_CONNECTION_TOKEN,
-      useFactory: async (connector: Connector, config: ConnectorConfig) => {
+      useFactory: async (connector: ConnectorFactory, config: ConnectorConfig) => {
         const connection = await connector.connect(config);
         return connection;
       },
@@ -35,7 +35,7 @@ import { NoRestConfig } from '../norest-config.interface';
   exports: [ConnectorService],
 })
 export class ConnectorModule {
-  static register(config: NoRestConfig, connector: Connector): DynamicModule {
+  static register(config: NoRestConfig, connector: ConnectorFactory): DynamicModule {
     return {
       module: ConnectorModule,
       imports: [ConfigModule.register(config)],
@@ -48,9 +48,9 @@ export class ConnectorModule {
         },
         {
           provide: DB_CONNECTION_TOKEN,
-          useFactory: async (connector: Connector) => {
-            const connection = await connector.connect(config.connector);
-            return connection;
+          useFactory: async (connector: ConnectorFactory) => {
+            const client = await connector.connect(config.connector);
+            return client;
           },
           inject: [DB_CONNECTOR_TOKEN],
         },

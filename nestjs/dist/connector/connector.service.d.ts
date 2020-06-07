@@ -1,5 +1,5 @@
-import { Connector } from './connector.interface';
+import { ConnectorFactory } from './connector.interface';
 export declare class ConnectorService {
-    database: Connector;
-    constructor(connector: Connector);
+    connectorFactory: ConnectorFactory;
+    constructor(factory: ConnectorFactory);
 }

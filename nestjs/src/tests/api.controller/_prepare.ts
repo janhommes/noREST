@@ -9,7 +9,7 @@ import {
   NOREST_CONNECTOR_CONFIG_TOKEN,
 } from '../../common/constants';
 import { ConnectorConfig } from '../../connector/connector-config.interface';
-import { Connector } from '../../connector/connector.interface';
+import { Connector, ConnectorFactory } from '../../connector/connector.interface';
 import { ConnectorService } from '../../connector/connector.service';
 import { FileService } from '../../connector/file.service';
 import { MockService } from '../../connector/mock.service';
@@ -136,7 +136,7 @@ export const prepare = async () => {
       },
       {
         provide: DB_CONNECTION_TOKEN,
-        useFactory: async (connector: Connector, config: ConnectorConfig) => {
+        useFactory: async (connector: ConnectorFactory, config: ConnectorConfig) => {
           const connection = await connector.connect(config);
           return connection;
         },

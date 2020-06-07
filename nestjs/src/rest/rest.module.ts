@@ -1,10 +1,10 @@
-import { Module, DynamicModule, Provider } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
 import { RestController } from './rest.controller';
 import { ConfigModule } from '../config/config.module';
 import { ConnectorModule } from '../connector/connector.module';
 import { NoRestConfig } from '../norest-config.interface';
-import { Connector } from '../connector/connector.interface';
+import { ConnectorFactory } from '../connector/connector.interface';
 
 @Module({
   imports: [AuthModule, ConfigModule, ConnectorModule],
@@ -13,7 +13,7 @@ import { Connector } from '../connector/connector.interface';
 export class RestModule {
   static register(
     config: NoRestConfig,
-    connector: Connector,
+    connector: ConnectorFactory,
   ): DynamicModule {
     return {
       module: RestModule,

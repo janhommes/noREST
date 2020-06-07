@@ -1,5 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { Request } from 'express';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { _ } from 'lodash';
 import { Collection, MongoClient, ObjectId } from 'mongodb';
 import { fromEvent } from 'rxjs';
@@ -17,11 +16,29 @@ import { Reference } from './reference.interface';
 
 @Injectable()
 export class MongoDbService implements Connector {
-  private connection: MongoClient;
   private collection: Collection;
-  private config: ConnectorConfig;
   private indexFragments: string[] = [];
   private watcher$;
+
+  async init(
+    client: MongoClient,
+    collectionName: string,
+    config: ConnectorConfig,
+  ) {
+    try {
+      this.collection = client.db().collection(collectionName);
+      this.indexFragments = await this.getIndexFragments();
+    } catch (ex) {
+      if (config.createCollectionNotExisting && ex.code === 26) {
+        this.collection = await client.db().createCollection(collectionName);
+        this.indexFragments = await this.getIndexFragments();
+      } else {
+        throw ex;
+      }
+    }
+
+    this.watcher$ = fromEvent(this.collection.watch(), 'change');
+  }
 
   listenOnChanges() {
     return this.watcher$.pipe(
@@ -62,43 +79,6 @@ export class MongoDbService implements Connector {
       }
     }
     return 'GET';
-  }
-
-  async connect(config: ConnectorConfig) {
-    this.config = config;
-    try {
-      this.connection = await new MongoClient(config.url, {
-        useUnifiedTopology: true,
-        useNewUrlParser: true,
-      }).connect();
-
-      await this.resolveCollection();
-
-      this.watcher$ = fromEvent(this.collection.watch(), 'change');
-
-      Logger.log(`${config.name} connection established at url: ${config.url}`);
-      return this.connection;
-    } catch (ex) {
-      throw new Error(ex);
-    }
-  }
-
-  // TODO: MULTI TENANCY IS fuc**
-  //       How to resolve a collection? Non singleton services? 
-  async resolveCollection(req?: Request) {
-    const collName = await this.getCollectionName(req);
-    try {
-      this.collection = this.connection.db().collection(collName);
-      this.indexFragments = await this.getIndexFragments();
-    } catch (ex) {
-      if (this.config.createCollectionNotExisting && ex.code === 26) {
-        this.collection = await this.connection.db().createCollection(collName);
-        this.indexFragments = await this.getIndexFragments();
-      } else {
-        throw ex;
-      }
-    }
-    return collName;
   }
 
   async isIndex(fragment: any) {
@@ -238,13 +218,6 @@ export class MongoDbService implements Connector {
     });
 
     return result.value;
-  }
-
-  private async getCollectionName(req?: Request) {
-    if (_.isString(this.config.collection)) {
-      return this.config.collection as string;
-    }
-    return (await (this.config.collection as Function)(req)) as string;
   }
 
   private async getIndexFragments() {

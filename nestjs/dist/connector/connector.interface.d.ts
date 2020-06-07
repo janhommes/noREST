@@ -1,12 +1,17 @@
 import { ConnectorConfig } from './connector-config.interface';
-import { Request } from 'express';
 import { List } from './list.interface';
 import { Reference } from './reference.interface';
 import { Observable } from 'rxjs';
 import { Changeset } from '../websocket/changeset.interface';
+export interface ConnectorRequest {
+    url: string;
+    headers: {};
+}
+export interface ConnectorFactory {
+    connect(config: ConnectorConfig): Promise<any>;
+    resolveConnector(req: ConnectorRequest, config: ConnectorConfig): Promise<Connector>;
+}
 export interface Connector {
-    connect(config: ConnectorConfig): any;
-    resolveCollection(req: Request): any;
     isIndex(fragment: any): any;
     read(id: string): any;
     readByKey(fragment: string, key: string): any;

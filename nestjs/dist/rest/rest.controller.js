@@ -26,7 +26,7 @@ let RestController = RestController_1 = class RestController {
     constructor(connector, config) {
         this.config = config;
         Reflect.defineMetadata(constants_1.REFLECTION_NESTJS_CONTROLLER_PATH, config.path, RestController_1);
-        this.database = connector.database;
+        this.connectorFactory = connector.connectorFactory;
     }
     async list(request, skip = 0, limit = this.config.rest.defaultPageSize, orderBy) {
         if (this.config.fixed) {
@@ -133,8 +133,8 @@ let RestController = RestController_1 = class RestController {
         return this.delete(id, request);
     }
     async getDatabase(request) {
-        await this.database.resolveCollection(request);
-        return this.database;
+        const connector = await this.connectorFactory.resolveConnector(request, this.config.connector);
+        return connector;
     }
     async checkIfRefExist(data, request) {
         if (data[constants_1.DEFAULT_REFERENCE_DB_KEY]) {

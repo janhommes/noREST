@@ -15,7 +15,8 @@ import * as Ws from 'ws';
 import { NOREST_CONFIG_TOKEN } from '../common/constants';
 import { normalizeFragment } from '../common/normalize';
 import { Changeset } from './changeset.interface';
-import { Connector } from '../connector/connector.interface';
+import { Request } from 'express';
+import { ConnectorFactory } from '../connector/connector.interface';
 import { ConnectorService } from '../connector/connector.service';
 import { PrivateInterceptor } from '../auth/interceptors/private.interceptor';
 import { ReferenceInterceptor } from '../auth/interceptors/reference.interceptor';
@@ -25,7 +26,7 @@ import { NoRestConfig } from '../norest-config.interface';
 @UseInterceptors(PrivateInterceptor)
 @UseInterceptors(ReferenceInterceptor)
 export class WebsocketGateway implements OnGatewayConnection<Ws> {
-  private database: Connector;
+  private database: ConnectorFactory;
 
   @WebSocketServer()
   server: Ws.Server;
@@ -36,7 +37,7 @@ export class WebsocketGateway implements OnGatewayConnection<Ws> {
     private httpServerRef: HttpAdapterHost,
     private privateDataInterceptor: PrivateInterceptor,
   ) {
-    this.database = connector.database;
+    this.database = connector.connectorFactory;
   }
 
   async handleConnection(client: Ws, msg: http.IncomingMessage) {
@@ -55,7 +56,7 @@ export class WebsocketGateway implements OnGatewayConnection<Ws> {
   }
 
   @SubscribeMessage('subscribe')
-  onEvent(client: Ws, eventDate: any): Observable<any> {
+  async onEvent(client: Ws, eventDate: any): Promise<Observable<any>> {
     const { channel, headers } = eventDate;
 
     // TODO: allow relative urls by getting the url from here:
@@ -74,7 +75,10 @@ export class WebsocketGateway implements OnGatewayConnection<Ws> {
 
     delete headers.upgrade;
 
-    this.database.resolveCollection(eventDate);
+    const dbClient = await this.database.resolveConnector(
+      { url: url.toString(), headers },
+      this.noRestConfig.connector,
+    );
 
     return from(fetch(channel, { headers })).pipe(
       mergeMap((res: Response) => res.json()),
@@ -94,7 +98,7 @@ export class WebsocketGateway implements OnGatewayConnection<Ws> {
         if (response.statusCode) {
           return of(response);
         }
-        return this.database
+        return dbClient
           .listenOnChanges(normalizeFragment(fragment), id, ref)
           .pipe(
             startWith({}),

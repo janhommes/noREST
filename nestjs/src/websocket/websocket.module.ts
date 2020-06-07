@@ -4,7 +4,7 @@ import { AuthModule } from '../auth/auth.module';
 import { ConnectorModule } from '../connector/connector.module';
 import { ConfigModule } from '../config/config.module';
 import { NoRestConfig } from '../norest-config.interface';
-import { Connector } from '../connector/connector.interface';
+import { ConnectorFactory } from '../connector/connector.interface';
 
 @Module({
   imports: [AuthModule, ConnectorModule, ConfigModule],
@@ -13,7 +13,7 @@ import { Connector } from '../connector/connector.interface';
 export class WebsocketModule {
   static async register(
     config: NoRestConfig,
-    connector: Connector,
+    connector: ConnectorFactory,
   ): Promise<DynamicModule> {
     return {
       module: WebsocketModule,

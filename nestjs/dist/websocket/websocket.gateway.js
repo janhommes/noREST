@@ -30,7 +30,7 @@ let WebsocketGateway = class WebsocketGateway {
         this.noRestConfig = noRestConfig;
         this.httpServerRef = httpServerRef;
         this.privateDataInterceptor = privateDataInterceptor;
-        this.database = connector.database;
+        this.database = connector.connectorFactory;
     }
     async handleConnection(client, msg) {
         const url = new URL(msg.url, `http://${msg.headers.host}`);
@@ -45,7 +45,7 @@ let WebsocketGateway = class WebsocketGateway {
             client.emit('message', JSON.stringify(sub));
         });
     }
-    onEvent(client, eventDate) {
+    async onEvent(client, eventDate) {
         const { channel, headers } = eventDate;
         const url = new URL(channel, `http://${headers.host}`);
         const pathParts = url.pathname.split('/');
@@ -54,7 +54,7 @@ let WebsocketGateway = class WebsocketGateway {
         const id = pathParts[baseIndex + 2];
         const ref = pathParts[baseIndex + 3];
         delete headers.upgrade;
-        this.database.resolveCollection(eventDate);
+        const dbClient = await this.database.resolveConnector({ url: url.toString(), headers }, this.noRestConfig.connector);
         return rxjs_1.from(fetch(channel, { headers })).pipe(operators_1.mergeMap((res) => res.json()), operators_1.map(response => {
             if (response.statusCode) {
                 return Object.assign(Object.assign({}, response), { method: 'GET', channel });
@@ -64,7 +64,7 @@ let WebsocketGateway = class WebsocketGateway {
             if (response.statusCode) {
                 return rxjs_1.of(response);
             }
-            return this.database
+            return dbClient
                 .listenOnChanges(normalize_1.normalizeFragment(fragment), id, ref)
                 .pipe(operators_1.startWith({}), operators_1.map((change) => {
                 if (response._id && response._id === change._id) {
@@ -122,7 +122,7 @@ __decorate([
     websockets_1.SubscribeMessage('subscribe'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Ws, Object]),
-    __metadata("design:returntype", rxjs_1.Observable)
+    __metadata("design:returntype", Promise)
 ], WebsocketGateway.prototype, "onEvent", null);
 WebsocketGateway = __decorate([
     websockets_1.WebSocketGateway(),

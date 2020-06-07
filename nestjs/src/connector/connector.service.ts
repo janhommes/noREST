@@ -1,13 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DB_CONNECTOR_TOKEN } from '../common/constants';
-import { Connector } from './connector.interface';
+import { Connector, ConnectorFactory } from './connector.interface';
 
 @Injectable({})
 export class ConnectorService {
-  public database: Connector;
+  public connectorFactory: ConnectorFactory;
   constructor(
-    @Inject(DB_CONNECTOR_TOKEN) connector: Connector,
+    @Inject(DB_CONNECTOR_TOKEN) factory: ConnectorFactory,
   ) {
-    this.database = connector;
+    this.connectorFactory = factory;
   }
 }

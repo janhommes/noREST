@@ -15,8 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const constants_1 = require("../common/constants");
 let ConnectorService = class ConnectorService {
-    constructor(connector) {
-        this.database = connector;
+    constructor(factory) {
+        this.connectorFactory = factory;
     }
 };
 ConnectorService = __decorate([

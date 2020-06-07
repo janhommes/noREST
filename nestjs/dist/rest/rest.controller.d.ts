@@ -3,7 +3,7 @@ import { ConnectorService } from '../connector/connector.service';
 import { NoRestConfig } from '../norest-config.interface';
 export declare class RestController {
     private config;
-    private database;
+    private connectorFactory;
     constructor(connector: ConnectorService, config: NoRestConfig);
     list(request: Request, skip?: string | number, limit?: string | number, orderBy?: any): Promise<import("../public_api").List>;
     listByFragmentOrDetailById(fragmentOrId: any, request: any, skip?: number, limit?: number, orderBy?: any): Promise<any>;

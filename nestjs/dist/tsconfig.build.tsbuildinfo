@@ -1882,12 +1882,8 @@
         "signature": "13b7c8d645b935c40966d6fe1b73205b37b20c4e9518efb32a83ab24d5b0c625"
       },
       "../src/connector/connector.interface.ts": {
-        "version": "685437a3dd73937a4a26dd069550dda8fd6d66acdbc809369891e2d4be5950cc",
-        "signature": "df1d6a9077aa22f5d3a8cc4e63394ae2d2b0236c9151ad7b18e106195d08519f"
-      },
-      "../src/connector/mock.service.ts": {
-        "version": "c5207ea1dc5bf004f9da4e07e93509198b86bed20652333382a7aade7cfd651b",
-        "signature": "e566c1c186ebe05ec783ac43110014b90e5daeb4cc5cc2b7be74a0e883fc5689"
+        "version": "94a97036196e2dfebc729ef476d6052ce0797062bdabbebe80830f2aed5c6628",
+        "signature": "476b08adb37bc71f231cbbb3e751a174d5cd4f53695b99a2fc7ee4379014dab6"
       },
       "../../node_modules/@types/bson/index.d.ts": {
         "version": "3994ebfd11faa4018d8e1b879190046588f41f5cd60438e642ca39a705c726be",
@@ -1898,8 +1894,48 @@
         "signature": "f6944407f076761718242252bc9965b5a7f4c5dddedd32046c282e3ea2fe03ee"
       },
       "../src/connector/mongodb.service.ts": {
-        "version": "0f4217308185749ee641198b5a9bc05981f7546b6a85199b406dccc2806ec31c",
-        "signature": "4322f1872743fc207cdfd8d177f4212978eff0a7792d6e8d46072c95ab672d0b"
+        "version": "f5a53ead09f065c51b699d4de4e1807d4b2ffcede56a263c47a00417bb7baaa9",
+        "signature": "952f00e520bbf0ea8865d1eebd24316fdd4e0b154a1d23f35b63c0e40f737765"
+      },
+      "../src/connector/mongodb.factory.ts": {
+        "version": "846ad40c78fa44801622c06a96d45f7a3971f400c47002dd459507ad880d7a89",
+        "signature": "d3b22ae579738a5d6e7f5b017fbdb52f6c092209256c99b4ab73d780b1c2c1f6"
+      },
+      "../src/common/resolver.ts": {
+        "version": "4d23c24e87f0fce53e5d111ce02e7231fa413118d7ef2bfb67eefae638d422a8",
+        "signature": "3676902774049b5b3b85d4622b6f20241c3263761694dce81d1772ed320ae4d7"
+      },
+      "../src/connector/connector.service.ts": {
+        "version": "e7792db4f02d1916fdc8b4827fe269eafc0d7b2dce9e7c98d39e07c56edcc619",
+        "signature": "040341a538184677d3c4ce217851989272fd965f16b2e504e26980bb5e17989a"
+      },
+      "../src/connector/connector.module.ts": {
+        "version": "d1fb9dfa2dc861164c8709aeb08b50bcfa2330f1e3ae4ff2caa9f3c1f5036c08",
+        "signature": "b34bbaadc0fd7e9dac278cf70877f175eb96c9e2966fb497ec87ee5993b2f0af"
+      },
+      "../src/rest/rest.controller.ts": {
+        "version": "cb17d5d4f9cad976e41d16d8f49370542883e072442a8a2af859a36146ce79ac",
+        "signature": "7af68146e148ec01166b43daca94f27649c7c832598338620d975e188bfa7393"
+      },
+      "../src/rest/rest.module.ts": {
+        "version": "2f20552f213979b32fefecbc373c28c806dc7eb6f163c6c953c12c69a2504127",
+        "signature": "e26c5378d2a49564e076925a35f5a9ad443f8a2fd3fc250eb55c7cea4e96202d"
+      },
+      "../src/websocket/websocket.gateway.ts": {
+        "version": "7ae45db064aa14cc9888897a4203b439ae062446b026a4737039fc7b213c2afc",
+        "signature": "302271d474d06e703fb93df0981db90cf1bc853c335a0571718451c20850b216"
+      },
+      "../src/websocket/websocket.module.ts": {
+        "version": "df409f5bf2d3e9001dc9a8265d23d667c0c6a0e46a1699c7d8cb77727dd6e533",
+        "signature": "af116ba3581bde9cf294353c145a77f017d2793f9618c04d07fe9394ea436339"
+      },
+      "../src/norest.module.ts": {
+        "version": "c49c606c62340b0e2d655e8ae14ed8b89f8737705f81dd0e1fc94718a8c6224c",
+        "signature": "3c9dfe96f827169a42f3a3f6d4f059bab61ba5b006ec0d0b2294283b3df89417"
+      },
+      "../src/main.ts": {
+        "version": "666ea6b71f03ae29389841ab1ce72ac6673f20a36021033a7520beea5e56bf4c",
+        "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
       },
       "../../node_modules/deep-object-diff/index.d.ts": {
         "version": "85393a11d2f104b3254a9ee06f7fe036cb6efd10d3296daeb3fbe2ea64aa0b82",
@@ -1909,41 +1945,9 @@
         "version": "e34383c5717de142b619790aaca927127dd9ff7d08ef99bbbc11365a7762a0eb",
         "signature": "2ce75927396ff8190c82931c27b4a8952c11e36f7a7d9526f46639d54bf3b5a0"
       },
-      "../src/common/resolver.ts": {
-        "version": "b89146bc478db795d47b5844150080eac3f033b33174ebbe6ab54c298c54a4d0",
-        "signature": "63302e433c8143cc58e365726afb8393700967c50c640c82a352c38d2c720bfe"
-      },
-      "../src/connector/connector.service.ts": {
-        "version": "5a6714e020c162bd72055b46721b8464e60ec899e597b5a38b4aaa88f2509aaf",
-        "signature": "067ed509d98b68e5c4b46b0a6cec3b9b9fba7a69bbc35874433e55c5d5543ced"
-      },
-      "../src/connector/connector.module.ts": {
-        "version": "5c48a1f44c8765cc193f8437f78f58d4a9b1d9fb98ec724fcf79774e3da3084f",
-        "signature": "5482e96aa2e4ff68b55abb8728ca020c9f232f8c5fb83fa1b6aa322374213323"
-      },
-      "../src/rest/rest.controller.ts": {
-        "version": "1ea4f6fa4a415dfc51a7840b2691810e2c9d776a6b920ee36e94344a35ffd2a3",
-        "signature": "747a2f4f31ed0169d79ae05423bb84ed73f113cb31017faf4501381d1e4c51d4"
-      },
-      "../src/rest/rest.module.ts": {
-        "version": "4205e833d0bb8bf12a24ee883cd3ec9a4baf637733c2908c65c03384d60e6c59",
-        "signature": "079f0786f6b42b105ee757d9d27b1f97c72361ac27fe3f47ab591b443cd515ff"
-      },
-      "../src/websocket/websocket.gateway.ts": {
-        "version": "2eeb312a815d7c5d33947186b2b2d2b9e593275187c3e261740d3c5eaf40d241",
-        "signature": "ed6efe20c426cd4ef861afb1d93f4d11900ff57f811d2fdc8a51a0ab09e28663"
-      },
-      "../src/websocket/websocket.module.ts": {
-        "version": "ef1fab4f87980393d7f7b27c938a8899ce490ed5f075259340edd2945c6d5b86",
-        "signature": "6a6c685f862d554fd54d15eb4824df1396ec77dc7dfe94c4a5ec572513714a3b"
-      },
-      "../src/norest.module.ts": {
-        "version": "f922215b228710665c5adc6cac9811d39564b9efcec2c4c67bb06cad8893d2ee",
-        "signature": "c5cd60eabd8c5f61ed6b0be9b02368b88f70fbac0c072cbcea07f731e603647f"
-      },
-      "../src/main.ts": {
-        "version": "666ea6b71f03ae29389841ab1ce72ac6673f20a36021033a7520beea5e56bf4c",
-        "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      "../src/connector/mock.service.ts": {
+        "version": "c5207ea1dc5bf004f9da4e07e93509198b86bed20652333382a7aade7cfd651b",
+        "signature": "e566c1c186ebe05ec783ac43110014b90e5daeb4cc5cc2b7be74a0e883fc5689"
       },
       "../src/public_api.ts": {
         "version": "f58ae59b6c6a418b6ba329949af0713ea986d2045a62c8239b310cde7e5a7877",
@@ -1978,7 +1982,7 @@
         "signature": "0a33b8bff876368beef794f5f08e8221103efa394f9e0e27e19f557a8cdaa0a0"
       },
       "../src/tests/api.controller/_prepare.ts": {
-        "version": "bc01cefae089db6e0933059534f9dd55d86e3e85bb9099f7d4e0a8a81ec5017f",
+        "version": "42d2ab7e86c608748b3353def69193a09c861f0709f9b37516c03d4fbed94e92",
         "signature": "0a20492dfdbc012abf984b16b1740fbe61f30a67e1a469a82bf9358af19f10e3"
       },
       "../../node_modules/@types/anymatch/index.d.ts": {
@@ -6467,22 +6471,6 @@
         "../../node_modules/@types/node/util.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "../src/connector/mock.service.ts": [
-        "../../node_modules/@nestjs/common/index.d.ts",
-        "../src/connector/connector.interface.ts",
-        "../src/connector/connector-config.interface.ts",
-        "../src/common/messages.ts",
-        "../src/connector/reference.interface.ts",
-        "../src/connector/list.interface.ts",
-        "../../node_modules/rxjs/index.d.ts",
-        "../../node_modules/rxjs/operators/index.d.ts",
-        "../src/websocket/changeset.interface.ts",
-        "../../node_modules/@types/node/fs.d.ts",
-        "../../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../../node_modules/@types/graceful-fs/index.d.ts",
-        "../../node_modules/@types/node/util.d.ts",
-        "../../node_modules/@types/node/ts3.2/util.d.ts"
-      ],
       "../../node_modules/@types/bson/index.d.ts": [
         "../../node_modules/@types/node/ts3.7/index.d.ts",
         "../../node_modules/@types/node/fs.d.ts",
@@ -6505,7 +6493,6 @@
       ],
       "../src/connector/mongodb.service.ts": [
         "../../node_modules/@nestjs/common/index.d.ts",
-        "../../node_modules/@types/express/index.d.ts",
         "../../node_modules/@types/mongodb/index.d.ts",
         "../../node_modules/rxjs/index.d.ts",
         "../../node_modules/rxjs/operators/index.d.ts",
@@ -6521,40 +6508,23 @@
         "../../node_modules/@types/node/util.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "../../node_modules/deep-object-diff/index.d.ts": [
-        "../../node_modules/@types/node/fs.d.ts",
-        "../../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../../node_modules/@types/graceful-fs/index.d.ts",
-        "../../node_modules/@types/node/util.d.ts",
-        "../../node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "../src/connector/file.service.ts": [
+      "../src/connector/mongodb.factory.ts": [
+        "../src/connector/connector.interface.ts",
+        "../src/connector/connector-config.interface.ts",
         "../../node_modules/@nestjs/common/index.d.ts",
-        "../../node_modules/deep-object-diff/index.d.ts",
+        "../../node_modules/@types/mongodb/index.d.ts",
+        "../src/connector/mongodb.service.ts",
         "../../node_modules/@types/express/index.d.ts",
         "../../node_modules/@types/node/fs.d.ts",
-        "../../node_modules/@types/mongodb/index.d.ts",
-        "../../node_modules/@types/node/path.d.ts",
-        "../../node_modules/rxjs/index.d.ts",
-        "../../node_modules/rxjs/operators/index.d.ts",
-        "../../node_modules/@types/node/util.d.ts",
-        "../src/common/messages.ts",
-        "../src/websocket/changeset.interface.ts",
-        "../src/connector/connector-config.interface.ts",
-        "../src/connector/connector.interface.ts",
-        "../src/connector/list.interface.ts",
-        "../src/connector/reference.interface.ts",
-        "../src/common/constants.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/graceful-fs/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "../src/common/resolver.ts": [
         "../src/connector/connector-type.enum.ts",
-        "../src/connector/mock.service.ts",
-        "../src/connector/mongodb.service.ts",
-        "../src/connector/file.service.ts",
         "../src/connector/connector.interface.ts",
+        "../src/connector/mongodb.factory.ts",
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/graceful-fs/index.d.ts",
@@ -6629,6 +6599,7 @@
         "../src/common/constants.ts",
         "../src/common/normalize.ts",
         "../src/websocket/changeset.interface.ts",
+        "../../node_modules/@types/express/index.d.ts",
         "../src/connector/connector.interface.ts",
         "../src/connector/connector.service.ts",
         "../src/auth/interceptors/private.interceptor.ts",
@@ -6675,6 +6646,50 @@
         "../../node_modules/@nestjs/core/index.d.ts",
         "../../node_modules/@nestjs/platform-ws/index.d.ts",
         "../src/norest.module.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/graceful-fs/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../../node_modules/deep-object-diff/index.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/graceful-fs/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../src/connector/file.service.ts": [
+        "../../node_modules/@nestjs/common/index.d.ts",
+        "../../node_modules/deep-object-diff/index.d.ts",
+        "../../node_modules/@types/express/index.d.ts",
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/mongodb/index.d.ts",
+        "../../node_modules/@types/node/path.d.ts",
+        "../../node_modules/rxjs/index.d.ts",
+        "../../node_modules/rxjs/operators/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../src/common/messages.ts",
+        "../src/websocket/changeset.interface.ts",
+        "../src/connector/connector-config.interface.ts",
+        "../src/connector/connector.interface.ts",
+        "../src/connector/list.interface.ts",
+        "../src/connector/reference.interface.ts",
+        "../src/common/constants.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/graceful-fs/index.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../src/connector/mock.service.ts": [
+        "../../node_modules/@nestjs/common/index.d.ts",
+        "../src/connector/connector.interface.ts",
+        "../src/connector/connector-config.interface.ts",
+        "../src/common/messages.ts",
+        "../src/connector/reference.interface.ts",
+        "../src/connector/list.interface.ts",
+        "../../node_modules/rxjs/index.d.ts",
+        "../../node_modules/rxjs/operators/index.d.ts",
+        "../src/websocket/changeset.interface.ts",
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
         "../../node_modules/@types/graceful-fs/index.d.ts",
@@ -11281,18 +11296,10 @@
       ],
       "../src/connector/connector.interface.ts": [
         "../src/connector/connector-config.interface.ts",
-        "../../node_modules/@types/express/index.d.ts",
         "../src/connector/list.interface.ts",
         "../src/connector/reference.interface.ts",
         "../../node_modules/rxjs/index.d.ts",
         "../src/websocket/changeset.interface.ts"
-      ],
-      "../src/connector/mock.service.ts": [
-        "../src/connector/connector-config.interface.ts",
-        "../src/connector/reference.interface.ts",
-        "../src/connector/list.interface.ts",
-        "../../node_modules/rxjs/index.d.ts",
-        "../src/connector/connector.interface.ts"
       ],
       "../../node_modules/@types/bson/index.d.ts": [
         "../../node_modules/@types/node/ts3.7/index.d.ts",
@@ -11315,25 +11322,14 @@
         "../../node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "../src/connector/mongodb.service.ts": [
-        "../src/connector/connector-config.interface.ts",
         "../../node_modules/@types/mongodb/index.d.ts",
-        "../../node_modules/@types/express/index.d.ts",
+        "../src/connector/connector-config.interface.ts",
         "../src/connector/reference.interface.ts",
         "../src/connector/connector.interface.ts"
       ],
-      "../../node_modules/deep-object-diff/index.d.ts": [
-        "../../node_modules/@types/node/fs.d.ts",
-        "../../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../../node_modules/@types/graceful-fs/index.d.ts",
-        "../../node_modules/@types/node/util.d.ts",
-        "../../node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "../src/connector/file.service.ts": [
-        "../../node_modules/@types/express/index.d.ts",
+      "../src/connector/mongodb.factory.ts": [
         "../src/connector/connector-config.interface.ts",
-        "../src/connector/reference.interface.ts",
-        "../src/connector/list.interface.ts",
-        "../../node_modules/rxjs/index.d.ts",
+        "../../node_modules/@types/express/index.d.ts",
         "../src/connector/connector.interface.ts"
       ],
       "../src/common/resolver.ts": [
@@ -11377,6 +11373,28 @@
         "../src/norest-config.interface.ts",
         "../src/connector/connector.interface.ts",
         "../../node_modules/@nestjs/common/index.d.ts"
+      ],
+      "../../node_modules/deep-object-diff/index.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/graceful-fs/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../src/connector/file.service.ts": [
+        "../../node_modules/@types/express/index.d.ts",
+        "../src/connector/connector-config.interface.ts",
+        "../src/connector/reference.interface.ts",
+        "../src/connector/list.interface.ts",
+        "../../node_modules/rxjs/index.d.ts",
+        "../src/connector/connector.interface.ts"
+      ],
+      "../src/connector/mock.service.ts": [
+        "../src/connector/connector-config.interface.ts",
+        "../src/connector/reference.interface.ts",
+        "../src/connector/list.interface.ts",
+        "../../node_modules/rxjs/index.d.ts",
+        "../src/connector/connector.interface.ts"
       ],
       "../src/public_api.ts": [
         "../src/auth/auth.guard.ts",
@@ -12262,11 +12280,9 @@
       "../src/connector/reference.interface.ts",
       "../src/websocket/changeset.interface.ts",
       "../src/connector/connector.interface.ts",
-      "../src/connector/mock.service.ts",
       "../../node_modules/@types/bson/index.d.ts",
       "../../node_modules/@types/mongodb/index.d.ts",
-      "../../node_modules/deep-object-diff/index.d.ts",
-      "../src/connector/file.service.ts",
+      "../src/connector/mongodb.factory.ts",
       "../src/common/resolver.ts",
       "../src/connector/connector.service.ts",
       "../src/connector/connector.module.ts",
@@ -12276,6 +12292,9 @@
       "../src/websocket/websocket.module.ts",
       "../src/norest.module.ts",
       "../src/main.ts",
+      "../../node_modules/deep-object-diff/index.d.ts",
+      "../src/connector/file.service.ts",
+      "../src/connector/mock.service.ts",
       "../src/public_api.ts",
       "../../node_modules/@nestjs/testing/interfaces/override-by-factory-options.interface.d.ts",
       "../../node_modules/@nestjs/testing/testing-module.d.ts",
