@@ -34,7 +34,10 @@ import {
   normalizeReference,
   normalizeSkipLimit,
 } from '../common/normalize';
-import { Connector, ConnectorFactory } from '../connector/connector.interface';
+import {
+  ConnectorFactory,
+  ConnectorRequest,
+} from '../connector/connector.interface';
 import { ConnectorService } from '../connector/connector.service';
 import { NoRestConfig } from '../norest-config.interface';
 
@@ -255,9 +258,15 @@ export class RestController {
     return this.delete(id, request);
   }
 
-  private async getDatabase(request: Request) {
+  private async getDatabase(req: Request) {
+    const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+    const connectorReq = {
+      url: fullUrl,
+      headers: req.headers
+    } as ConnectorRequest;
+
     const connector = await this.connectorFactory.resolveConnector(
-      request,
+      connectorReq,
       this.config.connector,
     );
     return connector;

@@ -5,12 +5,13 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  WsException,
 } from '@nestjs/websockets';
 import * as http from 'http';
 import { _ } from 'lodash';
 import * as fetch from 'node-fetch';
 import { from, Observable, of } from 'rxjs';
-import { map, mergeMap, startWith } from 'rxjs/operators';
+import { map, mergeMap, startWith, catchError } from 'rxjs/operators';
 import * as Ws from 'ws';
 import { NOREST_CONFIG_TOKEN } from '../common/constants';
 import { normalizeFragment } from '../common/normalize';
@@ -74,11 +75,19 @@ export class WebsocketGateway implements OnGatewayConnection<Ws> {
     const ref = pathParts[baseIndex + 3];
 
     delete headers.upgrade;
-
-    const dbClient = await this.database.resolveConnector(
-      { url: url.toString(), headers },
-      this.noRestConfig.connector,
-    );
+    let dbClient;
+    try {
+      dbClient = await this.database.resolveConnector(
+        {
+          url: url.toString(),
+          headers,
+        },
+        this.noRestConfig.connector,
+      );
+    } catch (ex) {
+      delete ex.message;
+      return { ...ex, method: 'GET', channel };
+    }
 
     return from(fetch(channel, { headers })).pipe(
       mergeMap((res: Response) => res.json()),

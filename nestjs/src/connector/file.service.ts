@@ -28,77 +28,60 @@ export class FileService implements Connector {
   private config: ConnectorConfig;
   private watcher$ = new BehaviorSubject(null);
 
-  private async getCollectionName(req?: Request) {
-    if (_.isString(this.config.collection)) {
-      return this.config.collection as string;
-    }
-    return (await (this.config.collection as Function)(req)) as string;
-  }
 
   async getData() {
-    const path = await this.resolveCollection();
-    return this.cachedData[path];
+    return this.cachedData[this.path];
   }
 
   async saveData(data) {
-    // TODO: req is not passed to this function
-    const collName = await this.getCollectionName();
-    const path = resolve(this.path, collName);
-    await this._writeFile(path, JSON.stringify(data));
+    await this._writeFile(this.path, JSON.stringify(data));
   }
 
-  async resolveCollection(req?: Request) {
-    const collName = await this.getCollectionName(req);
-    const path = resolve(this.path, collName);
+  async init(config, collName) {
+    this.config = config;
+    const path = this.config.path || '.';
+    if (isAbsolute(path)) {
+      this.path = resolve(path, collName);
+    } else {
+      this.path = resolve(process.cwd(), path, collName);
+    }
 
-    if (this.watchers[path]) {
-      return path;
+    if (this.watchers[this.path]) {
+      return this.path;
     }
 
     const _exsists = promisify(exists);
     let data = [];
-    if (!(await _exsists(path))) {
-      await this._writeFile(path, '[]');
+    if (!(await _exsists(this.path))) {
+      await this._writeFile(this.path, '[]');
     } else {
       try {
-        const fileData = await this._readFile(path, 'utf8');
+        const fileData = await this._readFile(this.path, 'utf8');
         data = JSON.parse(fileData);
       } catch (ex) {
-        throw new Error(`Failed to load file: ${path}`);
+        throw new Error(`Failed to load file: ${this.path}`);
       }
     }
-    this.cachedData[path] = data;
+    this.cachedData[this.path] = data;
 
-    this.watchers[path] = watchFile(
-      path,
+    this.watchers[this.path] = watchFile(
+      this.path,
       { interval: this.FILE_WATCH_INTERVAL },
       () => {
-        this._readFile(path, 'utf8').then(d => {
+        this._readFile(this.path, 'utf8').then(d => {
           const json = JSON.parse(d);
-          const changes = detailedDiff(this.cachedData[path], json);
+          const changes = detailedDiff(this.cachedData[this.path], json);
           this.watcher$.next({
             changes,
             data: json,
-            origin: this.cachedData[path],
+            origin: this.cachedData[this.path],
           });
-          this.cachedData[path] = json;
+          this.cachedData[this.path] = json;
         });
       },
     );
 
-    return path;
-  }
-
-  async connect(config: ConnectorConfig) {
-    this.config = config;
-    const path = this.config.path || '.';
-    if (isAbsolute(path)) {
-      this.path = path;
-    } else {
-      this.path = resolve(__dirname, path);
-    }
-    await this.resolveCollection();
-    Logger.log(`${config.name} connection established.`);
+    return this.path;
   }
 
   private mapOperationType(

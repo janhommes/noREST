@@ -62,7 +62,7 @@ GET /featured
 }]
 ```
 
-The frontend engineers can start right away implementing that feature and align the back-office frontend (to allow adding the fragment) and the store front website to show the featured products. All **without any backend deployment**.
+The frontend engineers can start right away implementing the feature and align the back-office application (to allow adding the fragment) and the store front website to show the featured products. All **without any backend deployment**.
 
 > The index fragment is called **index** fragment, as database connector automatically apply a index for fast resolving the data. Also the fragment is only visible if you are authenticated (read more about visibility in the Concept -> authentication chapter).
 
@@ -135,11 +135,11 @@ To give certain users certain access to certain endpoints a `crudo` entry can be
 ```
 
 **Note**:
- - By default any authenticated user has CRUD rights to all endpoints and you must opt-out to revoke the rights. So if there is another endpoint called products, the user foo is allow to create, read, update and delete items on this endpoint. It is a good stategy to change that strategy in the finalizing step of the API.
+ - By default any authenticated user has full CRUD rights to all endpoints and you must opt-out to revoke the rights. So if there is another endpoint called products, the user foo is allow to create, read, update and delete items on this endpoint. It is a good stategy to change that strategy in the finalizing step of the API.
  - Read in this case allows to read even the private payload of a response.
 
 ## Realtime (websocket)
-To get realtime events, each noREST implementation implement websockets. These websocket are just read streams (updates, delete and additions can only made via http). Following an example on how to connect to 
+To get realtime events, each noREST implementation implement websockets. These websocket are just read streams (updates, delete and additions can only made via http). Following an example on how to connect to a socket:
 
 ```javascript
 let socket = new WebSocket('ws://localhost:3030/api/products');
@@ -156,7 +156,7 @@ The returned message then is equal to the http result and gets pushed on each ch
 As mentioned before, noREST is intended to be used for rapid development. However, noREST supports a `fixed` mode which disallow to add new index fragments to the API.
 
 ## GraphQL (tbd)
-A GraphQL implementation is planed, but not yet done.
+A GraphQL support is planed, but not yet done.
 
 # Packages
 noREST is more meant as an paradigm, which could be implemented in any language. However to proof the paradigm we introduced a reference implementation in this repository and some tooling to help to get you started:
