@@ -6,6 +6,10 @@ const reqMock = {
   auth: {
     user: 'foo',
   },
+  protocol: 'http',
+  get() {
+    return 'localhost';
+  }
 };
 
 const sampleEntity = {

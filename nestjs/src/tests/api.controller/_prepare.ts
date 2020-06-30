@@ -16,6 +16,8 @@ import { MockService } from '../../connector/mock.service';
 import { MongoDbService } from '../../connector/mongodb.service';
 import { NoRestConfig } from '../../norest-config.interface';
 import { RestController } from '../../rest/rest.controller';
+import { MockFactory } from '../../connector/mock.factory';
+import { ConfigInitializerModule } from '../../config/config-initializer.module';
 
 export const createFakeData = async (
   restController: RestController,
@@ -115,6 +117,9 @@ export const prepare = async () => {
 
   const module = await Test.createTestingModule({
     controllers: [RestController],
+    imports: [
+      ConfigInitializerModule.register(config)
+    ],
     providers: [
       {
         provide: NOREST_CONFIG_TOKEN,
@@ -132,7 +137,7 @@ export const prepare = async () => {
       FileService,
       {
         provide: DB_CONNECTOR_TOKEN,
-        useExisting: MockService,
+        useFactory: () => new MockFactory(),
       },
       {
         provide: DB_CONNECTION_TOKEN,

@@ -6,6 +6,11 @@ const reqMock = {
   auth: {
     user: 'foo',
   },
+  protocol: 'http',
+  originalUrl: '/api',
+  get() {
+    return 'localhost:3030';
+  }
 };
 
 beforeAll(async () => {

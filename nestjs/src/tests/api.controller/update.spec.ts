@@ -6,6 +6,10 @@ const reqMock = {
   auth: {
     user: 'foo',
   },
+  protocol: 'http',
+  get() {
+    return 'localhost';
+  },
 };
 
 beforeAll(async () => {
@@ -34,7 +38,11 @@ describe('ApiController -> update() (PUT)', () => {
     await restController.create({ _id: 'foo2', '#_test': {} }, reqMock);
 
     // when
-    const result = await restController.update('foo2', { '#_bar': {} }, reqMock);
+    const result = await restController.update(
+      'foo2',
+      { '#_bar': {} },
+      reqMock,
+    );
 
     // then
     expect(result['#_bar']).toBeDefined();
@@ -169,6 +177,10 @@ describe('ApiController -> update() (PUT)', () => {
       {
         auth: {
           user: 'bar',
+        },
+        protocol: 'http',
+        get() {
+          return 'localhost';
         },
       },
     );
