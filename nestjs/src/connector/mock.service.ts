@@ -15,12 +15,8 @@ export class MockService implements Connector {
   private data = [];
   private watcher$: BehaviorSubject<Changeset> = new BehaviorSubject(null);
 
-  async resolveCollection() {
-    return 'mock';
-  }
-
-  connect(config: ConnectorConfig) {
-    Logger.log(`${config.name} connection established.`);
+  init(data) {
+    this.data = data;
   }
 
   isIndex(fragment: any) {

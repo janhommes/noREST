@@ -11,5 +11,6 @@ export enum Messages {
   VALIDATION_DUPLICATED_ID = 'Duplicated id',
   SKIP_QUERY_NO_POSITIVE_NUMBER = 'The skip and query parameter needs to be a positive number.',
   VALIDATION_ORDER = 'Invalid orderBy query parameter',
-  INVALID_JWT = 'The given authorization is not a valid JWT.'
+  INVALID_JWT = 'The given authorization is not a valid JWT.',
+  NO_COLLECTION = "Didn't find a collection. Use createCollectionNotExisting to create one automatically."
 }
