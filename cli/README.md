@@ -8,7 +8,7 @@ npm i @norest/cli -g
 
 # Getting started
 
-Spin up a default server:
+Spin up a default server (file system storage):
 
 ```
 norest
@@ -20,10 +20,10 @@ Or configure it to your needs:
 `-p`      = Which port to use (default: `3000`)
 `--fixed` = Set this to true, to disallow adding new index fragments (default: `false`).
 `--path`  = The base path to expose the rest api (default: `api`).
-`--websocket.<<prop>>` = All configurations for websocket.
-`--rest.<<prop>>`      = All configurations for the rest interface.
-`--auth.<<prop>>`      = All configurations for the authentication.
-`--connector.<<prop>>` = All configurations for the file or database connector.
+`--websocket.<<prop>>` = All [configurations for websocket](/blob/master/nestjs/src/websocket/websocket-config.interface.ts).
+`--rest.<<prop>>`      = All [configurations for the rest interface](/blob/master/nestjs/src/rest/rest-config.interface.ts).
+`--auth.<<prop>>`      = All [configurations for the authentication](/blob/master/nestjs/src/auth/auth-config.interface.ts).
+`--connector.<<prop>>` = All [configurations for the file or database connector](/blob/master/nestjs/nestjs/src/connector/connector-config.interface.ts).
 
 
 Example to start with a Mongo DB:
@@ -34,7 +34,7 @@ norest serve --connector.name mongodb --connector.url "mongodb://127.0.0.1:27017
 > Note: NoREST only works with mongodb Sharding, single mongodb nodes are not supported.
 
 ## Configuration file
-You could also create a .norestrc.json or yaml in the root directory and store the configuration there.
+You could also create a .norestrc.json, yaml or .js in the root directory and store/export the configuration there.
 ```
 {
   "connector": {

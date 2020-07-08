@@ -1,4 +1,9 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+} from '@nestjs/common';
 import { _ } from 'lodash';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -25,7 +30,9 @@ export class PrivateInterceptor implements NestInterceptor {
         if (!values.data) {
           return this.omit(values);
         }
-        values.data = values.data.map(value => this.omit(value));
+        values.data = this.omitWebsocketOrigin(values).data.map(value =>
+          this.omit(value),
+        );
         return values;
       }),
     );
@@ -35,5 +42,12 @@ export class PrivateInterceptor implements NestInterceptor {
     return _.omitBy(value, (val, key) =>
       key.startsWith(DEFAULT_INDEX_FRAGMENT_PREFIX),
     );
+  }
+
+  private omitWebsocketOrigin(values: any) {
+    if (_.get(values, '_.origin')) {
+      values._.origin = this.omit(values._.origin);
+    }
+    return values;
   }
 }

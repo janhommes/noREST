@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { _ } from 'lodash';
 import { Collection, MongoClient, ObjectId } from 'mongodb';
-import { fromEvent } from 'rxjs';
+import { fromEvent, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {
   DEFAULT_INDEX_FRAGMENT_PREFIX,
@@ -18,14 +18,15 @@ import { Reference } from './reference.interface';
 export class MongoDbService implements Connector {
   private collection: Collection;
   private indexFragments: string[] = [];
-  private watcher$;
+  private client: MongoClient;
 
   async init(
     client: MongoClient,
     collectionName: string,
-    config: ConnectorConfig,
+    config: ConnectorConfig
   ) {
     try {
+      this.client = client;
       this.collection = client.db().collection(collectionName);
       this.indexFragments = await this.getIndexFragments();
     } catch (ex) {
@@ -36,12 +37,15 @@ export class MongoDbService implements Connector {
         throw ex;
       }
     }
+  }
 
-    this.watcher$ = fromEvent(this.collection.watch(), 'change');
+  destroy() {
+    this.client.close();  
   }
 
   listenOnChanges() {
-    return this.watcher$.pipe(
+    const watcher$ = fromEvent(this.collection.watch(), 'change');
+    return watcher$.pipe(
       map(
         (change: any) =>
           ({
@@ -221,6 +225,7 @@ export class MongoDbService implements Connector {
   }
 
   private async getIndexFragments() {
+    // TODO: think of caching the indexes!
     return _.filter(await this.collection.indexes(), val =>
       val.name.startsWith(DEFAULT_INDEX_FRAGMENT_PREFIX),
     ).map(({ key }) => Object.keys(key)[0]);

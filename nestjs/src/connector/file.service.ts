@@ -24,13 +24,10 @@ export class FileService implements Connector {
   private cachedData = [];
   private _readFile = promisify(readFile);
   private _writeFile = promisify(writeFile);
-  private watchers = [];
   private config: ConnectorConfig;
-  private watcher$ = new BehaviorSubject(null);
-
 
   async getData() {
-    return this.cachedData[this.path];
+    return this.cachedData;
   }
 
   async saveData(data) {
@@ -46,10 +43,6 @@ export class FileService implements Connector {
       this.path = resolve(process.cwd(), path, collName);
     }
 
-    if (this.watchers[this.path]) {
-      return this.path;
-    }
-
     const _exsists = promisify(exists);
     let data = [];
     if (!(await _exsists(this.path))) {
@@ -62,26 +55,7 @@ export class FileService implements Connector {
         throw new Error(`Failed to load file: ${this.path}`);
       }
     }
-    this.cachedData[this.path] = data;
-
-    this.watchers[this.path] = watchFile(
-      this.path,
-      { interval: this.FILE_WATCH_INTERVAL },
-      () => {
-        this._readFile(this.path, 'utf8').then(d => {
-          const json = JSON.parse(d);
-          const changes = detailedDiff(this.cachedData[this.path], json);
-          this.watcher$.next({
-            changes,
-            data: json,
-            origin: this.cachedData[this.path],
-          });
-          this.cachedData[this.path] = json;
-        });
-      },
-    );
-
-    return this.path;
+    this.cachedData = data;
   }
 
   private mapOperationType(
@@ -96,6 +70,8 @@ export class FileService implements Connector {
       deletedIndexes.indexOf(index) > -1 &&
       updatedIndexes.indexOf(index) > -1
     ) {
+      // FIXME: sometimes (if the id is not changed) a PUT is
+      //        shown as PATCH.
       return 'PUT';
     } else if (updatedIndexes.indexOf(index) > -1) {
       return 'PATCH';
@@ -116,11 +92,6 @@ export class FileService implements Connector {
     const allData = await this.getData();
     allData.push(data);
     await this.saveData(allData);
-    this.watcher$.next({
-      method: 'POST',
-      data: data,
-      _id: data._id,
-    });
     return data;
   }
 
@@ -195,11 +166,6 @@ export class FileService implements Connector {
     data._id = id;
     allData[toReplaceIndex] = data;
     await this.saveData(allData);
-    this.watcher$.next({
-      method: partialData ? 'PATCH' : 'PUT',
-      data: data,
-      _id: data._id,
-    });
     return data;
   }
 
@@ -221,17 +187,26 @@ export class FileService implements Connector {
     });
 
     await this.saveData(allData);
-
-    this.watcher$.next({
-      method: 'DELETE',
-      data: toReplace,
-      _id: toReplace._id,
-    });
     return toReplace;
   }
 
   listenOnChanges(): Observable<any> {
-    return this.watcher$.pipe(
+    const watcher$ = new BehaviorSubject(null);
+    // TODO: add unsub!
+    watchFile(this.path, { interval: this.FILE_WATCH_INTERVAL }, () => {
+      this._readFile(this.path, 'utf8').then(d => {
+        const json = JSON.parse(d);
+        const changes = detailedDiff(this.cachedData, json);
+        watcher$.next({
+          changes,
+          data: json,
+          origin: this.cachedData,
+        });
+        this.cachedData = json;
+      });
+    });
+
+    return watcher$.pipe(
       filter(diff => diff),
       mergeMap(changesetOrChanges => {
         if (changesetOrChanges.changes) {

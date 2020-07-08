@@ -4,7 +4,7 @@ const URL = require('url').URL;
 
 module.exports = {
   connector: {
-    name: 'mock',
+    name: 'file',
     path: 'data',
     // url: 'mongodb://127.0.0.1:27017/test',
     collection: req => {

@@ -10,6 +10,9 @@ export interface ConnectorRequest {
   headers: {}
 }
 
+/**
+ * Used to create the connector on each request.
+ */
 export interface ConnectorFactory {
   /**
    * A function that can be used to connect to the

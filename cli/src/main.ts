@@ -2,13 +2,27 @@ import { NestFactory } from '@nestjs/core';
 import { WsAdapter } from '@nestjs/platform-ws';
 import { Command } from 'commander';
 import { NoRestConfig, NoRestModule } from '@norest/nestjs';
-import yargs = require('yargs');
+import * as _ from 'lodash';
+import { parse } from 'yargs';
 
 const program = new Command();
-let argv = process.argv;
-const parsed = yargs(argv.slice(2)).parse(argv);
+const argv: any[] = _.cloneDeep(process.argv).splice(2);
+const parsed =
+  argv.includes('--help') || argv.includes('-h') ? argv : parse(argv);
 const dotOptions: Partial<NoRestConfig> = {};
+const envOptions: Partial<NoRestConfig> = {};
 const enhancedOptionsName = ['connector', 'rest', 'auth', 'websocket'];
+const envKeys = Object.keys(process.env).filter(key =>
+  key.startsWith('NOREST_'),
+);
+
+envKeys.forEach(key => {
+  const value = process.env[key];
+  const configKey = _.tail(key.split('_'))
+    .map(k => _.camelCase(k))
+    .join('.');
+  _.set(envOptions, configKey, value);
+});
 
 async function bootstrap(port, config: NoRestConfig) {
   const app = await NestFactory.create(NoRestModule.register(config));
@@ -22,7 +36,7 @@ enhancedOptionsName.forEach(ns => {
     dotOptions[ns] = parsed[ns];
   }
 });
-argv = argv.filter(
+process.argv = process.argv.filter(
   item => !enhancedOptionsName.some(ns => item.match(new RegExp(`^--${ns}\.`))),
 );
 
@@ -50,11 +64,11 @@ program
     const config: NoRestConfig = {
       path: options.path,
       fixed: options.fixed,
-      connector: dotOptions.connector,
-      auth: dotOptions.auth,
-      websocket: dotOptions.websocket,
-      rest: dotOptions.rest,
+      connector: { ...envOptions.connector, ...dotOptions.connector },
+      auth: { ...envOptions.auth, ...dotOptions.auth },
+      websocket: { ...envOptions.websocket, ...dotOptions.websocket },
+      rest: { ...envOptions.rest, ...dotOptions.rest },
     };
     bootstrap(options.port || 3030, config);
   })
-  .parse(argv);
+  .parse(process.argv);
