@@ -9,10 +9,10 @@
     "clean": "rimraf **/node_modules **/dist node_modules",
     "build": "yarn workspace @norest/nestjs build && yarn workspace @norest/cli build",
     "watch:cli": "yarn workspace @norest/cli build -w",
-    "watch:nestjs": "yarn workspace @norest/nestjs build -w",
+    "watch:nestjs": "yarn workspace @norest/nestjs start:dev",
     "watch:documentation": "?",
     "start:cli": "yarn workspace @norest/cli start:dev",
-    "start:nestjs": "yarn workspace @norest/nestjs start:dev",
+    "start:nestjs": "yarn workspace @norest/nestjs start",
     "start:documentation": "?",
     "db:mongo": "docker start mongo && docker run -it --rm -p 8081:8081 --link mongo:mongo mongo-express"
   },

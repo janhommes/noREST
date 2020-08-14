@@ -91,7 +91,7 @@ POST /api/categories
   "id": 2
   "name": "Category",
   "#_categories": {}
-  "@_categories": [1]
+  "@_products": [1]
 }
 ```
 
@@ -135,7 +135,7 @@ To give certain users certain access to certain endpoints a `crudo` entry can be
 ```
 
 **Note**:
- - By default any authenticated user has full CRUD rights to all endpoints and you must opt-out to revoke the rights. So if there is another endpoint called products, the user foo is allow to create, read, update and delete items on this endpoint. It is a good stategy to change that strategy in the finalizing step of the API.
+ - By default any authenticated user has full CRUD rights to all endpoints and you must opt-out to revoke the rights. So if there is another endpoint called products, the user foo is allow to create, read, update and delete items on this endpoint. It is a good strategy to change that strategy in the finalizing step of the API.
  - Read in this case allows to read even the private payload of a response.
 
 ## Realtime (websocket)

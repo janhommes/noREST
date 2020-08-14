@@ -170,7 +170,7 @@ export class RestController {
     @Body() data,
     @Req() request,
   ) {
-    fragment = await this.checkIfFragmentExist(fragment, request);
+    fragment = normalizeFragment(fragment);
     data = this.attachFragmentIfNotSet(fragment, data);
     await this.checkIfFragmentsAreValid(data, request);
     return this.create(data, request);
@@ -353,7 +353,7 @@ export class RestController {
           throw new HttpException(Messages.API_FIXED, HttpStatus.FORBIDDEN);
         }
       }
-    }
+    } 
   }
 
   private async checkIfIdIsAKey(fragment: any, id: any, request: Request) {

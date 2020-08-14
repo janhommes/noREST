@@ -36,7 +36,7 @@ export class ReferenceInterceptor implements NestInterceptor {
         if (!_values.data) {
           return this.mapValues(_values);
         }
-        _values.data.map(value => this.mapValues(value));
+        _values.data = _values.data.map(value => this.mapValues(value));
         return _values;
       }),
     );

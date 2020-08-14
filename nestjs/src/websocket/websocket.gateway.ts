@@ -85,7 +85,7 @@ export class WebsocketGateway implements OnGatewayConnection<Ws> {
         this.noRestConfig.connector,
       );
     } catch (ex) {
-      delete ex.message;
+      delete ex.response;
       return { ...ex, method: 'GET', channel };
     }
 

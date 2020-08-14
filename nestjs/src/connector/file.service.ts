@@ -1,20 +1,20 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { detailedDiff } from 'deep-object-diff';
-import { Request } from 'express';
-import { exists, readFile, watchFile, writeFile } from 'fs';
+import { exists, readFile, writeFile } from 'fs';
+import * as chokidar from 'chokidar';
 import { _ } from 'lodash';
 import { ObjectID } from 'mongodb';
 import { isAbsolute, resolve } from 'path';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { filter, mergeMap } from 'rxjs/operators';
 import { promisify } from 'util';
+import { DEFAULT_REFERENCE_DB_KEY } from '../common/constants';
 import { Messages } from '../common/messages';
 import { Changeset } from '../websocket/changeset.interface';
 import { ConnectorConfig } from './connector-config.interface';
 import { Connector } from './connector.interface';
 import { List } from './list.interface';
 import { Reference } from './reference.interface';
-import { DEFAULT_REFERENCE_DB_KEY } from '../common/constants';
 
 @Injectable()
 export class FileService implements Connector {
@@ -45,7 +45,9 @@ export class FileService implements Connector {
 
     const _exsists = promisify(exists);
     let data = [];
-    if (!(await _exsists(this.path))) {
+    if (
+      !((await _exsists(this.path)) && this.config.createCollectionNotExisting)
+    ) {
       await this._writeFile(this.path, '[]');
     } else {
       try {
@@ -192,19 +194,24 @@ export class FileService implements Connector {
 
   listenOnChanges(): Observable<any> {
     const watcher$ = new BehaviorSubject(null);
-    // TODO: add unsub!
-    watchFile(this.path, { interval: this.FILE_WATCH_INTERVAL }, () => {
-      this._readFile(this.path, 'utf8').then(d => {
-        const json = JSON.parse(d);
-        const changes = detailedDiff(this.cachedData, json);
-        watcher$.next({
-          changes,
-          data: json,
-          origin: this.cachedData,
+    // TODO: add close() call!
+    chokidar
+      .watch(this.path, {
+        interval: this.FILE_WATCH_INTERVAL,
+        awaitWriteFinish: true,
+      })
+      .on('change', () => {
+        this._readFile(this.path, 'utf8').then(d => {
+          const json = JSON.parse(d);
+          const changes = detailedDiff(this.cachedData, json);
+          watcher$.next({
+            changes,
+            data: json,
+            origin: this.cachedData,
+          });
+          this.cachedData = json;
         });
-        this.cachedData = json;
       });
-    });
 
     return watcher$.pipe(
       filter(diff => diff),
