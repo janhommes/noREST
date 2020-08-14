@@ -1,0 +1,55 @@
+<div class="nr-welcome" fxLayout="column" fxLayoutAlign="space-around center">
+  <img src="../assets/logo.png" alt="noREST logo" />
+  <h1>
+    -- 👨🏻‍💻 Welcome to the <span class="nr-green-text">no</span>REST playground 👩🏻‍💻
+    --
+  </h1>
+  <div>
+    <p>
+      This <i>notonly.rest</i> webpage is the playground to try out the
+      reference implementation of <span class="nr-green-text">no</span>REST.
+      More information about the <span class="nr-green-text">no</span>REST
+      project can be found on its
+      <a href="https://github.com/janhommes/noREST">Github</a>
+      page.
+    </p>
+    <p>You have <strong>2 possible</strong> starting points:</p>
+    <ol>
+      <li>
+        Creating an playground with <i>pre-stored e-commerce sample data</i> is
+        the best way to explorer the functionalities of
+        <span class="nr-green-text">no</span>REST
+      </li>
+      <li>
+        An <i>empty playground</i> has no data stored yet and you can explorer
+        <span class="nr-green-text">no</span>REST from the ground.
+      </li>
+    </ol>
+
+    <p>
+      If you want to return to an existing playground, simply attach your
+      <i>nr-</i> key to the url:
+      <img
+        src="../assets/example.png"
+        alt="Where to put the API-KEY of no-rest"
+        class="nr-key-example"
+      />
+    </p>
+
+    <button
+      mat-raised-button
+      color="norest"
+      (click)="createPlayground(true)"
+      [disabled]="isLoading"
+    >
+      1. Create playground with sample-data
+    </button>
+    <button
+      mat-raised-button
+      (click)="createPlayground()"
+      [disabled]="isLoading"
+    >
+      2. Create empty playground
+    </button>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+.nr-example-description-button {
+  width: 220px;
+  text-align: left;
+  font-weight: normal;
+  font-size: inherit;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nr-example-execute-button {
+  position: absolute;
+  right: 12px;
+  width: 60px;
+  padding: 0px;
+  line-height: 36px;
+  font-weight: normal;
+  font-size: inherit;
+  font-size: 12px;
+}

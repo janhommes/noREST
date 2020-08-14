@@ -13,7 +13,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -23,6 +22,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { FormsModule } from '@angular/forms';
 import { HttpFormComponent } from './http-form/http-form.component';
@@ -32,9 +33,20 @@ import { FragmentListComponent } from './fragment-list/fragment-list.component';
 import { ExamplesComponent } from './examples/examples.component';
 import { RealtimeComponent } from './realtime/realtime.component';
 import { RealtimeDialogComponent } from './realtime-dialog/realtime-dialog.component';
+import { PlaygroundComponent } from './playground/playground.component';
+import { WizardComponent } from './wizard/wizard.component';
 
 @NgModule({
-  declarations: [AppComponent, HttpFormComponent, FragmentListComponent, ExamplesComponent, RealtimeComponent, RealtimeDialogComponent],
+  declarations: [
+    AppComponent,
+    HttpFormComponent,
+    FragmentListComponent,
+    ExamplesComponent,
+    RealtimeComponent,
+    RealtimeDialogComponent,
+    PlaygroundComponent,
+    WizardComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -60,6 +72,8 @@ import { RealtimeDialogComponent } from './realtime-dialog/realtime-dialog.compo
     MatCheckboxModule,
     MatSlideToggleModule,
     MatDialogModule,
+    MatSnackBarModule,
+    MatProgressBarModule,
     FlexLayoutModule,
     MonacoEditorModule.forRoot(),
   ],

@@ -1,0 +1,30 @@
+div.nr-welcome {
+  margin: 24px auto;
+  font-family: 'Courier New', Courier, monospace;
+  > img {
+    margin: 24px auto;
+  }
+  > div {
+    max-width: 400px;
+  }
+
+  .nr-key-example {
+    display: flex;
+    margin: 4px auto;
+    border: 8px solid #fff;
+    border-radius: 24px;
+    padding: 4px;
+  }
+
+  h1 {
+    font-family: 'Courier New', Courier, monospace;
+  }
+
+  button {
+    &:first-of-type {
+      color: #fff;
+    }
+    width: 100%;
+    margin: 12px 12px 0 12px;
+  }
+}

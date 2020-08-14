@@ -1,3 +1,6 @@
 export const environment = {
-  production: true
+  production: true,
+  wsUri: 'wss://notonly.rest/',
+  httpUri: 'https://notonly.rest/',
+  path: 'api'
 };

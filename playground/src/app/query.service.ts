@@ -1,18 +1,46 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Query } from './common/query.interface';
+import { environment } from '../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { first, tap, finalize, delay } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class QueryService {
   query$ = new BehaviorSubject<Query>(null);
+  isLoading = false;
+  private _key = '';
+
+  set key(value) {
+    this._key = value;
+  }
+
+  constructor(private http: HttpClient) {}
 
   trigger(query: Query) {
-    console.log(query);
     if (!query.options) {
       query.options = {};
     }
     this.query$.next(query);
+  }
+
+  execute(query: Query, isLoadingFinished = true) {
+    const req$ = this.http
+      .request(query.method, `${this.getBaseUrl()}/${query.uri}`, {
+        responseType: 'json',
+        body: query.body,
+        headers: query.options.headers,
+      })
+      .pipe(
+        tap(() => (this.isLoading = true)),
+        finalize(() => (this.isLoading = !isLoadingFinished)),
+      );
+    return req$;
+  }
+
+  getBaseUrl() {
+    return `/${environment.path}/${this._key}`;
   }
 }

@@ -16,7 +16,7 @@ export class ExamplesComponent {
       uri: 'products',
       options: {
         title: 'List all products',
-        description: `A simple GET to the /api/products endpoint. Returns all Products with the #_products fragment.`,
+        description: `A simple GET to the /api/nr-key/products endpoint. Returns all Products with the #_products fragment.`,
       },
     },
     {
@@ -30,10 +30,55 @@ export class ExamplesComponent {
     },
     {
       method: 'GET',
-      uri: 'products?limit=2&orderBy=rating asc',
+      uri: 'products?limit=2&orderBy=rating desc',
       options: {
         title: 'Read the top two highest rated products',
         description: 'Reads all products, orders them by rating and limits it to 2.',
+      },
+    },
+    {
+      method: 'POST',
+      uri: 'products',
+      body: JSON.stringify(
+        {
+          _id: 'barfoo',
+          name: 'barfoo',
+          description: 'barfoo enlightens your day',
+          price: 9.99,
+          rating: 0,
+          '#_products': {},
+        },
+        null,
+        2,
+      ),
+      options: {
+        useAuthentication: true,
+        title: 'Create a new barfoo product',
+        description: 'Creates a new product with the a custom id.',
+      },
+    },
+    {
+      method: 'GET',
+      uri: 'products/barfoo',
+      options: {
+        title: 'Get the barfoo product',
+        description: 'Reads the barfoo product.',
+      },
+    },
+    {
+      method: 'PATCH',
+      uri: 'products/barfoo',
+      body: JSON.stringify(
+        {
+          '#_featuredProducts': {},
+        },
+        null,
+        2,
+      ),
+      options: {
+        useAuthentication: true,
+        title: 'Update the barfoo product to be featured',
+        description: 'Updates the barfoo product to add a featuredProducts fragment, so that it can be reached via the /api/nr-key/featuredProducts endpoint.',
       },
     },
     {
@@ -46,56 +91,11 @@ export class ExamplesComponent {
     },
     {
       method: 'POST',
-      uri: 'products',
-      body: JSON.stringify(
-        {
-          _id: 'foo-id',
-          name: 'foo',
-          description: 'foo enlightens your day',
-          price: 9.99,
-          rating: 2,
-          '#_products': {},
-        },
-        null,
-        2,
-      ),
-      options: {
-        useAuthentication: true,
-        title: 'Create a foo product',
-        description: 'Creates a new product with the a custom id.',
-      },
-    },
-    {
-      method: 'GET',
-      uri: 'products/foo-id',
-      options: {
-        title: 'Get the foo product',
-        description: 'Reads the foo product.',
-      },
-    },
-    {
-      method: 'PATCH',
-      uri: 'products/foo-id',
-      body: JSON.stringify(
-        {
-          '#_featuredProducts': {},
-        },
-        null,
-        2,
-      ),
-      options: {
-        useAuthentication: true,
-        title: 'Update the foo product to be featured',
-        description: 'Updates the foo product to add a featuredProducts fragment, so that it can be reached via the /api/featuredProducts endpoint.',
-      },
-    },
-    {
-      method: 'POST',
       uri: 'categories',
       body: JSON.stringify(
         {
-          _id: 'bar-id',
-          name: 'bar',
+          _id: 'barfooCategory',
+          name: 'foobar',
           '#_categories': {},
         },
         null,
@@ -103,16 +103,16 @@ export class ExamplesComponent {
       ),
       options: {
         useAuthentication: true,
-        title: 'Create a bar category',
+        title: 'Create a foobar category',
         description: 'Creates a new category which can be referenced in the following PATCH requests.',
       },
     },
     {
       method: 'PATCH',
-      uri: 'categories/bar-id',
+      uri: 'categories/barfooCategory',
       body: JSON.stringify(
         {
-          '@_products': ['foo-id'],
+          '@_products': ['barfoo'],
         },
         null,
         2,
@@ -125,18 +125,18 @@ export class ExamplesComponent {
     },
     {
       method: 'GET',
-      uri: 'categories/bar-id/products',
+      uri: 'categories/barfooCategory/products',
       options: {
-        title: 'Read all products of the bar category',
+        title: 'Read all products of the barfoo category',
         description: 'Reads the references and returns the result.',
       },
     },
     {
       method: 'DELETE',
-      uri: 'products/foo-id',
+      uri: 'products/barfoo',
       options: {
         useAuthentication: true,
-        title: 'Delete the foo product',
+        title: 'Delete the barfoo product',
         description: 'Deletes the created foo product. All references should be removed as well.',
       },
     },
@@ -146,13 +146,13 @@ export class ExamplesComponent {
 
   triggerQuery(event: Event, example: Query) {
     event.stopPropagation();
-    example.execute = true;
+    example.autoExecute = true;
     this.queryService.trigger(example);
     return false;
   }
 
   prepareQuery(example: Query) {
-    example.execute = false;
+    example.autoExecute = false;
     this.queryService.trigger(example);
   }
 }

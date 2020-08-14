@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { QueryService } from '../query.service';
 import { Query } from '../common/query.interface';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
+import { filter } from 'rxjs/operators';
 import { MatTabGroup } from '@angular/material/tabs';
 import { Methods } from '../common/methods';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'nr-http-form',
@@ -57,35 +59,33 @@ export class HttpFormComponent implements OnInit {
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKb2huIERvZSJ9.oNawxKMyxc1U6LU2qeySPSLfOeeantwiPDrGuscs28U',
   };
 
-  constructor(private queryService: QueryService, private http: HttpClient) {}
+  constructor(
+    private queryService: QueryService,
+    private activeRoute: ActivatedRoute,
+  ) {
+    this.activeRoute.params.subscribe(({ key }) => {
+      if (key) {
+        this.queryService.key = key;
+      }
+    });
+  }
+
+  getUrl() {
+    return this.queryService.getBaseUrl();
+  }
 
   ngOnInit(): void {
-    this.queryService.query$.subscribe((query: Query) => {
+    this.queryService.query$.pipe(
+      filter(Boolean)
+    ).subscribe((query: Query) => {
       if (query) {
         const desc = this.generateDescription(query);
         this.method = query.method;
         this.uri = query.uri;
         this.options.useAuthentication = query.options.useAuthentication;
         this.body = query.body;
-        if (query.execute !== false) {
-          this.http
-            .request<{}>(query.method, `/api/${this.uri}`, {
-              responseType: 'json',
-              body: query.body,
-              headers: this.getHeaders(query),
-            })
-            .subscribe(
-              response => {
-                this.tabs.selectedIndex = 0;
-                this.status = 200;
-                this.response = desc + JSON.stringify(response, null, 2);
-              },
-              (error: HttpErrorResponse) => {
-                this.tabs.selectedIndex = 0;
-                this.status = error.status;
-                this.response = JSON.stringify(error.error, null, 2);
-              },
-            );
+        if (query.autoExecute !== false) {
+          this.query(desc);
         } else {
           this.response = desc;
         }
@@ -93,28 +93,38 @@ export class HttpFormComponent implements OnInit {
     });
   }
 
-  getHeaders(query: Query) {
-    if (!query.options.useAuthentication) {
+  query(desc = '') {
+    this.queryService
+      .execute({
+        method: this.method,
+        uri: this.uri,
+        body: this.body,
+        options: {
+          useAuthentication: this.options.useAuthentication,
+          headers: this.getHeaders(),
+        },
+      } as Query)
+      .toPromise()
+      .then(response => {
+        this.tabs.selectedIndex = 0;
+        this.status = 200;
+        this.response = desc + JSON.stringify(response, null, 2);
+      })
+      .catch((error: HttpErrorResponse) => {
+        this.tabs.selectedIndex = 0;
+        this.status = error.status;
+        this.response = JSON.stringify(error.error, null, 2);
+      });
+  }
+
+  private getHeaders() {
+    if (!this.options.useAuthentication) {
       return { 'Content-Type': 'application/json' };
-    }
-    if (query.options.headers) {
-      return query.options.headers;
     }
     return {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${this.options.jwt}`,
     };
-  }
-
-  query() {
-    this.queryService.trigger({
-      method: this.method,
-      uri: this.uri,
-      body: this.body,
-      options: {
-        useAuthentication: this.options.useAuthentication,
-      },
-    });
   }
 
   private generateDescription(query: Query) {
@@ -125,7 +135,7 @@ export class HttpFormComponent implements OnInit {
     return `/**\n * Example: ${query.options.title}\n * \n * ${spliced.join(
       '\n *',
     )} ${
-      query.execute === false
+      query.autoExecute === false
         ? `\n * \n * -> hit the ${query.method}-button to execute the request.`
         : ''
     }\n **/\n`;

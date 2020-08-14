@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 export interface Query {
   method: string;
   uri: string;
@@ -10,5 +12,5 @@ export interface Query {
       [key: string]: string;
     };
   };
-  execute?: boolean;
+  autoExecute?: boolean;
 }
