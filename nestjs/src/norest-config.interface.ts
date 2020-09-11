@@ -10,4 +10,5 @@ export interface NoRestConfig {
   websocket: WebsocketConfig;
   path: string;
   fixed: boolean;
+  cors: boolean|{};
 }

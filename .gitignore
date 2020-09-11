@@ -1,4 +1,5 @@
 # compiled output
+/cli/dist
 /dist
 /node_modules
 

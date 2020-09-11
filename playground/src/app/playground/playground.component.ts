@@ -7,4 +7,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PlaygroundComponent {
   menuOpen = true;
+
+  constructor() {
+    if (window.innerWidth < 800) {
+      this.menuOpen = false;
+    }
+  }
 }

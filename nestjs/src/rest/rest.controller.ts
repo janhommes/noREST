@@ -40,8 +40,10 @@ import {
 } from '../connector/connector.interface';
 import { ConnectorService } from '../connector/connector.service';
 import { NoRestConfig } from '../norest-config.interface';
+import { RequestResponseInterceptor } from './request-response.interceptor';
 
 @UseInterceptors(PrivateInterceptor)
+@UseInterceptors(RequestResponseInterceptor)
 @UseInterceptors(ReferenceInterceptor)
 @Controller({
   scope: Scope.DEFAULT,

@@ -1,3 +1,4 @@
+const { of } = require('rxjs');
 const HttpException = require('@nestjs/common').HttpException;
 const HttpStatus = require('@nestjs/common').HttpStatus;
 
@@ -6,7 +7,7 @@ module.exports = {
     name: 'file',
     path: 'data',
     collection: req => {
-      const match = req.url.match(new RegExp(/api\/(nr-.*?)\//));
+      const match = req.url.match(new RegExp(/\/(nr-.*?)\//));
       if (match && match.length > 0) {
         const apiKey = match[1];
 
@@ -29,6 +30,7 @@ module.exports = {
     cookieName: 'auth',
     userProperty: 'sub',
   },
-  path: 'api/:key/',
+  path: '/:key/',
   fixed: false,
+  cors: true,
 };

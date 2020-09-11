@@ -1,24 +1,52 @@
-form {
-  width: 100%;
-  background-color: #fff;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  height: 94px;
+@media only screen and (min-width: 801px) {
+  form {
+    width: 100%;
+    background-color: #fff;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    height: 94px;
 
-  .nr-method-selector {
-    flex: 1;
-    padding: 24px 4px 0px 24px;
+    .nr-method-selector {
+      flex: 1;
+      padding: 24px 4px 0px 24px;
+    }
+
+    .nr-resource-input {
+      flex: 4;
+      padding: 24px 4px 0px 0px;
+    }
+
+    .nr-resource-button {
+      flex: 1;
+      margin: 24px 24px 20px 0px;
+    }
   }
+}
 
-  .nr-resource-input {
-    flex: 4;
-    padding: 24px 4px 0px 0px;
-  }
+@media only screen and (max-width: 800px) {
+  form {
+    width: 100%;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
 
-  .nr-resource-button {
-    flex: 1;
-    margin: 24px 24px 20px 0px;
+    .nr-method-selector {
+      flex: 1;
+      padding: 4px 4px 0px 4px;
+      margin-bottom: -14px;
+    }
+
+    .nr-resource-input {
+      flex: 4;
+      padding: 4px 4px 0px 4px;
+      margin-bottom: -14px;
+    }
+
+    .nr-resource-button {
+      flex: 1;
+      margin: 4px 4px 8px 4px;
+    }
   }
 }
 

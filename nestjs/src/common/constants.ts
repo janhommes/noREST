@@ -43,4 +43,5 @@ export const DEFAULT_CONFIG: NoRestConfig = {
   rest: REST_CONFIG_DEFAULTS,
   path: 'api',
   fixed: false,
+  cors: true,
 };

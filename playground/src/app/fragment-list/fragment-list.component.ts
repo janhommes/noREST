@@ -20,7 +20,7 @@ export class FragmentListComponent {
   ) {
     const key = this.activeRoute.snapshot.params.key;
     const socket = new WebSocket(
-      `${environment.wsUri}${environment.path}/${key}/?limit=200&auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKb2huIERvZSJ9.oNawxKMyxc1U6LU2qeySPSLfOeeantwiPDrGuscs28U`,
+      `${this.queryService.getProtocol('ws')}${environment.wsUri}${environment.path}/${key}/?limit=200&auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKb2huIERvZSJ9.oNawxKMyxc1U6LU2qeySPSLfOeeantwiPDrGuscs28U`,
     );
     socket.onopen = () => {
       socket.onmessage = msg => {

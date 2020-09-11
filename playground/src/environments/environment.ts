@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  wsUri: 'ws://localhost:3030/',
-  httpUri: 'http://localhost:3030/',
-  path: 'api'
+  wsUri: '//localhost:3030',
+  httpUri: '//localhost:3030',
+  path: ''
 };
 
 /*

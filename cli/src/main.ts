@@ -25,7 +25,7 @@ envKeys.forEach(key => {
 });
 
 async function bootstrap(port, config: NoRestConfig) {
-  const app = await NestFactory.create(NoRestModule.register(config));
+  const app = await NestFactory.create(NoRestModule.register(config), { cors: config.cors });
   app.useWebSocketAdapter(new WsAdapter(app));
   await app.listen(port);
 }
@@ -53,6 +53,11 @@ program
     '--fixed',
     'Set this to true, to disallow adding new index fragments (default: `false`).',
   )
+  .option(
+    '--cors',
+    'Set this to false, to disable cors (default: `true`).',
+    true
+  )
   .option('--auth.<<prop>>', 'All configurations for the rest interface.')
   .option('--rest.<<prop>>', 'All configurations for the authentication.')
   .option('--websocket.<<prop>>', 'All configurations for websocket.')
@@ -64,11 +69,12 @@ program
     const config: NoRestConfig = {
       path: options.path,
       fixed: options.fixed,
+      cors: options.cors,
       connector: { ...envOptions.connector, ...dotOptions.connector },
       auth: { ...envOptions.auth, ...dotOptions.auth },
       websocket: { ...envOptions.websocket, ...dotOptions.websocket },
       rest: { ...envOptions.rest, ...dotOptions.rest },
-    };
+    };    
     bootstrap(options.port || 3030, config);
   })
   .parse(process.argv);

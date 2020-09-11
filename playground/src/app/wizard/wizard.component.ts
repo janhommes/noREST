@@ -29,8 +29,12 @@ export class WizardComponent {
     this.isLoading = true;
     const key = (+new Date()).toString(32);
     try {
+      console.log(`${this.queryService.getProtocol()}${environment.httpUri}${environment.path}/nr-${key}/`);
       const result = await this.http
-        .request<{ data: [] }>('GET', `/${environment.path}/nr-${key}/`)
+        .request<{ data: [] }>(
+          'GET',
+          `${this.queryService.getProtocol()}${environment.httpUri}${environment.path}/nr-${key}/`,
+        )
         .toPromise();
       if (result.data.length === 0) {
         await this.finalize(key, isCreateSampleData);
@@ -42,6 +46,7 @@ export class WizardComponent {
         duration: 4000,
         panelClass: 'warn',
       });
+      this.isLoading = false;
     }
   }
 
@@ -49,7 +54,7 @@ export class WizardComponent {
     if (isCreateSampleData) {
       this.queryService.key = `nr-${key}`;
       const queries = exampleData.map(example => {
-        return example.data.map((e) => {
+        return example.data.map(e => {
           const query: Query = {
             method: example.method,
             uri: example.url,

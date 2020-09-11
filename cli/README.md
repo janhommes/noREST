@@ -56,6 +56,8 @@ You could also create a .norestrc.json, yaml or .js in the root directory and st
 
 ```
 
+> By default the noREST nestjs implementation supports two connectors: mongoDB and file. File is the default configuration but only suitable for non high load.
+
 ## Env variables
 Each of the mentioned configuration can be also be parsed as a ENV var. Use the prefix `NOREST_` and replace dots with underscores then:
 

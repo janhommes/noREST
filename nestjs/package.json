@@ -27,6 +27,7 @@
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/platform-ws": "^7.0.5",
     "@nestjs/websockets": "^7.0.5",
+    "artillery": "^1.6.1",
     "chokidar": "^3.4.1",
     "cosmiconfig": "^6.0.0",
     "deep-object-diff": "^1.1.0",

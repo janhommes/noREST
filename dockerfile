@@ -1,3 +1,9 @@
-FROM mongo:latest
-RUN echo "rs.initiate();" > /docker-entrypoint-initdb.d/replica-init.js
-CMD [ "--replSet", "myrepl" ]
+FROM node:alpine
+
+RUN mkdir norest
+WORKDIR /norest
+
+ADD . /norest
+COPY ./nestjs/norest.config.js ./norest.config.js
+
+CMD  ["npx", "norest"]

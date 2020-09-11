@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Query } from './common/query.interface';
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { first, tap, finalize, delay } from 'rxjs/operators';
+import { tap, finalize} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -41,6 +41,13 @@ export class QueryService {
   }
 
   getBaseUrl() {
-    return `/${environment.path}/${this._key}`;
+    return `${this.getProtocol()}${environment.httpUri}${environment.path}/${this._key}`;
+  }
+
+  getProtocol(prefix = 'http') {
+    if (window.location.protocol.endsWith('s:')) {
+      return `${prefix}s:`;
+    }
+    return `${prefix}:`;
   }
 }

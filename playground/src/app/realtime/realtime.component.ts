@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { environment } from '../../environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
+import { QueryService } from '../query.service';
 
 @Component({
   selector: 'nr-realtime',
@@ -24,6 +25,7 @@ export class RealtimeComponent implements OnInit {
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private activeRoute: ActivatedRoute,
+    private queryService: QueryService,
   ) {}
 
   ngOnInit(): void {
@@ -42,7 +44,9 @@ export class RealtimeComponent implements OnInit {
     this.isConnecting = true;
     this.label = 'Connected to';
     this.socket = new WebSocket(
-      `${environment.wsUri}${environment.path}/${key}${this.uri}`,
+      `${this.queryService.getProtocol('ws')}${environment.wsUri}${
+        environment.path
+      }/${key}${this.uri}`,
     );
     this.socket.onopen = () => {
       this.isConnecting = false;

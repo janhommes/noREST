@@ -1,5 +1,7 @@
 div.nr-welcome {
   margin: 24px auto;
+  padding: 24px;
+  font-size: 120%;
   font-family: 'Courier New', Courier, monospace;
   > img {
     margin: 24px auto;
@@ -16,8 +18,9 @@ div.nr-welcome {
     padding: 4px;
   }
 
-  h1 {
+  h1, h2 {
     font-family: 'Courier New', Courier, monospace;
+    text-align: center;
   }
 
   button {
@@ -25,6 +28,10 @@ div.nr-welcome {
       color: #fff;
     }
     width: 100%;
-    margin: 12px 12px 0 12px;
+    margin: 6px auto 6px auto;
+
+    &:last-of-type {
+      margin-bottom: 24px;
+    }
   }
 }

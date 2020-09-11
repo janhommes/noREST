@@ -106,13 +106,14 @@ export const prepare = async () => {
       cookieName: 'auth',
     },
     rest: {
-      defaultPageSize: 100,
+      defaultPageSize: 100
     },
     websocket: {
       enabled: true,
     },
     path: 'api',
     fixed: false,
+    cors: true,
   };
 
   const module = await Test.createTestingModule({

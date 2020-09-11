@@ -24,7 +24,6 @@ import { ReferenceInterceptor } from '../auth/interceptors/reference.interceptor
 import { NoRestConfig } from '../norest-config.interface';
 
 @WebSocketGateway()
-@UseInterceptors(PrivateInterceptor)
 @UseInterceptors(ReferenceInterceptor)
 export class WebsocketGateway implements OnGatewayConnection<Ws> {
   private database: ConnectorFactory;
@@ -62,14 +61,14 @@ export class WebsocketGateway implements OnGatewayConnection<Ws> {
 
     // TODO: allow relative urls by getting the url from here:
     // this.httpServerRef.httpAdapter.getInstance()
-
     const url = new URL(channel, `http://${headers.host}`);
     const pathParts = url.pathname.split('/');
     const baseIndex = pathParts.indexOf(
       pathParts.find(path => path === this.noRestConfig.path),
     );
 
-    // TODO: this needs proper testing!
+    // TODO: this needs proper testing! maybe it doesn't work
+    // with current tenant resolving for notonly.rest
     const fragment = pathParts[baseIndex + 1];
     const id = pathParts[baseIndex + 2];
     const ref = pathParts[baseIndex + 3];
