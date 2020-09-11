@@ -1,0 +1,21 @@
+config:
+  target: http://localhost:3030/api/nr-test
+  phases:
+    - duration: 60
+      arrivalRate: 100
+  defaults:
+    headers:
+      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.ZgF7urHjTSNg49crw1Go9EZ3aKINxm5fQ_zIaJt6ZPM"
+      Content-Type: "application/json"
+scenarios:
+  - flow:
+      - get:
+          url: "/"
+      - post:
+          url: "/"
+          body: '{"hello": "world", "#_foo": {}}' 
+          capture:
+            json: "$._id"
+            as: "_id"
+      - get:
+          url: "/{{ _id }}"

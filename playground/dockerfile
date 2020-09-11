@@ -1,0 +1,4 @@
+FROM nginx:latest
+ADD ./dist/playground /usr/share/nginx/html/
+
+ADD ./default.conf  ./etc/nginx/conf.d/default.conf
