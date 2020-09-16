@@ -44,4 +44,5 @@ export const DEFAULT_CONFIG: NoRestConfig = {
   path: 'api',
   fixed: false,
   cors: true,
+  port: 3030
 };

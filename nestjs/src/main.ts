@@ -7,6 +7,6 @@ import { DEFAULT_CONFIG } from './common/constants';
 async function bootstrap() {
   const app = await NestFactory.create(NoRestModule, { cors: DEFAULT_CONFIG.cors  });
   app.useWebSocketAdapter(new WsAdapter(app));
-  await app.listen(3030);
+  await app.listen(DEFAULT_CONFIG.port);
 }
 bootstrap();

@@ -16,13 +16,13 @@ import * as Ws from 'ws';
 import { NOREST_CONFIG_TOKEN } from '../common/constants';
 import { normalizeFragment } from '../common/normalize';
 import { Changeset } from './changeset.interface';
-import { Request } from 'express';
 import { ConnectorFactory } from '../connector/connector.interface';
 import { ConnectorService } from '../connector/connector.service';
 import { PrivateInterceptor } from '../auth/interceptors/private.interceptor';
 import { ReferenceInterceptor } from '../auth/interceptors/reference.interceptor';
 import { NoRestConfig } from '../norest-config.interface';
 
+// TODO: This file is a mess... we should restructure it asap
 @WebSocketGateway()
 @UseInterceptors(ReferenceInterceptor)
 export class WebsocketGateway implements OnGatewayConnection<Ws> {
@@ -41,7 +41,7 @@ export class WebsocketGateway implements OnGatewayConnection<Ws> {
   }
 
   async handleConnection(client: Ws, msg: http.IncomingMessage) {
-    const url = new URL(msg.url, `http://${msg.headers.host}`);
+    const url = new URL(msg.url, `http://localhost:${this.noRestConfig.port}`);
     const sub = {
       event: 'subscribe',
       data: {
@@ -55,13 +55,18 @@ export class WebsocketGateway implements OnGatewayConnection<Ws> {
     });
   }
 
+  @SubscribeMessage('ping')
+  onHearbeat(): any {
+    return { ping: 'pong' };
+  }
+
   @SubscribeMessage('subscribe')
   async onEvent(client: Ws, eventDate: any): Promise<Observable<any>> {
     const { channel, headers } = eventDate;
 
     // TODO: allow relative urls by getting the url from here:
     // this.httpServerRef.httpAdapter.getInstance()
-    const url = new URL(channel, `http://${headers.host}`);
+    const url = new URL(channel, `http://localhost:${this.noRestConfig.port}`);
     const pathParts = url.pathname.split('/');
     const baseIndex = pathParts.indexOf(
       pathParts.find(path => path === this.noRestConfig.path),
@@ -119,6 +124,10 @@ export class WebsocketGateway implements OnGatewayConnection<Ws> {
               return response;
             }),
           );
+      }),
+      catchError(ex => {
+        console.error(ex);
+        return '';
       }),
     );
   }

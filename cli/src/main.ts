@@ -70,11 +70,12 @@ program
       path: options.path,
       fixed: options.fixed,
       cors: options.cors,
+      port: options.port || 3030, 
       connector: { ...envOptions.connector, ...dotOptions.connector },
       auth: { ...envOptions.auth, ...dotOptions.auth },
       websocket: { ...envOptions.websocket, ...dotOptions.websocket },
       rest: { ...envOptions.rest, ...dotOptions.rest },
     };    
-    bootstrap(options.port || 3030, config);
+    bootstrap(config);
   })
   .parse(process.argv);

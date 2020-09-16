@@ -1,74 +1,36 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Methods } from '../common/methods';
 import { RealtimeDialogComponent } from '../realtime-dialog/realtime-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { environment } from '../../environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { QueryService } from '../query.service';
+import { Realtime } from './realtime';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'nr-realtime',
   templateUrl: './realtime.component.html',
   styleUrls: ['./realtime.component.scss'],
 })
-export class RealtimeComponent implements OnInit {
+export class RealtimeComponent implements OnInit, OnDestroy {
   uri = '/';
   label = 'Connected to';
-  isConnected = true;
-  isConnecting = false;
-  socket: WebSocket;
   messages = [];
   methods = Methods;
+
+  realtime: Realtime;
+
+  private rtMessageSub: Subscription;
+  private rtStatusSub: Subscription;
 
   constructor(
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private activeRoute: ActivatedRoute,
-    private queryService: QueryService,
   ) {}
 
   ngOnInit(): void {
     this.connect();
-  }
-
-  disconnect() {
-    this.isConnected = false;
-    this.label = 'URI';
-    this.messages = [];
-    this.socket.close();
-  }
-
-  connect() {
-    const key = this.activeRoute.snapshot.params.key;
-    this.isConnecting = true;
-    this.label = 'Connected to';
-    this.socket = new WebSocket(
-      `${this.queryService.getProtocol('ws')}${environment.wsUri}${
-        environment.path
-      }/${key}${this.uri}`,
-    );
-    this.socket.onopen = () => {
-      this.isConnecting = false;
-      this.isConnected = true;
-      this.socket.onmessage = msg => {
-        const payload = JSON.parse(msg.data);
-        if (payload.data) {
-          this.messages.push({ date: Date.now(), payload });
-        } else {
-          this.snackBar.open(
-            `❌ Realtime failed: ${payload.message}`,
-            'dismiss',
-            {
-              duration: 4000,
-              panelClass: 'warn',
-            },
-          );
-          this.isConnected = false;
-          this.socket.close();
-        }
-      };
-    };
   }
 
   openDetails(msg): void {
@@ -76,5 +38,44 @@ export class RealtimeComponent implements OnInit {
       width: '90vh',
       data: msg,
     });
+  }
+
+  connect() {
+    const key = this.activeRoute.snapshot.params.key;
+    this.realtime = new Realtime(key, this.uri);
+    this.realtime.connect();
+    this.rtMessageSub = this.realtime.message$.subscribe(msg => {
+      this.messages.push(msg);
+    });
+    this.rtStatusSub = this.realtime.status$.subscribe(
+      ({ hasError, errorMsg }) => {
+        if (hasError) {
+          this.snackBar.open(errorMsg, 'dismiss', {
+            duration: 4000,
+            panelClass: 'warn',
+          });
+        }
+      },
+    );
+  }
+
+  disconnect() {
+    this.realtime.disconnect();
+    this.label = 'URI';
+    this.messages = [];
+    this.unsubscribeObservables();
+  }
+
+  unsubscribeObservables() {
+    if (this.rtMessageSub) {
+      this.rtMessageSub.unsubscribe();
+    }
+    if (this.rtStatusSub) {
+      this.rtStatusSub.unsubscribe();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribeObservables();
   }
 }

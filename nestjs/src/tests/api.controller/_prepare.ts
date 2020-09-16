@@ -114,6 +114,7 @@ export const prepare = async () => {
     path: 'api',
     fixed: false,
     cors: true,
+    port: 3030
   };
 
   const module = await Test.createTestingModule({

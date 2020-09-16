@@ -11,4 +11,5 @@ export interface NoRestConfig {
   path: string;
   fixed: boolean;
   cors: boolean|{};
+  port: number;
 }

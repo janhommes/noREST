@@ -7,15 +7,15 @@
       placeholder="&#60;&#60;fragment&#62;&#62;/&#60;&#60;id&#62;&#62;"
       [(ngModel)]="uri"
       name="uri"
-      [disabled]="isConnected || isConnecting"
+      [disabled]="(realtime?.status$ | async)?.isConnected || (realtime?.status$ | async)?.isConnecting"
     />
   </mat-form-field>
   <button
     class="nr-resource-button"
     type="submit"
     mat-raised-button
-    *ngIf="!isConnected"
-    [disabled]="isConnecting"
+    *ngIf="!(realtime?.status$ | async)?.isConnected"
+    [disabled]="(realtime?.status$ | async)?.isConnecting"
     color="primary"
     (click)="connect()"
   >
@@ -26,8 +26,8 @@
     type="submit"
     mat-raised-button
     color="warn"
-    *ngIf="isConnected"
-    [disabled]="isConnecting"
+    *ngIf="(realtime?.status$ | async)?.isConnected"
+    [disabled]="(realtime?.status$ | async)?.isConnecting"
     (click)="disconnect()"
   >
     Disconnect

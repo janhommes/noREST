@@ -1,4 +1,3 @@
-const { of } = require('rxjs');
 const HttpException = require('@nestjs/common').HttpException;
 const HttpStatus = require('@nestjs/common').HttpStatus;
 

@@ -28,7 +28,7 @@ export class HttpFormComponent implements OnInit {
   };
   response = `
   /**
-   * -- 👨🏻‍💻 Welcome to the noREST playground 👩🏻‍💻 --
+   *      -- Welcome to the noREST playground --
    *
    * You can:
    *  - Click on an index fragment to see it's content.
@@ -42,7 +42,7 @@ export class HttpFormComponent implements OnInit {
    *    realtime connection.
    *
    * Documentation can be found on Github:
-   * 👉 http://github.com/janhommes/noREST
+   * -> http://github.com/janhommes/noREST
    *    (don't forget to give us a ⭐ if you enjoyed it)
    *
    **/`;
