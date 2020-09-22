@@ -41,11 +41,11 @@ jobs:
       - run: echo "Version ${{steps.get-version.outputs.version}}"
       - uses: borales/actions-yarn@v2.0.0
         with:
-          auth-token: ${{ secrets.NPM_TOKEN }}
+          auth-token: ${{ secrets.NPM_AUTH_TOKEN }}
           cmd: workspace @norest/cli publish --new-version ${{steps.get-version.outputs.version}} --access public
       - uses: borales/actions-yarn@v2.0.0
         with:
-          auth-token: ${{ secrets.NPM_TOKEN }}
+          auth-token: ${{ secrets.NPM_AUTH_TOKEN }}
           cmd: workspace @norest/nestjs publish --new-version ${{steps.get-version.outputs.version}} --access public
       - name: Create Release
         id: create_release
