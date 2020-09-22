@@ -43,12 +43,12 @@ jobs:
         with:
           registry-url: registry.npmjs.org
           auth-token: ${{ secrets.NPM_AUTH_TOKEN }}
-          cmd: workspace @norest/cli publish --new-version ${{steps.get-version.outputs.version}} --access public
+          cmd: workspace @norest/cli publish --access public
       - uses: borales/actions-yarn@v2.0.2
         with:
           registry-url: registry.npmjs.org
           auth-token: ${{ secrets.NPM_AUTH_TOKEN }}
-          cmd: workspace @norest/nestjs publish --new-version ${{steps.get-version.outputs.version}} --access public
+          cmd: workspace @norest/nestjs publish --access public
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
