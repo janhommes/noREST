@@ -180,7 +180,7 @@ socket.onopen = function() {
 };
 ```
 
-The returned message then is equal to the http result and gets pushed on each change to the index fragment collection. The metadata is enhanced by information about the change that triggers the new message to be send. Create operations are appended at the end of the list.
+The returned message then is equal to the http result and gets pushed on each change to the index fragment collection. The metadata is enhanced by information about the change that triggers the new message to be send. Create operations are appended at the end of the list. Authentication needs to be send via header or url parameter.
 
 ## Fixating an API
 As mentioned before, noREST is intended to be used for rapid development. However, noREST supports a `fixed` mode which disallow to add new index fragments to the API.
