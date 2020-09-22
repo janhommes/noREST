@@ -37,7 +37,7 @@ The idea behind noREST is as simple as the idea behind noSQL, it should provide 
 As an example we will re-use the given product example from getting started. Imagine an E-Commerce API which holds thousands of products. After a while the project manager decides that they want to add featured products, that should be shown on the start page. Traditional some sort of link or flag would be introduced in the schema:
 ```
 {
-  "id": 1,
+  "_id": 1,
   "name": "bar product",
   "price": 10,
   "featured": true
@@ -54,7 +54,7 @@ Afterwards all featured products can be requested with a simple GET request to t
 ```
 GET /featured
 [{
-  "id": 1,
+  "_id": 1,
   "name": "bar product",
   "price": 10,
   "#_featured": {},
@@ -111,8 +111,38 @@ By default all endpoints are readable. Sometimes you want to make data private. 
 }
 ```
 
+## Readonly and keys
+Values that are readonly start with an `_` (underscore). They cannot be changed with an PATCH request. There are two special underscore keys: `_id` is the unique identifier. It must be unique over all index fragments. You can leave it empty to generate a unique one. Additional there is the `"_": {}` metadata entry which is returned by the API to give additional information about the response. It can also not be changed.
+
 ## Metadata
-tbd
+Each create and update request also creates or updates the metadata of an entity. The metadata ar always stored in the `_` fragment and containing information about the person who created (owner) and who changed it last. The owner/changedBy are taken from the JWT `sub` entry (if not configured otherwise). 
+```JSON
+{
+  "_": {
+      "owner": "john",
+      "created": "2020-08-27T18:32:46.223Z",
+      "changedBy": "doo",
+      "changed": "2020-08-28T18:32:46.223Z"
+  }
+}
+```
+
+A list request additional contains the information about the pagesize:
+```JSON
+{
+  "_": {
+    "total": 2059,
+    "skip": 0,
+    "limit": 100
+  }
+}
+```
+
+Skip and limit can be used for pagination. Every list request supports a `limit`, `skip` and `orderBy` URL parameter. For example the following request will return the 2nd most highest rating:
+
+```
+GET /api/ratings?limit=1&skip=1%orderBy&orderBy=rating desc
+```
 
 ## Authentication and Authorization
 Authentication is not handled by the API itself. Instead noREST just have two states: 
@@ -121,7 +151,7 @@ Authentication is not handled by the API itself. Instead noREST just have two st
 
  The API just takes any JWT passed as cookie, search query parameter or authentication bearer header and uses the `sub` as the current user. There is no validation done on the JWT. The API expects that it is valid and therefore the stack needs to ensure that it is validated. This can be done via a middleware, an API gateway or an service like Auth0.
 
-## Authorization with CRUDO (todo)
+## Authorization with CRUDO (not yet implemented: todo)
 To give certain users certain access to certain endpoints a `crudo` entry can be added to the JWT. The term `crudo` stands for **c**reate, **r**ead, **u**pdate, **d**elete and **o**wn. "Own" is a special kind which allows full access to entries you are owning. An example `crudo` entry looks the following:
 
 ```json
@@ -163,5 +193,5 @@ noREST is more meant as an paradigm, which could be implemented in any language.
 
  - [@norest/nestjs](nestjs/README.md): A noREST reference implementation for node.js written with the help of the nestjs framework.
  - [@norest/cli](cli/README.md): A small tool which allows to configure and run the application quickly from your command line.
- - [@norest/playground](playground/README.md): An interactive playground to try out the capabilities of noREST.
+ - [@norest/playground](playground/README.md): An interactive playground to try out the capabilities of noREST. Visit [notonly.rest](https://notonly.rest) to try it out.
 
