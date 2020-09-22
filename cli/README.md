@@ -16,14 +16,13 @@ norest
 
 ## Configuration
 Or configure it to your needs:
-
-`-p`      = Which port to use (default: `3030`)
-`--fixed` = Set this to true, to disallow adding new index fragments (default: `false`).
-`--path`  = The base path to expose the rest api (default: `api`).
-`--websocket.<<prop>>` = All [configurations for websocket](/blob/master/nestjs/src/websocket/websocket-config.interface.ts).
-`--rest.<<prop>>`      = All [configurations for the rest interface](/blob/master/nestjs/src/rest/rest-config.interface.ts).
-`--auth.<<prop>>`      = All [configurations for the authentication](/blob/master/nestjs/src/auth/auth-config.interface.ts).
-`--connector.<<prop>>` = All [configurations for the file or database connector](/blob/master/nestjs/nestjs/src/connector/connector-config.interface.ts).
+ - `-p`      = Which port to use (default: `3030`)
+ - `--fixed` = Set this to true, to disallow adding new index fragments (default: `false`).
+ - `--path`  = The base path to expose the rest api (default: `api`).
+ - `--websocket.<<prop>>` = All [configurations for websocket](/blob/master/nestjs/src/websocket/websocket-config.interface.ts).
+ - `--rest.<<prop>>`      = All [configurations for the rest interface](/blob/master/nestjs/src/rest/rest-config.interface.ts).
+ - `--auth.<<prop>>`      = All [configurations for the authentication](/blob/master/nestjs/src/auth/auth-config.interface.ts).
+ - `--connector.<<prop>>` = All [configurations for the file or database connector](/blob/master/nestjs/nestjs/src/connector/connector-config.interface.ts).
 
 
 Example to start with a Mongo DB:
