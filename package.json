@@ -16,7 +16,11 @@
     "watch:documentation": "?",
     "start:cli": "yarn workspace @norest/cli start:dev",
     "start:nestjs": "yarn workspace @norest/nestjs start",
-    "db:mongo": "docker start mongo && docker run -it --rm -p 8081:8081 --link mongo:mongo mongo-express"
+    "db:mongo": "docker start mongo && docker run -it --rm -p 8081:8081 --link mongo:mongo mongo-express",
+    "version:cli": "cd cli && yarn version --new-version $npm_package_version",
+    "version:nestjs": "cd nestjs && yarn version --new-version $npm_package_version",
+    "version:playground": "cd playground && yarn version --new-version $npm_package_version",
+    "postversion": "yarn version:cli && yarn version:nestjs && yarn version:playground"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
@@ -25,5 +29,5 @@
     "prettier": "^1.19.1",
     "rimraf": "^3.0.2"
   },
-  "version": "0.1.5"
+  "version": "0.1.6"
 }
