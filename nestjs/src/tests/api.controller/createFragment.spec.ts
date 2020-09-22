@@ -52,7 +52,7 @@ describe('ApiController -> createFragment()', () => {
   it('should throw 404 if the fragment is unknown', async () => {
     // given
     const data = {
-      _id: 'test',
+      _id: 'test' + Math.random(),
       test: '1',
     };
 

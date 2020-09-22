@@ -24,10 +24,10 @@ envKeys.forEach(key => {
   _.set(envOptions, configKey, value);
 });
 
-async function bootstrap(port, config: NoRestConfig) {
+async function bootstrap(config: NoRestConfig) {
   const app = await NestFactory.create(NoRestModule.register(config), { cors: config.cors });
   app.useWebSocketAdapter(new WsAdapter(app));
-  await app.listen(port);
+  await app.listen(config.port);
 }
 
 enhancedOptionsName.forEach(ns => {

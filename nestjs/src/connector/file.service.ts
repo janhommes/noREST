@@ -19,7 +19,7 @@ import { Reference } from './reference.interface';
 @Injectable()
 export class FileService implements Connector {
   private readonly MAX_PAGE_SIZE = Infinity;
-  private readonly FILE_WATCH_INTERVAL = 500;
+  private readonly FILE_WATCH_INTERVAL = 100;
   private path;
   private cachedData = [];
   private _readFile = promisify(readFile);
