@@ -21,7 +21,7 @@
     "version:cli": "cd cli && yarn version --new-version $npm_package_version --no-git-tag-version",
     "version:nestjs": "cd nestjs && yarn version --new-version $npm_package_version --no-git-tag-version",
     "version:playground": "cd playground && yarn version --new-version $npm_package_version --no-git-tag-version",
-    "postversion": "yarn version:cli && yarn version:nestjs && yarn version:playground && git commit -am '✔ (chore) bumping versions' && yarn version --new-version $npm_package_version && git push origin v$npm_package_version"
+    "postrelease": "yarn version:cli && yarn version:nestjs && yarn version:playground && git commit -am '✔ (chore) bumping versions' && yarn tag v$npm_package_version && git push origin v$npm_package_version"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
