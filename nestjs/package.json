@@ -75,5 +75,9 @@
     },
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/janhommes/noREST.git"
   }
 }

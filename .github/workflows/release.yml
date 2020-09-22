@@ -1,0 +1,59 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: install
+      - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: test
+      - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: build
+      - id: get-version
+        uses: actions/github-script@0.9.0
+        with:
+          script: |
+            const v = context.ref.substring(1);
+            core.setOutput('version', v)
+      - run: echo "Version ${{steps.get-version.outputs.version}}"
+      - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: workspace @norest/cli publish --new-version ${{steps.get-version.outputs.version}} --access public
+      - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: workspace @norest/nestjs publish --new-version ${{steps.get-version.outputs.version}} --access public
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Packages can be found on: https://https://www.npmjs.com/~norest
+          draft: false
+          prerelease: false

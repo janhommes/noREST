@@ -1,9 +1,8 @@
 {
   "name": "@norest/cli",
   "version": "0.1.0",
-  "description": "",
-  "author": "",
-  "private": true,
+  "description": "A zero configuration (not only) REST interface.",
+  "author": "Jan Hommes",
   "license": "MIT",
   "bin": {
     "norest": "public_api.js"
@@ -64,5 +63,9 @@
     },
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/janhommes/noREST.git"
   }
 }
