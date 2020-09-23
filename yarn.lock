@@ -1512,7 +1512,7 @@
     multer "1.4.2"
     tslib "1.11.1"
 
-"@nestjs/platform-ws@^7.0.5", "@nestjs/platform-ws@^7.0.9":
+"@nestjs/platform-ws@^7.0.5":
   version "7.0.9"
   resolved "https://registry.yarnpkg.com/@nestjs/platform-ws/-/platform-ws-7.0.9.tgz#1d35bd93a1bad9d1af5589108ec3fe0a347ec7ab"
   integrity sha512-Q71cFcrGtnm1YY4h1lC8edtJXQE3+u9uPppPu0n4EZTvXqGytZS1Uyb81V1Vvbo2/JSeze3noEdsNKed+QBLCw==

@@ -58,6 +58,6 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           body: |
-            Packages can be found on: https://https://www.npmjs.com/~norest
+            Packages can be found on: https://www.npmjs.com/~norest
           draft: false
           prerelease: false
