@@ -1,6 +1,6 @@
 {
   "name": "@norest/cli",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "A zero configuration (not only) REST interface.",
   "author": "Jan Hommes",
   "license": "MIT",
