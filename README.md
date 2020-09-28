@@ -7,6 +7,13 @@
 
 # Getting started
 
+Start directly: 
+```
+npx @norest/cli
+``` 
+
+ -or-
+
 Download the CLI via npm:
 ```
 npm i -g @norest/cli
@@ -29,7 +36,7 @@ POST http://localhost:3030/api?auth=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmb29iYXIifQ.
 
 That product is then accessible via the endpoint `http://localhost:3030/api/product` and readable by any user.
 
- > Noticing the long `auth` query parameter? It's because noREST "secures" create, update and delete operations by default with an JWT. Read more about it in the chapter (Concept -> authentication and authorization).
+ > Notice the long `auth` query parameter? It's because noREST "secures" create, update and delete operations by default with an JWT. Read more about it in the chapter (Concept -> authentication and authorization).
 
 # Idea
 The idea behind noREST is as simple as the idea behind noSQL, it should provide data that is representational but without the boundaries of a fixed schema. Therefore so called **index fragments** are added to the data itself, which allow the data to be requested, created and updated via the REST paradigm. Index fragments belongs to the data and can be added at any time (they start with `#_`).
