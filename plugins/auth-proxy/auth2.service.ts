@@ -1,22 +1,23 @@
 import { Injectable, HttpStatus, HttpException, Inject, Optional } from '@nestjs/common';
-import { NOREST_AUTH_CONFIG_TOKEN, DEFAULT_CONFIG } from '../common/constants';
+//import { NOREST_AUTH_CONFIG_TOKEN, DEFAULT_CONFIG } from '../common/constants';
 import { Request } from 'express';
-import { AuthConfig } from './auth-config.interface';
-import { Messages } from '../common/messages';
+import { NOREST_AUTH_CONFIG_TOKEN, DEFAULT_CONFIG, Messages } from '@norest/nestjs';
+//import { AuthConfig } from './auth-config.interface';
+//import { Messages } from '../common/messages';
 
 export type AuthenticatedRequest = Request & { auth? };
 
 @Injectable()
-export class AuthService {
+export class AuthService2 {
   public isAuthenticated = false;
   public user: string;
 
   constructor(
-    @Optional() @Inject(NOREST_AUTH_CONFIG_TOKEN) private authConfig: AuthConfig = DEFAULT_CONFIG.auth
+    @Optional() @Inject(NOREST_AUTH_CONFIG_TOKEN) private authConfig: any = DEFAULT_CONFIG.auth
   ) {}
 
   authenticate(request: AuthenticatedRequest) {
-    console.log('old');
+    console.log('new wohoo :)');
     if (!this.authConfig.enabled) {
       request.auth = {
         isAuthenticated: true,

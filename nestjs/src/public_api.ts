@@ -21,7 +21,5 @@ export * from './norest-config.interface';
 export * from './norest.module';
 export * from './rest/rest-config.interface';
 export * from './rest/rest.controller';
-export * from './rest/rest.module';
 export * from './websocket/changeset.interface';
 export * from './websocket/websocket.gateway';
-

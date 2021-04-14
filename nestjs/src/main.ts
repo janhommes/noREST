@@ -3,7 +3,6 @@ import { WsAdapter } from '@nestjs/platform-ws';
 import { NoRestModule } from './norest.module';
 import { DEFAULT_CONFIG } from './common/constants';
 
-
 async function bootstrap() {
   const app = await NestFactory.create(NoRestModule, { cors: DEFAULT_CONFIG.cors  });
   app.useWebSocketAdapter(new WsAdapter(app));

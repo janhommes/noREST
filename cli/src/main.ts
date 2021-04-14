@@ -27,6 +27,9 @@ envKeys.forEach(key => {
 async function bootstrap(config: NoRestConfig) {
   const app = await NestFactory.create(NoRestModule.register(config), { cors: config.cors });
   app.useWebSocketAdapter(new WsAdapter(app));
+  /*config.plugins.forEach((plugin) => {
+    plugin();
+  });*/
   await app.listen(config.port);
 }
 
@@ -75,6 +78,7 @@ program
       auth: { ...envOptions.auth, ...dotOptions.auth },
       websocket: { ...envOptions.websocket, ...dotOptions.websocket },
       rest: { ...envOptions.rest, ...dotOptions.rest },
+      plugins: { ...envOptions.plugins, ...dotOptions.plugins },
     };    
     bootstrap(config);
   })

@@ -4,4 +4,5 @@ export interface AuthConfig {
     mode: string;
     secret: string;*/
     userProperty: string;
+    enabled: boolean;
 }

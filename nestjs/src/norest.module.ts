@@ -1,16 +1,30 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { AuthModule } from './auth/auth.module';
 import { normalizeConfig } from './common/normalize';
 import { resolveConnector } from './common/resolver';
-import { Connector, ConnectorFactory } from './connector/connector.interface';
+import { ConnectorFactory } from './connector/connector.interface';
 import { ConnectorModule } from './connector/connector.module';
 import { NoRestConfig } from './norest-config.interface';
-import { RestModule } from './rest/rest.module';
-import { WebsocketModule } from './websocket/websocket.module';
 import { ConfigModule } from './config/config.module';
+import { AuthService } from './auth/auth.service';
+import { AuthGuard } from './auth/auth.guard';
+import { PrivateInterceptor } from './auth/interceptors/private.interceptor';
+import { ReferenceInterceptor } from './auth/interceptors/reference.interceptor';
+import { WebsocketGateway } from './websocket/websocket.gateway';
+import { RequestResponseInterceptor } from './rest/request-response.interceptor';
+import { RestController } from './rest/rest.controller';
 
 @Module({
-  imports: [AuthModule, ConnectorModule, RestModule, WebsocketModule],
+  providers: [
+    AuthService,
+    AuthGuard,
+    PrivateInterceptor,
+    ReferenceInterceptor,
+    WebsocketGateway,
+    RequestResponseInterceptor,
+  ],
+  controllers: [RestController],
+  imports: [ConfigModule, ConnectorModule],
+  exports: [ConnectorModule],
 })
 export class NoRestModule {
   static async forRoot(
@@ -29,15 +43,28 @@ export class NoRestModule {
       noRestConfig.connector.name,
       databaseConnector,
     );
+    console.log(noRestConfig.plugins);
+    console.log('using for register!!');
+    const providers = [
+      AuthService,
+      AuthGuard,
+      PrivateInterceptor,
+      ReferenceInterceptor,
+      WebsocketGateway,
+      RequestResponseInterceptor,
+      ...(noRestConfig.plugins?.providers || [])
+    ];
+
     return {
       module: NoRestModule,
+      providers,
       imports: [
         ConfigModule.register(noRestConfig),
-        AuthModule.register(noRestConfig),
         ConnectorModule.register(noRestConfig, connector),
-        RestModule.register(noRestConfig, connector),
-        WebsocketModule.register(noRestConfig, connector),
+        ...(noRestConfig.plugins?.imports || []),
       ],
+      controllers: [RestController],
+      exports: [ConnectorModule],
     };
   }
 }

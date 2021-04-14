@@ -25,6 +25,12 @@ Or configure it to your needs:
  - `--connector.<<prop>>` = All [configurations for the file or database connector](/blob/master/nestjs/nestjs/src/connector/connector-config.interface.ts).
 
 
+Example to start with authentication enabled:
+```
+norest serve --auth.enabled true
+```
+
+
 Example to start with a Mongo DB:
 ```
 norest serve --connector.name mongodb --connector.url "mongodb://127.0.0.1:27017/test"

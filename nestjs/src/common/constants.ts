@@ -22,6 +22,7 @@ export const AUTH_CONFIG_DEFAULTS = {
   /*jwtValidation: false,
   mode: '',
   secret: '',*/
+  enabled: false
 };
 export const CONNECTOR_CONFIG_DEFAULTS = {
   name: ConnectorType.File,

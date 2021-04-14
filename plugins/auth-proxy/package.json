@@ -1,0 +1,20 @@
+{
+  "name": "@norest/plugin-auth-proxy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "@nestjs/common": "^7.0.0",
+    "@nestjs/core": "^7.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.7.4"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}

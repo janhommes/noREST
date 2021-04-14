@@ -26,7 +26,7 @@ norest
 
 The default port is `3030` and the base path is `api`. You can start by POSTing an fragment to that endpoint:
 ```
-POST http://localhost:3030/api?auth=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmb29iYXIifQ.M1vlUUb5QsiGb1QtwDzM_exKUqIZZtK14TAR20YDPNs
+POST http://localhost:3030/api
 {
   "name": "foo product",
   "price": 10,
@@ -36,7 +36,7 @@ POST http://localhost:3030/api?auth=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmb29iYXIifQ.
 
 That product is then accessible via the endpoint `http://localhost:3030/api/product` and readable by any user.
 
- > Notice the long `auth` query parameter? It's because noREST "secures" create, update and delete operations by default with an JWT. Read more about it in the chapter (Concept -> authentication and authorization).
+ > Authentication is by default disabled. Use `norest --auth.enabled=true` to enable authentication (See the [authentication and authorization](#authentication-and-authorization) chapter and read about all flags in the [@norest/cli readme](cli/README.md)).
 
 # Idea
 The idea behind noREST is as simple as the idea behind noSQL, it should provide data that is representational but without the boundaries of a fixed schema. Therefore so called **index fragments** are added to the data itself, which allow the data to be requested, created and updated via the REST paradigm. Index fragments belongs to the data and can be added at any time (they start with `#_`).
@@ -108,16 +108,6 @@ Afterwards all products belonging to an given category can simply be requested b
 
  References have the benefit that they are updated automatically, when the status of the referenced data changes. When for example the product with the id `1` is removed, the category with the id `2` will return no reference any more.
 
-
-## Private and public payload
-By default all endpoints are readable. Sometimes you want to make data private. Therefore you can simply add the private data to the index fragment. The data inside the index fragment is only exposed if the user is authenticated (JWT is set) and authorized (read or owner rights of crudo). The following data can be seen by an authorized user only:
-
-```JSON
-"#_product": {
-  "overpriced": true
-}
-```
-
 ## Readonly and keys
 Values that are readonly start with an `_` (underscore). They cannot be changed with an PATCH request. There are two special underscore keys: `_id` is the unique identifier. It must be unique over all index fragments. You can leave it empty to generate a unique one. Additional there is the `"_": {}` metadata entry which is returned by the API to give additional information about the response. It can also not be changed.
 
@@ -133,6 +123,8 @@ Each create and update request also creates or updates the metadata of an entity
   }
 }
 ```
+
+ > If authentication is disabled (default behavior), the owner and changer will always be `anonymous`.
 
 A list request additional contains the information about the pagesize:
 ```JSON
@@ -158,7 +150,16 @@ Authentication is not handled by the API itself. Instead noREST just have two st
 
  The API just takes any JWT passed as cookie, search query parameter or authentication bearer header and uses the `sub` as the current user. There is no validation done on the JWT. The API expects that it is valid and therefore the stack needs to ensure that it is validated. This can be done via a middleware, an API gateway or an service like Auth0.
 
-## Authorization with CRUDO (not yet implemented: todo)
+### Private and public payload (needs authentication)
+By default all endpoints are readable. Sometimes you want to make data private. Therefore you can simply add the private data to the index fragment. The data inside the index fragment is only exposed if the user is authenticated (JWT is set) and authorized (read or owner rights of crudo). The following data can be seen by an authorized user only:
+
+```JSON
+"#_product": {
+  "overpriced": true
+}
+```
+
+### Authorization with CRUDO (needs authentication)
 To give certain users certain access to certain endpoints a `crudo` entry can be added to the JWT. The term `crudo` stands for **c**reate, **r**ead, **u**pdate, **d**elete and **o**wn. "Own" is a special kind which allows full access to entries you are owning. An example `crudo` entry looks the following:
 
 ```json

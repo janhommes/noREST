@@ -1,6 +1,6 @@
 {
   "name": "@norest/nestjs",
-  "version": "0.2.8",
+  "version": "0.3.0",
   "description": "A zero configuration (not only) REST interface.",
   "author": "Jan Hommes",
   "license": "MIT",
@@ -27,6 +27,7 @@
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/platform-ws": "^7.0.5",
     "@nestjs/websockets": "^7.0.5",
+    "@norest/plugin-auth-proxy": "1.0.0",
     "artillery": "^1.6.1",
     "chokidar": "^3.4.1",
     "cosmiconfig": "^6.0.0",

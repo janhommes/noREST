@@ -1,6 +1,6 @@
 {
   "name": "@norest/cli",
-  "version": "0.2.8",
+  "version": "0.3.0",
   "description": "A zero configuration (not only) REST interface.",
   "author": "Jan Hommes",
   "license": "MIT",
@@ -22,7 +22,12 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
-    "@norest/nestjs": "latest",
+    "@nestjs/common": "^7.0.0",
+    "@nestjs/core": "^7.0.0",
+    "@nestjs/platform-express": "^7.0.0",
+    "@nestjs/platform-ws": "^7.0.5",
+    "@nestjs/websockets": "^7.0.5",
+    "@norest/nestjs": "0.3.0",
     "commander": "^5.1.0",
     "lodash": "^4.17.15",
     "reflect-metadata": "^0.1.13",

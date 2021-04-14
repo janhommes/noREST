@@ -102,6 +102,7 @@ export const prepare = async () => {
       createCollectionNotExisting: true,
     },
     auth: {
+      enabled: true,
       userProperty: 'sub',
       cookieName: 'auth',
     },

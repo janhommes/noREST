@@ -9,6 +9,7 @@ export class AuthGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
+    console.log('old');
     const request = context.switchToHttp().getRequest();
     this.auth.authenticate(request);
     // TODO add here role based access control

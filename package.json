@@ -4,7 +4,8 @@
     "documentation",
     "nestjs",
     "playground",
-    "cli"
+    "cli",
+    "plugins/auth-proxy"
   ],
   "scripts": {
     "clean": "rimraf **/node_modules **/dist node_modules",
@@ -30,5 +31,5 @@
     "prettier": "^1.19.1",
     "rimraf": "^3.0.2"
   },
-  "version": "0.2.8"
+  "version": "0.3.0"
 }
