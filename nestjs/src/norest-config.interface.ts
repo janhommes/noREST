@@ -9,7 +9,7 @@ export interface NoRestConfig {
   auth: AuthConfig;
   rest: RestConfig;
   websocket: WebsocketConfig;
-  plugins?: DynamicModule;
+  plugins?: DynamicModule[];
   path: string;
   fixed: boolean;
   cors: boolean | {};

@@ -1,7 +1,6 @@
 const HttpException = require('@nestjs/common').HttpException;
 const HttpStatus = require('@nestjs/common').HttpStatus;
-const AuthService2 = require('@norest/plugin-auth-proxy').AuthService2;
-const AuthService = require('@norest/nestjs').AuthService;
+const AuthProxyModule = require('@norest/plugin-auth-proxy').AuthProxyModule;
 
 module.exports = {
   connector: {
@@ -32,14 +31,9 @@ module.exports = {
     cookieName: 'auth',
     userProperty: 'sub',
   },
-  plugins: {
-    providers: [
-      AuthService2,
-      { provide: AuthService, useExisting: AuthService2 },
-    ],
-  },
+  plugins: [AuthProxyModule.register()],
   path: '/:key/',
   fixed: false,
-  port: 3031,
+  port: 3030,
   cors: true,
 };

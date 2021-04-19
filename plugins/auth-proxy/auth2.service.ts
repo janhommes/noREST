@@ -1,9 +1,6 @@
 import { Injectable, HttpStatus, HttpException, Inject, Optional } from '@nestjs/common';
-//import { NOREST_AUTH_CONFIG_TOKEN, DEFAULT_CONFIG } from '../common/constants';
 import { Request } from 'express';
 import { NOREST_AUTH_CONFIG_TOKEN, DEFAULT_CONFIG, Messages } from '@norest/nestjs';
-//import { AuthConfig } from './auth-config.interface';
-//import { Messages } from '../common/messages';
 
 export type AuthenticatedRequest = Request & { auth? };
 

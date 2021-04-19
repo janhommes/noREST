@@ -16,7 +16,6 @@ export class AuthService {
   ) {}
 
   authenticate(request: AuthenticatedRequest) {
-    console.log('old');
     if (!this.authConfig.enabled) {
       request.auth = {
         isAuthenticated: true,

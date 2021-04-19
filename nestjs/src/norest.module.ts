@@ -1,4 +1,11 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import {
+  DynamicModule,
+  Module,
+  Provider,
+  ForwardReference,
+  Type,
+  Abstract,
+} from '@nestjs/common';
 import { normalizeConfig } from './common/normalize';
 import { resolveConnector } from './common/resolver';
 import { ConnectorFactory } from './connector/connector.interface';
@@ -12,6 +19,7 @@ import { ReferenceInterceptor } from './auth/interceptors/reference.interceptor'
 import { WebsocketGateway } from './websocket/websocket.gateway';
 import { RequestResponseInterceptor } from './rest/request-response.interceptor';
 import { RestController } from './rest/rest.controller';
+import { Logger } from '@nestjs/common';
 
 @Module({
   providers: [
@@ -43,28 +51,35 @@ export class NoRestModule {
       noRestConfig.connector.name,
       databaseConnector,
     );
-    console.log(noRestConfig.plugins);
-    console.log('using for register!!');
-    const providers = [
-      AuthService,
-      AuthGuard,
-      PrivateInterceptor,
-      ReferenceInterceptor,
-      WebsocketGateway,
-      RequestResponseInterceptor,
-      ...(noRestConfig.plugins?.providers || [])
-    ];
 
-    return {
+    const mainModule: DynamicModule = {
       module: NoRestModule,
-      providers,
+      providers: [
+        AuthService,
+        AuthGuard,
+        PrivateInterceptor,
+        ReferenceInterceptor,
+        WebsocketGateway,
+        RequestResponseInterceptor,
+      ],
       imports: [
         ConfigModule.register(noRestConfig),
         ConnectorModule.register(noRestConfig, connector),
-        ...(noRestConfig.plugins?.imports || []),
       ],
       controllers: [RestController],
       exports: [ConnectorModule],
     };
+    const { plugins } = noRestConfig;
+
+    (plugins || []).forEach((plugin: DynamicModule) => {
+      mainModule.providers.push(...(plugin.providers || []));
+      mainModule.controllers.push(...(plugin.controllers || []));
+      mainModule.imports.push(...(plugin.imports || []));
+      mainModule.exports.push(...(plugin.exports || []));
+      Logger.log(`${plugin.module.name} loaded`, 'PluginLoader');
+      // console.log(mainModule);
+    });
+
+    return mainModule;
   }
 }
