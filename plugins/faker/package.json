@@ -1,0 +1,26 @@
+{
+  "name": "@norest/plugin-faker",
+  "version": "1.0.0",
+  "description": "A plugin to create faked data for the file connector.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "@nestjs/common": "^7.0.0",
+    "@nestjs/core": "^7.0.0",
+    "faker": "^5.5.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.6.6"
+  },
+  "devDependencies": {
+    "typescript": "^3.7.4"
+  },
+  "keywords": [
+    "noREST",
+    "plugin"
+  ],
+  "author": "Jan Hommes",
+  "license": "MIT"
+}
