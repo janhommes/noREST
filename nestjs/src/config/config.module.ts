@@ -7,7 +7,7 @@ import { NoRestConfig } from '../norest-config.interface';
   exports: [ConfigInitializerModule],
 })
 export class ConfigModule {
-  static register(config: NoRestConfig): DynamicModule {
+  static register(config?: NoRestConfig): DynamicModule {
     return {
       module: ConfigModule,
       imports: [

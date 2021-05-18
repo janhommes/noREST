@@ -18,11 +18,7 @@ export const DEFAULT_PAGE_SIZE = 100;
 export const AUTH_CONFIG_DEFAULTS = {
   userProperty: 'sub',
   cookieName: 'auth',
-  // TODO: Add a jwt validation
-  /*jwtValidation: false,
-  mode: '',
-  secret: '',*/
-  enabled: false
+  enabled: false,
 };
 export const CONNECTOR_CONFIG_DEFAULTS = {
   name: ConnectorType.File,
@@ -42,8 +38,9 @@ export const DEFAULT_CONFIG: NoRestConfig = {
   websocket: WEBSOCKET_DEFAULT_CONFIG,
   auth: AUTH_CONFIG_DEFAULTS,
   rest: REST_CONFIG_DEFAULTS,
+  plugins: [],
   path: 'api',
   fixed: false,
   cors: true,
-  port: 3030
+  port: 3030,
 };

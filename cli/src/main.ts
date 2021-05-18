@@ -1,7 +1,15 @@
-import { NestFactory } from '@nestjs/core';
+import {
+  NestFactory,
+  HttpAdapterHost,
+  BaseExceptionFilter,
+} from '@nestjs/core';
 import { WsAdapter } from '@nestjs/platform-ws';
 import { Command } from 'commander';
-import { NoRestConfig, NoRestModule } from '@norest/nestjs';
+import {
+  NoRestConfig,
+  NoRestCliModule,
+  AllExceptionsFilter,
+} from '@norest/nestjs';
 import * as _ from 'lodash';
 import { parse } from 'yargs';
 
@@ -24,12 +32,13 @@ envKeys.forEach(key => {
   _.set(envOptions, configKey, value);
 });
 
-async function bootstrap(config: NoRestConfig) {
-  const app = await NestFactory.create(NoRestModule.register(config), { cors: config.cors });
+async function bootstrap(config: Partial<NoRestConfig>) {
+  const app = await NestFactory.create(await NoRestCliModule.register(config), {
+    cors: config.cors,
+  });
+  const { httpAdapter } = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new AllExceptionsFilter(httpAdapter)); // AllExceptionsFilter is a workaround, as for some reasons the http errors where not send when using a CLI
   app.useWebSocketAdapter(new WsAdapter(app));
-  /*config.plugins.forEach((plugin) => {
-    plugin();
-  });*/
   await app.listen(config.port);
 }
 
@@ -59,7 +68,7 @@ program
   .option(
     '--cors',
     'Set this to false, to disable cors (default: `true`).',
-    true
+    true,
   )
   .option('--auth.<<prop>>', 'All configurations for the rest interface.')
   .option('--rest.<<prop>>', 'All configurations for the authentication.')
@@ -73,13 +82,12 @@ program
       path: options.path,
       fixed: options.fixed,
       cors: options.cors,
-      port: options.port || 3030, 
+      port: options.port || 3030,
       connector: { ...envOptions.connector, ...dotOptions.connector },
       auth: { ...envOptions.auth, ...dotOptions.auth },
       websocket: { ...envOptions.websocket, ...dotOptions.websocket },
       rest: { ...envOptions.rest, ...dotOptions.rest },
-      plugins: { ...envOptions.plugins, ...dotOptions.plugins },
-    };    
+    };
     bootstrap(config);
   })
   .parse(process.argv);

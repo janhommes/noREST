@@ -1,8 +1,15 @@
-import { Injectable, HttpStatus, HttpException, Inject, Optional } from '@nestjs/common';
+import {
+  Injectable,
+  HttpStatus,
+  HttpException,
+  Inject,
+  Optional,
+} from '@nestjs/common';
 import { NOREST_AUTH_CONFIG_TOKEN, DEFAULT_CONFIG } from '../common/constants';
 import { Request } from 'express';
 import { AuthConfig } from './auth-config.interface';
 import { Messages } from '../common/messages';
+import { verify } from 'jsonwebtoken';
 
 export type AuthenticatedRequest = Request & { auth? };
 
@@ -12,14 +19,16 @@ export class AuthService {
   public user: string;
 
   constructor(
-    @Optional() @Inject(NOREST_AUTH_CONFIG_TOKEN) private authConfig: AuthConfig = DEFAULT_CONFIG.auth
+    @Optional()
+    @Inject(NOREST_AUTH_CONFIG_TOKEN)
+    protected authConfig: AuthConfig = DEFAULT_CONFIG.auth,
   ) {}
 
   authenticate(request: AuthenticatedRequest) {
     if (!this.authConfig.enabled) {
       request.auth = {
         isAuthenticated: true,
-        user: 'anonymous',
+        user: 'anonymous', // TODO: add a config
       };
       return;
     }
@@ -36,16 +45,17 @@ export class AuthService {
         };
       }
       const jwt = this.getJwt(headers, query);
+      const verified = jwt && this.verifyJwt(jwt);
       request.auth = {
-        isAuthenticated: !!jwt,
-        user: jwt ? this.getUserFromJwt(jwt) : undefined,
+        isAuthenticated: !!verified,
+        user: verified ? this.getUserFromJwt(jwt) : undefined,
       };
     }
   }
 
   getJwt(headers: any, query: any) {
     if (query && query[this.authConfig.cookieName]) {
-      return this.getJwtContent(query[this.authConfig.cookieName]);
+      return query[this.authConfig.cookieName];
     }
 
     let authHeader = headers.authorization || headers.cookie;
@@ -55,11 +65,27 @@ export class AuthService {
     if (!authHeader) {
       return;
     }
-    return this.getJwtContent(authHeader.replace(/Bearer /i, ''));
+    return authHeader.replace(/Bearer /i, '');
   }
 
   getUserFromJwt(jwt: any) {
-    return jwt[this.authConfig.userProperty];
+    return this.getJwtContent(jwt)[this.authConfig.userProperty];
+  }
+
+  private verifyJwt(jwt: string) {
+    if (!this.authConfig.jwt || !this.authConfig.jwt.verify) {
+      return true;
+    }
+    try {
+      verify(
+        jwt,
+        this.authConfig.jwt.secretOrPublicKey,
+        this.authConfig.jwt.options,
+      );
+      return true;
+    } catch (ex) {
+      throw new HttpException(Messages.INVALID_JWT, HttpStatus.UNAUTHORIZED);
+    }
   }
 
   private getCookieByName(cookies: string, name: string) {

@@ -1,26 +1,24 @@
-import {
-  DynamicModule,
-  Module,
-  Provider,
-  ForwardReference,
-  Type,
-  Abstract,
-} from '@nestjs/common';
-import { normalizeConfig } from './common/normalize';
-import { resolveConnector } from './common/resolver';
-import { ConnectorFactory } from './connector/connector.interface';
-import { ConnectorModule } from './connector/connector.module';
-import { NoRestConfig } from './norest-config.interface';
-import { ConfigModule } from './config/config.module';
-import { AuthService } from './auth/auth.service';
+import { Module } from '@nestjs/common';
 import { AuthGuard } from './auth/auth.guard';
+import { AuthService } from './auth/auth.service';
 import { PrivateInterceptor } from './auth/interceptors/private.interceptor';
 import { ReferenceInterceptor } from './auth/interceptors/reference.interceptor';
-import { WebsocketGateway } from './websocket/websocket.gateway';
+import { ConfigModule } from './config/config.module';
+import { ConnectorModule } from './connector/connector.module';
 import { RequestResponseInterceptor } from './rest/request-response.interceptor';
 import { RestController } from './rest/rest.controller';
-import { Logger } from '@nestjs/common';
+import { WebsocketGateway } from './websocket/websocket.gateway';
 
+/**
+ * The main module to be used in other nestjs 
+ * applications. It is always using the default
+ * configuration. Use NoRestCliModule.register()
+ * for a configurable module.
+ * 
+ * Todo: The modules are split into two, because of an issue
+ * where two imports where loaded. Later we might want to unify
+ * them again.
+ */
 @Module({
   providers: [
     AuthService,
@@ -34,52 +32,4 @@ import { Logger } from '@nestjs/common';
   imports: [ConfigModule, ConnectorModule],
   exports: [ConnectorModule],
 })
-export class NoRestModule {
-  static async forRoot(
-    config?: Partial<NoRestConfig>,
-    databaseConnector?: ConnectorFactory,
-  ): Promise<DynamicModule> {
-    return NoRestModule.register(config, databaseConnector);
-  }
-
-  static async register(
-    config?: Partial<NoRestConfig>,
-    databaseConnector?: ConnectorFactory,
-  ): Promise<DynamicModule> {
-    const noRestConfig = await normalizeConfig(config);
-    const connector = resolveConnector(
-      noRestConfig.connector.name,
-      databaseConnector,
-    );
-
-    const mainModule: DynamicModule = {
-      module: NoRestModule,
-      providers: [
-        AuthService,
-        AuthGuard,
-        PrivateInterceptor,
-        ReferenceInterceptor,
-        WebsocketGateway,
-        RequestResponseInterceptor,
-      ],
-      imports: [
-        ConfigModule.register(noRestConfig),
-        ConnectorModule.register(noRestConfig, connector),
-      ],
-      controllers: [RestController],
-      exports: [ConnectorModule],
-    };
-    const { plugins } = noRestConfig;
-
-    (plugins || []).forEach((plugin: DynamicModule) => {
-      mainModule.providers.push(...(plugin.providers || []));
-      mainModule.controllers.push(...(plugin.controllers || []));
-      mainModule.imports.push(...(plugin.imports || []));
-      mainModule.exports.push(...(plugin.exports || []));
-      Logger.log(`${plugin.module.name} loaded`, 'PluginLoader');
-      // console.log(mainModule);
-    });
-
-    return mainModule;
-  }
-}
+export class NoRestModule {}
