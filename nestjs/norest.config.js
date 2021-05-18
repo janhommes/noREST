@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/camelcase */
 const HttpException = require('@nestjs/common').HttpException;
 const HttpStatus = require('@nestjs/common').HttpStatus;
 const AuthProxyModule = require('@norest/plugin-auth-proxy').AuthProxyModule;
+const FakerModule = require('@norest/plugin-faker').FakerModule;
 
 module.exports = {
   connector: {
@@ -41,9 +43,11 @@ module.exports = {
       github: {
         client_id: '22e26fceea63a8ace68f',
         redirect_uri: 'http://localhost:3031/github/auth',
-        client_secret: 'xyz',
-      },
+        // TODO: REMOVE BEFORE PUSHING!
+        client_secret: '9c9253447abb6c8980981cb32a78e7a807b39287',
+      }
     }),
+    FakerModule.register()
   ],
   path: '/api/:key/',
   fixed: false,

@@ -80,8 +80,9 @@ module.exports = {
 };
 ```
 
-There is currently only one official plugin:
+There is currently only two official plugin:
  - [@norest/plugin-auth-proxy](/plugins/auth-proxy/README.md): The auth-proxy plugin allows to add an external authentication provider like Github. 
+ - [@norest/plugin-faker](/plugins/faker/README.md): A plugin that allows to generate fake data with faker.js
 
 
 ## Env variables

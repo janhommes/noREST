@@ -5,7 +5,8 @@
     "nestjs",
     "playground",
     "cli",
-    "plugins/auth-proxy"
+    "plugins/auth-proxy",
+    "plugins/faker"
   ],
   "scripts": {
     "clean": "rimraf **/node_modules **/dist node_modules",

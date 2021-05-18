@@ -15,7 +15,7 @@
   "devDependencies": {
     "typescript": "^3.7.4"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["noREST", "plugin"],
+  "author": "Jan Hommes",
   "license": "MIT"
 }
