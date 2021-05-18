@@ -1,6 +1,6 @@
 {
   "name": "@norest/plugin-auth-proxy",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -15,7 +15,10 @@
   "devDependencies": {
     "typescript": "^3.7.4"
   },
-  "keywords": ["noREST", "plugin"],
+  "keywords": [
+    "noREST",
+    "plugin"
+  ],
   "author": "Jan Hommes",
   "license": "MIT"
 }
