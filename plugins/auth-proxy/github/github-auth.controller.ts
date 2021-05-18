@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import {
   Controller,
   Scope,
@@ -95,7 +96,15 @@ export class GitHubAuthController {
     response.cookie(this.authConfig.cookieName, signedJwt, {
       httpOnly: true,
     });
-    return { sub };
+    return { message: `${sub} successful logged in.`, status: 200 };
+  }
+
+  @Get('logout')
+  logout(@Res({ passthrough: true }) response: Response) {
+    response.clearCookie(this.authConfig.cookieName, {
+      httpOnly: true,
+    });
+    return { message: `Successful logged out.`, status: 200 };
   }
 
   async getUserName(accessResponse: any) {

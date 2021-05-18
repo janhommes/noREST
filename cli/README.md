@@ -53,7 +53,7 @@ You could also create a .norestrc.json, yaml or .js in the root directory and st
   },
   "auth": {
     "cookieName": "auth",
-    "userProperty": "sub"    
+    "userProperty": "sub"   
   },
   "path": "api",
   "fixed": false
@@ -62,6 +62,27 @@ You could also create a .norestrc.json, yaml or .js in the root directory and st
 ```
 
 > By default the noREST nestjs implementation supports two connectors: mongoDB and file. File is the default configuration but only suitable for non high load.
+
+## Plugins
+Plugins can be added to an Javascript configuration file only. They are based on the module infrastructure of Nestjs. Configuration can be passed to the
+calling `register()` function.
+``` 
+const AuthProxyModule = require('@norest/plugin-auth-proxy').AuthProxyModule;
+
+module.exports = {
+  plugins: [AuthProxyModule.register({
+    github: {
+      client_id: '22e26fceea63a8ace68f',
+      redirect_uri: 'http://localhost:3031/github/auth',
+      client_secret: 'xyz',
+    }
+  })]
+};
+```
+
+There is currently only one official plugin:
+ - [@norest/plugin-auth-proxy](/plugins/auth-proxy/README.md): The auth-proxy plugin allows to add an external authentication provider like Github. 
+
 
 ## Env variables
 Each of the mentioned configuration can be also be parsed as a ENV var. Use the prefix `NOREST_` and replace dots with underscores then:

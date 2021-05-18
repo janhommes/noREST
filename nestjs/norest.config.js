@@ -33,17 +33,19 @@ module.exports = {
     jwt: {
       verify: true,
       secretOrPublicKey: 'topsecret',
-      secretOrPrivateKey: 'topsecret'
-    }
+      secretOrPrivateKey: 'topsecret',
+    },
   },
-  plugins: [AuthProxyModule.register({
-    github: {
-      client_id: '22e26fceea63a8ace68f',
-      redirect_uri: 'http://localhost:3031/github/auth',
-      client_secret: 'xyz',
-    }
-  })],
-  path: '/:user/:key/',
+  plugins: [
+    AuthProxyModule.register({
+      github: {
+        client_id: '22e26fceea63a8ace68f',
+        redirect_uri: 'http://localhost:3031/github/auth',
+        client_secret: 'xyz',
+      },
+    }),
+  ],
+  path: '/api/:key/',
   fixed: false,
   port: 3030,
   cors: true,
