@@ -1,6 +1,6 @@
 {
   "name": "@norest/plugin-faker",
-  "version": "1.0.0",
+  "version": "0.3.2",
   "description": "A plugin to create faked data for the file connector.",
   "main": "dist/index.js",
   "scripts": {

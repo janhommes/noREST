@@ -58,7 +58,7 @@ jobs:
         with:
           registry-url: registry.npmjs.org
           auth-token: ${{ secrets.NPM_AUTH_TOKEN }}
-          cmd: workspace @norest/faker publish --access public
+          cmd: workspace @norest/plugin-faker publish --access public
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
