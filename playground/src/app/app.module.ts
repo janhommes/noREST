@@ -28,7 +28,6 @@ import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { FormsModule } from '@angular/forms';
 import { HttpFormComponent } from './http-form/http-form.component';
 import { HttpClientModule } from '@angular/common/http';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { FragmentListComponent } from './fragment-list/fragment-list.component';
 import { ExamplesComponent } from './examples/examples.component';
 import { RealtimeComponent } from './realtime/realtime.component';
@@ -74,7 +73,6 @@ import { WizardComponent } from './wizard/wizard.component';
     MatDialogModule,
     MatSnackBarModule,
     MatProgressBarModule,
-    FlexLayoutModule,
     MonacoEditorModule.forRoot(),
   ],
   providers: [],
