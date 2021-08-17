@@ -20,6 +20,7 @@ import { WebsocketGateway } from './websocket/websocket.gateway';
 import { RequestResponseInterceptor } from './rest/request-response.interceptor';
 import { RestController } from './rest/rest.controller';
 import { Logger } from '@nestjs/common';
+import { DynamicGraphQlModule } from './graphql/dynamic-graphql.module';
 
 @Module({})
 export class NoRestCliModule {
@@ -53,6 +54,7 @@ export class NoRestCliModule {
       imports: [
         ConfigModule.register(noRestConfig),
         ConnectorModule.register(noRestConfig, connector),
+        DynamicGraphQlModule
       ],
       controllers: [RestController],
       exports: [ConnectorModule],

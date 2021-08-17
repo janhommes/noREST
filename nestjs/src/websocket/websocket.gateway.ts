@@ -9,7 +9,7 @@ import {
 } from '@nestjs/websockets';
 import * as http from 'http';
 import { _ } from 'lodash';
-import * as fetch from 'node-fetch';
+import { default as fetch, Response } from 'node-fetch';
 import { from, Observable, of } from 'rxjs';
 import { map, mergeMap, startWith, catchError } from 'rxjs/operators';
 import * as Ws from 'ws';

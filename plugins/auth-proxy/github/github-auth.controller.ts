@@ -14,7 +14,7 @@ import {
 import { AuthProxyConfig } from '../auth-proxy-config.interface';
 import { _ } from 'lodash';
 import { Request, Response } from 'express';
-import * as fetch from 'node-fetch';
+import { default as fetch } from 'node-fetch';
 import { sign } from 'jsonwebtoken';
 import {
   NOREST_AUTH_CONFIG_TOKEN,

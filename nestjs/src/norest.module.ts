@@ -5,6 +5,7 @@ import { PrivateInterceptor } from './auth/interceptors/private.interceptor';
 import { ReferenceInterceptor } from './auth/interceptors/reference.interceptor';
 import { ConfigModule } from './config/config.module';
 import { ConnectorModule } from './connector/connector.module';
+import { DynamicGraphQlModule } from './graphql/dynamic-graphql.module';
 import { RequestResponseInterceptor } from './rest/request-response.interceptor';
 import { RestController } from './rest/rest.controller';
 import { WebsocketGateway } from './websocket/websocket.gateway';
@@ -29,7 +30,7 @@ import { WebsocketGateway } from './websocket/websocket.gateway';
     RequestResponseInterceptor,
   ],
   controllers: [RestController],
-  imports: [ConfigModule, ConnectorModule],
+  imports: [ConfigModule, ConnectorModule, DynamicGraphQlModule],
   exports: [ConnectorModule],
 })
 export class NoRestModule {}

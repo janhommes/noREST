@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "skipLibCheck": true // arg, we might want to remove this at some point. Reason it exist: Appollo client and ws type errors.
   },
   "extends": "../tsconfig.json",
   "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]

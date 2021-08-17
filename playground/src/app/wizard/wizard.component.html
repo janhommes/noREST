@@ -1,29 +1,25 @@
 <div class="nr-welcome">
-  <img src="../assets/logo.png" alt="noREST logo" />
-  <h1>Welcome to the <span class="nr-green-text">no</span>REST playground</h1>
+  <div class="nr-text-right">
+    <img src="../assets/logo.png" alt="noREST logo" />
+  </div>
+  <div></div>
+</div>
+<div class="nr-welcome-text">
   <div>
+    <h1>
+      Welcome to <span class="nr-green-text">n</span>ot<span
+        class="nr-green-text"
+        >o</span
+      >nly.rest
+    </h1>
+
     <p>
-      This <i>notonly.rest</i> page is the playground to try out the reference
-      implementation of <span class="nr-green-text">no</span>REST, a no-code
-      (<span class="nr-green-text">n</span>ot
-      <span class="nr-green-text">o</span>nly) RESTfull API. More information
-      about the <span class="nr-green-text">no</span>REST project can be found
-      on its
-      <a href="https://github.com/janhommes/noREST">Github</a>
-      page.
+      Get a
+      <span class="nr-green-text">n</span>ot
+      <span class="nr-green-text">o</span>nly RESTfull API in seconds. Full
+      flavored with <strong>websockets</strong>,
+      <strong>authentication</strong> and <strong>fake data</strong>.
     </p>
-    <p>You have <strong>2 possible</strong> starting points:</p>
-    <ol>
-      <li>
-        Creating an playground with <i>pre-stored e-commerce sample data</i> is
-        the best way to explorer the functionalities of
-        <span class="nr-green-text">no</span>REST
-      </li>
-      <li>
-        An <i>empty playground</i> has no data stored yet and you can explorer
-        <span class="nr-green-text">no</span>REST from the ground.
-      </li>
-    </ol>
 
     <button
       mat-raised-button
@@ -31,29 +27,129 @@
       (click)="createPlayground(true)"
       [disabled]="isLoading"
     >
-      1. Create playground with sample-data
+      Get an instant data bucket
     </button>
     <button
       mat-raised-button
-      (click)="createPlayground()"
+      (click)="createPlayground(true)"
       [disabled]="isLoading"
     >
-      2. Create empty playground
+      Log in with Github
     </button>
+  </div>
+</div>
+<div class="nr-features">
+  <div>
+    <div>
+      <h2 class="nr-green-text">Fragment</h2>
+      <p>
+        Fragments are the basic building blocks to define your data. It works
+        like tagging: You simply add a fragment like
+        <code>#_customer: {{ '{}' }}</code> to your data and you can recover it
+        via the <code>/customer</code> endpoint.
+      </p>
+    </div>
+  </div>
+  <div>
+    <div>
+      <h2 class="nr-green-text">Authentication</h2>
+      <p>
+        Reading by default is always <strong>allowed</strong>. Changing and
+        Deleting however is <strong>secured by default</strong> and needs
+        authentication. Additional, data in a fragment can only be seen by
+        logged in users.
+      </p>
+    </div>
+  </div>
+  <div>
+    <div>
+      <h2 class="nr-green-text">Realtime</h2>
+      <p>
+        You can listen to any fragment to get changes pushed via websockets.
+        These allows to react to data changes in
+        <strong>nearly realtime.</strong>
+      </p>
+    </div>
+  </div>
+  <div>
+    <div>
+      <h2 class="nr-green-text">Fake data</h2>
+      <p>
+        With the help of faker.js, a bucket can be filled with fake data. This
+        allows easy testing or scaffolding to get you
+        <strong>focused on the work that matters</strong>.
+      </p>
+    </div>
+  </div>
+  <div>
+    <div>
+      <h2 class="nr-green-text">Default meta information</h2>
+      <p>
+        Each bucket is enhanced by <strong>useful meta information</strong> by
+        default. For example data list have paging information attached and
+        details creation and change date.
+      </p>
+    </div>
+  </div>
+</div>
 
+<div class="nr-start">
+  <h2>
+    Get a
+    <abbr
+      title="A bucket is a collection of data. It offers you an endpoint on our api, where you can request data from. Instant buckets are perfect for testing, they can be used without login and don't need any authentication. If you need more, pls sign-up with github. You can have as many buckets as you want."
+      >bucket</abbr
+    >:<br />
+  </h2>
+  <input type="text" placeholder="your-bucket-name" />
+  <select>
+    <option>No fake data</option>
+    <option>Commerce</option>
+    <option>Animal</option>
+    <option>User</option>
+  </select>
+  <button
+    mat-raised-button
+    (click)="createPlayground(true)"
+    [disabled]="isLoading"
+  >
+    Create instant bucket
+  </button>
+</div>
+
+<div class="nr-about">
+  <div>
+    <h3 class="nr-green-text">Access & Pricing</h3>
     <p>
-      If you want to return to an existing playground, simply attach your
-      <i>nr-</i> key to the url:
-      <img
-        src="../assets/example.png"
-        alt="Where to put the API-KEY of no-rest"
-        class="nr-key-example"
-      />
+      You can access your bucket at any-time with your API-KEY @
+      https://api.notonly.rest/nr-xxxxxx. Buckets are free, but they might get
+      deleted if a certain data volume is reached.
+    </p>
+  </div>
+  <div>
+    <h3 class="nr-green-text">About</h3>
+    <p>
+      <i>notonly.rest</i> is the cloud to try out the reference implementation
+      of <span class="nr-green-text">no</span>REST, an
+      <span class="nr-green-text">n</span>ot
+      <span class="nr-green-text">o</span>nly RESTfull API. It aims to resolve
+      the hassle that comes when implementing an API by providing not only a
+      REST interface, but also a way of storing, authenticate, authorize and
+      realtime accessing. The <span class="nr-green-text">no</span>REST project
+      is open source and can be found on
+      <a href="https://github.com/janhommes/noREST">Github</a>.
+    </p>
+  </div>
+  <div>
+    <h3 class="nr-green-text">Disclaimer</h3>
+    <p>
+      <i>notonly.rest</i> is a side project and therefore no warranty or service
+      level agreement can be given.
+      <a href="mailto:jan@janhommes.de">Feedback</a> is very welcome.
     </p>
     <p>
-      You can access the API at any-time with your API-KEY @
-      https://api.notonly.rest/nr-xxxxxx. Note that playgrounds might get
-      deleted if a certain data volume is reached.
+      Crafted with <span class="nr-green-text">♥</span> by
+      <a href="https://janhommes.de">Jan Hommes</a>
     </p>
   </div>
 </div>

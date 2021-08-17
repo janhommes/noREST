@@ -6,16 +6,16 @@
     "playground",
     "cli",
     "plugins/auth-proxy",
-    "plugins/faker"
+    "plugins/faker",
+    "plugins/health"
   ],
   "scripts": {
     "clean": "rimraf **/node_modules **/dist node_modules",
-    "build": "yarn workspace @norest/nestjs build && yarn workspace @norest/cli build && yarn workspace @norest/playground build",
+    "build": "yarn plugin:build && yarn workspace @norest/nestjs build && yarn workspace @norest/cli build && yarn workspace @norest/playground build",
     "test": "yarn workspace @norest/nestjs test",
     "watch:cli": "yarn workspace @norest/cli build -w",
     "watch:nestjs": "yarn workspace @norest/nestjs start:dev",
     "watch:playground": "yarn workspace @norest/playground start",
-    "watch:documentation": "?",
     "start:cli": "yarn workspace @norest/cli start:dev",
     "start:nestjs": "yarn workspace @norest/nestjs start",
     "db:mongo": "docker start mongo && docker run -it --rm -p 8081:8081 --link mongo:mongo mongo-express",
@@ -25,7 +25,10 @@
     "version:playground": "cd playground && yarn version --new-version $npm_package_version --no-git-tag-version",
     "version:plugin:auth-proxy": "cd plugins/auth-proxy && yarn version --new-version $npm_package_version --no-git-tag-version",
     "version:plugin:faker": "cd plugins/faker && yarn version --new-version $npm_package_version --no-git-tag-version",
-    "postrelease": "yarn version:plugin:auth-proxy && yarn version:plugin:faker && yarn version:nestjs && yarn version:cli && yarn version:playground && git commit -am '✔ (chore) bumping versions' && git tag v$npm_package_version && git push origin v$npm_package_version"
+    "version:plugin:health": "cd plugins/health && yarn version --new-version $npm_package_version --no-git-tag-version",
+    "plugin:build": "yarn workspace @norest/plugin-health build && yarn workspace @norest/plugin-auth-proxy build && yarn workspace @norest/plugin-faker build",
+    "plugin:watch": "yarn workspace @norest/plugin-health watch && yarn workspace @norest/plugin-auth-proxy watch && yarn workspace @norest/plugin-faker watch",
+    "postrelease": "yarn version:plugin:health && yarn version:plugin:auth-proxy && yarn version:plugin:faker && yarn version:nestjs && yarn version:cli && yarn version:playground && git commit -am '✔ (chore) bumping versions' && git tag v$npm_package_version && git push origin v$npm_package_version"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
