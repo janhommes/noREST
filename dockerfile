@@ -4,7 +4,7 @@ RUN mkdir norest
 WORKDIR /norest
 RUN mkdir data
 
-ADD . /norest
-COPY ./nestjs/norest.config.js ./norest.config.js
+ADD ./nestjs/norest.config.js /norest
+CMD  ["npm", "install", "@norest/cli" "-g"]
 
-CMD  ["npx", "norest", "--port=80"]
+CMD  ["norest", "--port=80"]

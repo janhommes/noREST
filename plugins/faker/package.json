@@ -8,6 +8,7 @@
     "watch": "tsc -w"
   },
   "dependencies": {
+    "@norest/nestjs": "^0.3.0",
     "@nestjs/common": "^7.0.0",
     "@nestjs/core": "^7.0.0",
     "faker": "^5.5.3",
