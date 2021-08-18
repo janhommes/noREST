@@ -1,6 +1,6 @@
 {
   "name": "@norest/nestjs",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "A not only REST interface.",
   "author": "Jan Hommes",
   "license": "MIT",
