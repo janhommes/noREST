@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "clean": "rimraf **/node_modules **/dist node_modules",
-    "build": "yarn workspace @norest/nestjs build && yarn workspace @norest/cli build && yarn workspace @norest/playground build && yarn plugin:build",
+    "build": "yarn workspace @norest/nestjs build && yarn workspace @norest/cli build && yarn plugin:build",
     "test": "yarn workspace @norest/nestjs test",
     "watch:cli": "yarn workspace @norest/cli build -w",
     "watch:nestjs": "yarn workspace @norest/nestjs start:dev",
@@ -37,5 +37,5 @@
     "prettier": "^1.19.1",
     "rimraf": "^3.0.2"
   },
-  "version": "0.3.5"
+  "version": "0.3.3"
 }

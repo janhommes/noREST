@@ -1,10 +1,11 @@
-FROM node:alpine
+FROM node:14
 
 RUN mkdir norest
 WORKDIR /norest
 RUN mkdir data
+RUN npm init -f
 
 ADD ./nestjs/norest.config.js /norest
-CMD  ["npm", "install", "@norest/cli" "-g"]
+RUN  npm install @norest/cli @norest/plugin-health
 
-CMD  ["norest", "--port=80"]
+CMD  ["npx", "norest", "--port=80"]
