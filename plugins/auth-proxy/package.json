@@ -1,6 +1,6 @@
 {
   "name": "@norest/plugin-auth-proxy",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -8,9 +8,9 @@
     "watch": "tsc -w"
   },
   "dependencies": {
-    "@norest/nestjs": "^0.3.0",
     "@nestjs/common": "^7.0.0",
     "@nestjs/core": "^7.0.0",
+    "@norest/nestjs": "^0.3.0",
     "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
